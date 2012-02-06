@@ -8,16 +8,16 @@ Twine is a command line tool for managing your strings and their translations. T
 
 Twine is most easily installed as a Gem.
 
-	sudo gem install twine
+	$ gem install twine
 
 ### From Source
 
 You can also run Twine directly from source. However, it requires [rubyzip][rubyzip] in order to create and read standard zip files.
 
-	sudo gem install rubyzip
-	git clone git://github.com/mobiata/twine.git
-	cd twine
-	./twine --help
+	$ gem install rubyzip
+	$ git clone git://github.com/mobiata/twine.git
+	$ cd twine
+	$ ./twine --help
 
 Make sure you run the `twine` executable at the root of the project as it properly sets up your Ruby library path. The `bin/twine` executable does not.
 
@@ -78,42 +78,42 @@ Whitepace in this file is mostly ignored. If you absolutely need to put spaces a
 
 This command creates an Apple or Android strings file from the master strings data file.
 
-	> twine generate-string-file /path/to/strings.txt values-ja.xml --tag common,app1
-	> twine generate-string-file /path/to/strings.txt Localizable.strings --lang ja --tag mytag
-	> twine generate-string-file /path/to/strings.txt all-english.strings --lang en
+	$ twine generate-string-file /path/to/strings.txt values-ja.xml --tag common,app1
+	$ twine generate-string-file /path/to/strings.txt Localizable.strings --lang ja --tag mytag
+	$ twine generate-string-file /path/to/strings.txt all-english.strings --lang en
 
 #### `generate-all-string-files`
 
 This command is a convenient way to call `generate-string-file` multiple times. It uses standard Mac OS X, iOS, and Android conventions to figure out exactly which files to create given a parent directory. For example, if you point it to a parent directory containing `en.lproj`, `fr.lproj`, and `ja.lproj` subdirectories, Twine will create a `Localizable.strings` file of the appropriate language in each of them. This is often the command you will want to execute during the build phase of your project.
 
-	> twine generate-all-string-files /path/to/strings.txt /path/to/project/locales/directory --tag common,app1
+	$ twine generate-all-string-files /path/to/strings.txt /path/to/project/locales/directory --tag common,app1
 
 #### `consume-string-file`
 
 This command slurps all of the strings from a `.strings` or `.xml` file and incorporates the translated text into the master strings data file. This is a simple way to incorporate any changes made to a single file by one of your translators. It will only identify strings that already exist in the master data file.
 
-	> twine consume-string-file /path/to/strings.txt fr.strings
-	> twine consume-string-file /path/to/strings.txt Localizable.strings --lang ja
-	> twine consume-string-file /path/to/strings.txt es.xml
+	$ twine consume-string-file /path/to/strings.txt fr.strings
+	$ twine consume-string-file /path/to/strings.txt Localizable.strings --lang ja
+	$ twine consume-string-file /path/to/strings.txt es.xml
 
 #### `generate-loc-drop`
 
 This command is a convenient way to generate a zip file containing files created by the `generate-string-file` command. It is often used for creating a single zip containing a large number of strings in all languages which you can then hand off to your translation team.
 
-	> twine generate-loc-drop /path/to/strings.txt LocDrop1.zip
-	> twine generate-loc-drop /path/to/strings.txt LocDrop2.zip --lang en,fr,ja,ko --tag common,app1
+	$ twine generate-loc-drop /path/to/strings.txt LocDrop1.zip
+	$ twine generate-loc-drop /path/to/strings.txt LocDrop2.zip --lang en,fr,ja,ko --tag common,app1
 
 #### `consume-loc-drop`
 
 This command is a convenient way of taking a zip file and executing the `consume-string-file` command on each file within the archive. It is most often used to incorporate all of the changes made by the translation team after they have completed work on a localization drop.
 
-	> twine consume-loc-drop /path/to/strings.txt LocDrop2.zip
+	$ twine consume-loc-drop /path/to/strings.txt LocDrop2.zip
 
 #### `generate-report`
 
 This command gives you useful information about your strings. It will tell you how many strings you have, how many have been translated into each language, and whether your master strings data file has any duplicate string keys.
 
-	> twine generate-report /path/to/strings.txt
+	$ twine generate-report /path/to/strings.txt
 
 [rubyzip]: http://rubygems.org/gems/rubyzip
 [git]: http://git-scm.org/
