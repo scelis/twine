@@ -122,7 +122,7 @@ It is easy to incorporate Twine right into your iOS and Mac OS X app build proce
 1. In your project folder, create all of the `.lproj` directories that you need. It does not really matter where they are. We tend to put them in `Resources/Locales/`.
 2. Run the `generate-all-string-files` command to create all of the string files you need in these directories. For example,
 
-	`twine generate-all-string-files strings.txt Resources/Locales/ --tags tag1,tag2`
+	$ twine generate-all-string-files strings.txt Resources/Locales/ --tags tag1,tag2
 
 	Make sure you point Twine at your strings data file, the directory that contains all of your `.lproj` directories, and and the tags that describe the strings you want to use for this project.
 3. Drag the `Resources/Locales/` directory to the Xcode project navigator so that Xcode knows to include all of these strings files in your build.
