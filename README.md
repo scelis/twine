@@ -115,6 +115,24 @@ This command gives you useful information about your strings. It will tell you h
 
 	$ twine generate-report /path/to/strings.txt
 
+## Twine in your Build Process
+
+It is easy to incorporate Twine right into your iOS and Mac OS X app build processes.
+
+1. In your project folder, create all of the `.lproj` directories that you need. It does not really matter where they are. We tend to put them in `Resources/Locales/`.
+2. Run the `generate-all-string-files` command to create all of the string files you need in these directories. For example,
+
+	`twine generate-all-string-files strings.txt Resources/Locales/ --tags tag1,tag2`
+
+	Make sure you point Twine at your strings data file, the directory that contains all of your `.lproj` directories, and and the tags that describe the strings you want to use for this project.
+3. Drag the `Resources/Locales/` directory to the Xcode project navigator so that Xcode knows to include all of these strings files in your build.
+4. In Xcode, navigate to the "Build Phases" tab of your target.
+5. Click on the "Add Build Phase" button and select "Add Run Script".
+6. Drag the new "Run Script" build phase up so that it runs earlier in the build process. It doesn't really matter where, as long as it happens before the resources are copied to your bundle.
+7. Edit your script to run the exact same command you ran in step (2) above.
+
+Now, whenever you build your application, Xcode will automatically invoke Twine to make sure that your `.strings` files are always up-to-date.
+
 [rubyzip]: http://rubygems.org/gems/rubyzip
 [git]: http://git-scm.org/
 [INI]: http://en.wikipedia.org/wiki/INI_file
