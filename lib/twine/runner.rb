@@ -108,6 +108,10 @@ module Twine
         raise Twine::Error.new "Unable to determine language for #{path}"
       end
 
+      if !@strings.language_codes.include? lang
+        @strings.language_codes << lang
+      end
+
       if is_read
         formatter.read_file(path, lang, @strings)
       else
