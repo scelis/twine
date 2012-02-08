@@ -58,6 +58,7 @@ module Twine
             value = ele.text
             if value
               value.gsub!('\\\'', '\'')
+              value.gsub!(/\n/, '')
               value.gsub!('%s', '%@')
               strings.strings_map[key].translations[lang] = value
             else
