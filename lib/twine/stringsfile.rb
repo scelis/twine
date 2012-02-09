@@ -120,13 +120,17 @@ module Twine
           f.puts "[[#{section.name}]]"
 
           section.rows.each do |row|
+            f.puts "\t[#{row.key}]"
             value = row.translations[dev_lang]
-            if value[0,1] == ' ' || value[-1,1] == ' ' || (value[0,1] == '`' && value[-1,1] == '`')
-              value = '`' + value + '`'
+            if !value
+              puts "Warning! #{row.key} does not exist in #{dev_lang}"
+            else
+              if value[0,1] == ' ' || value[-1,1] == ' ' || (value[0,1] == '`' && value[-1,1] == '`')
+                value = '`' + value + '`'
+              end
+              f.puts "\t\t#{dev_lang} = #{value}"
             end
 
-            f.puts "\t[#{row.key}]"
-            f.puts "\t\t#{dev_lang} = #{value}"
             if row.tags && row.tags.length > 0
               tag_str = row.tags.join(',')
               f.puts "\t\ttags = #{tag_str}"

@@ -34,16 +34,35 @@ module Twine
 
       def read_file(path, lang, strings)
         File.open(path, 'r:UTF-8') do |f|
+          current_section = nil
           doc = REXML::Document.new(f)
           doc.elements.each('resources/string') do |ele|
             key = ele.attributes["name"]
-            if strings.strings_map.include? key
-              value = ele.text
+            if not strings.strings_map.include? key
+              puts "#{key} not found in strings data file - adding"
+              if !current_section
+                strings.sections.each do |section|
+                  if section.name == 'Uncategorized'
+                    current_section = section
+                  end
+                end
+                if !current_section
+                  current_section = StringsSection.new('Uncategorized')
+                  strings.sections << current_section
+                end
+              end
+              current_row = StringsRow.new(key)
+              current_section.rows << current_row
+              strings.strings_map[key] = current_row
+            end
+            value = ele.text
+            if value
               value.gsub!('\\\'', '\'')
+              value.gsub!(/\n/, '')
               value.gsub!('%s', '%@')
               strings.strings_map[key].translations[lang] = value
             else
-              puts "#{key} not found in strings data file."
+              strings.strings_map[key].translations[lang] = ""
             end
           end
         end
