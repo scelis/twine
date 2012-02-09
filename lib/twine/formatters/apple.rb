@@ -63,7 +63,7 @@ module Twine
                 key = row.key
                 key = key.gsub('"', '\\\\"')
 
-                value = translated_string_for_row_and_lang(row, lang, default_lang)
+                value = row.translated_string_for_and_lang(lang, default_lang)
                 value = value.gsub('"', '\\\\"')
 
                 comment = row.comment

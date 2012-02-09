@@ -38,6 +38,10 @@ module Twine
 
       return false
     end
+    
+    def translated_string_for_lang(lang, default_lang=nil)
+      row.translations[lang] || row.translations[default_lang]
+    end
   end
 
   class StringsFile

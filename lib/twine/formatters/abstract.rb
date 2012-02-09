@@ -33,10 +33,6 @@ module Twine
           end
         end
       end
-
-      def translated_string_for_row_and_lang(row, lang, default_lang)
-        row.translations[lang] || row.translations[default_lang]
-      end
     end
   end
 end
