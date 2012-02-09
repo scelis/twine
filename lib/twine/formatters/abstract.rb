@@ -34,22 +34,6 @@ module Twine
         end
       end
 
-      def row_matches_tags?(row, tags)
-        if tags == nil || tags.length == 0
-          return true
-        end
-
-        if tags != nil && row.tags != nil
-          tags.each do |tag|
-            if row.tags.include? tag
-              return true
-            end
-          end
-        end
-
-        return false
-      end
-
       def translated_string_for_row_and_lang(row, lang, default_lang)
         row.translations[lang] || row.translations[default_lang]
       end

@@ -21,6 +21,23 @@ module Twine
       @tags = nil
       @translations = {}
     end
+    
+    def matches_tags?(tags)
+      # The user did not specify any tags. Everything passes.
+      if tags == nil || tags.length == 0
+        return true
+      end
+
+      if tags != nil && @tags != nil
+        tags.each do |tag|
+          if @tags.include? tag
+            return true
+          end
+        end
+      end
+
+      return false
+    end
   end
 
   class StringsFile

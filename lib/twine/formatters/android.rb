@@ -76,7 +76,7 @@ module Twine
           strings.sections.each do |section|
             printed_section = false
             section.rows.each do |row|
-              if row_matches_tags?(row, tags)
+              if row.matches_tags?(tags)
                 unless printed_section
                   f.puts ''
                   if section.name && section.name.length > 0
