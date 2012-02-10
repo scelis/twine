@@ -53,6 +53,9 @@ module Twine
           end
           @options[:format] = lformat
         end
+        opts.on('-a', '--all', 'Normally, when consuming a string file, Twine will ignore any string keys that do not exist in your master file. This flag will force those missing strings to be added to your master file.') do |a|
+          @options[:consume_all] = true
+        end
         opts.on('-h', '--help', 'Show this message.') do |h|
           puts opts.help
           exit

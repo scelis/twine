@@ -40,7 +40,7 @@ module Twine
     end
     
     def translated_string_for_lang(lang, default_lang=nil)
-      row.translations[lang] || row.translations[default_lang]
+      @translations[lang] || @translations[default_lang]
     end
   end
 
@@ -108,7 +108,7 @@ module Twine
                 current_row.tags = value.split(',')
               else
                 if !@language_codes.include? key
-                  @language_codes << key
+                  add_language_code(key)
                 end
                 current_row.translations[key] = value
               end
@@ -120,12 +120,6 @@ module Twine
             raise Twine::Error.new("Unable to parse line #{line_num} of #{path}: #{line}")
           end
         end
-
-        # Developer Language
-        dev_lang = @language_codes[0]
-        @language_codes.delete(dev_lang)
-        @language_codes.sort!
-        @language_codes.insert(0, dev_lang)
       end
     end
 
@@ -144,7 +138,7 @@ module Twine
             f.puts "\t[#{row.key}]"
             value = row.translations[dev_lang]
             if !value
-              puts "Warning! #{row.key} does not exist in #{dev_lang}"
+              puts "Warning: #{row.key} does not exist in developer language '#{dev_lang}'"
             else
               if value[0,1] == ' ' || value[-1,1] == ' ' || (value[0,1] == '`' && value[-1,1] == '`')
                 value = '`' + value + '`'
@@ -170,6 +164,18 @@ module Twine
             end
           end
         end
+      end
+    end
+
+    def add_language_code(code)
+      if @language_codes.length == 0
+        @language_codes << code
+      elsif !@language_codes.include?(code)
+        dev_lang = @language_codes[0]
+        @language_codes << code
+        @language_codes.delete(dev_lang)
+        @language_codes.sort!
+        @language_codes.insert(0, dev_lang)
       end
     end
   end

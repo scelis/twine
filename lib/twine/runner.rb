@@ -53,7 +53,7 @@ module Twine
         lang = @options[:languages][0]
       end
 
-      read_write_string_file(@options[:output_path], false, lang, @options[:format], @options[:tags])
+      read_write_string_file(@options[:output_path], false, lang)
     end
 
     def generate_all_string_files
@@ -71,7 +71,7 @@ module Twine
 
       formatter = formatter_for_format(format)
 
-      formatter.write_all_files(@options[:output_path], @options[:tags], @strings)
+      formatter.write_all_files(@options[:output_path])
     end
 
     def consume_string_file
@@ -80,15 +80,16 @@ module Twine
         lang = @options[:languages][0]
       end
 
-      read_write_string_file(@options[:input_path], true, lang, @options[:format], nil)
+      read_write_string_file(@options[:input_path], true, lang)
       @strings.write(@options[:strings_file])
     end
 
-    def read_write_string_file(path, is_read, lang, format, tags)
+    def read_write_string_file(path, is_read, lang)
       if is_read && !File.file?(path)
         raise Twine::Error.new("File does not exist: #{path}")
       end
 
+      format = @options[:format]
       if !format
         format = determine_format_given_path(path)
       end
@@ -113,9 +114,9 @@ module Twine
       end
 
       if is_read
-        formatter.read_file(path, lang, @strings)
+        formatter.read_file(path, lang)
       else
-        formatter.write_file(path, lang, tags, @strings)
+        formatter.write_file(path, lang)
       end
     end
 
@@ -166,7 +167,7 @@ module Twine
               real_path = File.join(dir, entry.name)
               FileUtils.mkdir_p(File.dirname(real_path))
               zipfile.extract(entry.name, real_path)
-              read_write_string_file(real_path, true, nil, nil, @options[:tags])
+              read_write_string_file(real_path, true, nil)
             end
           end
         end
@@ -259,7 +260,7 @@ module Twine
     def formatter_for_format(format)
       Formatters::FORMATTERS.each do |formatter|
         if formatter::FORMAT_NAME == format
-          return formatter.new
+          return formatter.new(@strings, @options)
         end
       end
 
