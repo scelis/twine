@@ -81,7 +81,8 @@ module Twine
       end
 
       read_write_string_file(@options[:input_path], true, lang)
-      @strings.write(@options[:strings_file])
+      output_path = @options[:output_path] || @options[:strings_file]
+      @strings.write(output_path)
     end
 
     def read_write_string_file(path, is_read, lang)
@@ -172,8 +173,9 @@ module Twine
           end
         end
       end
-      
-      @strings.write @options[:strings_file]
+
+      output_path = @options[:output_path] || @options[:strings_file]
+      @strings.write(output_path)
     end
 
     def generate_report

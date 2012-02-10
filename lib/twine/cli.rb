@@ -56,6 +56,9 @@ module Twine
         opts.on('-a', '--all', 'Normally, when consuming a string file, Twine will ignore any string keys that do not exist in your master file. This flag will force those missing strings to be added to your master file.') do |a|
           @options[:consume_all] = true
         end
+        opts.on('-o', '--output-file OUTPUT_FILE', 'Write the new strings database to this file instead of replacing the original file. This flag is only useful when running the consume-string-file or consume-loc-drop commands.') do |o|
+          @options[:output_path] = o
+        end
         opts.on('-h', '--help', 'Show this message.') do |h|
           puts opts.help
           exit
