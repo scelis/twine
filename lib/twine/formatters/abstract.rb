@@ -60,7 +60,7 @@ module Twine
         Dir.foreach(path) do |item|
           lang = determine_language_given_path(item)
           if lang
-            write_file(File.join(path, item, default_file_name), lang, tags, strings)
+            write_file(File.join(path, item, default_file_name), lang)
           end
         end
       end
