@@ -23,12 +23,13 @@ module Twine
     end
     
     def matches_tags?(tags)
-      # The user did not specify any tags. Everything passes.
-      if tags == nil || tags.length == 0
+      if @tags == nil || @tags.length == 0
+        # This row has no tags. Never match
+        return false
+      elsif tags == nil || tags.length == 0
+        # The user did not specify any tags. Everything passes.
         return true
-      end
-
-      if tags != nil && @tags != nil
+      else
         tags.each do |tag|
           if @tags.include? tag
             return true
