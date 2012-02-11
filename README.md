@@ -70,7 +70,7 @@ Whitepace in this file is mostly ignored. If you absolutely need to put spaces a
 
 ## Usage
 
-	Usage: twine COMMAND STRINGS_FILE [INPUT_OR_OUTPUT_PATH] [--lang LANG1,LANG2...] [--tag TAG1,TAG2,TAG3...] [--format FORMAT]
+	Usage: twine COMMAND STRINGS_FILE [INPUT_OR_OUTPUT_PATH] [--lang LANG1,LANG2...] [--tags TAG1,TAG2,TAG3...] [--format FORMAT]
 	
 ### Commands
 
@@ -78,15 +78,15 @@ Whitepace in this file is mostly ignored. If you absolutely need to put spaces a
 
 This command creates an Apple or Android strings file from the master strings data file.
 
-	$ twine generate-string-file /path/to/strings.txt values-ja.xml --tag common,app1
-	$ twine generate-string-file /path/to/strings.txt Localizable.strings --lang ja --tag mytag
+	$ twine generate-string-file /path/to/strings.txt values-ja.xml --tags common,app1
+	$ twine generate-string-file /path/to/strings.txt Localizable.strings --lang ja --tags mytag
 	$ twine generate-string-file /path/to/strings.txt all-english.strings --lang en
 
 #### `generate-all-string-files`
 
 This command is a convenient way to call `generate-string-file` multiple times. It uses standard Mac OS X, iOS, and Android conventions to figure out exactly which files to create given a parent directory. For example, if you point it to a parent directory containing `en.lproj`, `fr.lproj`, and `ja.lproj` subdirectories, Twine will create a `Localizable.strings` file of the appropriate language in each of them. This is often the command you will want to execute during the build phase of your project.
 
-	$ twine generate-all-string-files /path/to/strings.txt /path/to/project/locales/directory --tag common,app1
+	$ twine generate-all-string-files /path/to/strings.txt /path/to/project/locales/directory --tags common,app1
 
 #### `consume-string-file`
 
@@ -101,7 +101,7 @@ This command slurps all of the strings from a `.strings` or `.xml` file and inco
 This command is a convenient way to generate a zip file containing files created by the `generate-string-file` command. It is often used for creating a single zip containing a large number of strings in all languages which you can then hand off to your translation team.
 
 	$ twine generate-loc-drop /path/to/strings.txt LocDrop1.zip
-	$ twine generate-loc-drop /path/to/strings.txt LocDrop2.zip --lang en,fr,ja,ko --tag common,app1
+	$ twine generate-loc-drop /path/to/strings.txt LocDrop2.zip --lang en,fr,ja,ko --tags common,app1
 
 #### `consume-loc-drop`
 

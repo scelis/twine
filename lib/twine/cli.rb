@@ -13,7 +13,7 @@ module Twine
 
     def parse_args
       parser = OptionParser.new do |opts|
-        opts.banner = 'Usage: twine COMMAND STRINGS_FILE [INPUT_OR_OUTPUT_PATH] [--lang LANG1,LANG2...] [--tag TAG1,TAG2,TAG3...] [--format FORMAT]'
+        opts.banner = 'Usage: twine COMMAND STRINGS_FILE [INPUT_OR_OUTPUT_PATH] [--lang LANG1,LANG2...] [--tags TAG1,TAG2,TAG3...] [--format FORMAT]'
         opts.separator ''
         opts.separator 'The purpose of this script is to convert back and forth between multiple data formats, allowing us to treat our strings (and translations) as data stored in a text file. We can then use the data file to create drops for the localization team, consume similar drops returned by the localization team, generate reports on the strings, as well as create iOS and Android string files to ship with our products.'
         opts.separator ''
@@ -36,7 +36,7 @@ module Twine
         opts.on('-l', '--lang LANGUAGES', Array, 'The language code(s) to use for the specified action.') do |langs|
           @options[:languages] = langs
         end
-        opts.on('-t', '--tag TAGS', Array, 'The tag(s) to use for the specified action. Only strings with that tag will be processed.') do |tags|
+        opts.on('-t', '--tags TAGS', Array, 'The tag(s) to use for the specified action. Only strings with that tag will be processed.') do |tags|
           @options[:tags] = tags
         end
         opts.on('-f', '--format FORMAT', 'The file format to read or write (iOS, Android). Additional formatters can be placed in the formats/ directory.') do |format|
@@ -70,10 +70,10 @@ module Twine
         opts.separator ''
         opts.separator 'Examples:'
         opts.separator ''
-        opts.separator '> twine generate-string-file strings.txt ko.xml --tag FT'
-        opts.separator '> twine generate-all-string-files strings.txt Resources/Locales/ --tag FT,FB'
+        opts.separator '> twine generate-string-file strings.txt ko.xml --tags FT'
+        opts.separator '> twine generate-all-string-files strings.txt Resources/Locales/ --tags FT,FB'
         opts.separator '> twine consume-string-file strings.txt ja.strings'
-        opts.separator '> twine generate-loc-drop strings.txt LocDrop5.zip --tag FT,FB --format android --lang de,en,en-GB,ja,ko'
+        opts.separator '> twine generate-loc-drop strings.txt LocDrop5.zip --tags FT,FB --format android --lang de,en,en-GB,ja,ko'
         opts.separator '> twine consume-loc-drop strings.txt LocDrop5.zip'
         opts.separator '> twine generate-report strings.txt'
       end
