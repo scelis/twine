@@ -16,13 +16,8 @@ module Twine
     def run
       # Parse all CLI arguments.
       CLI::parse_args(@args, @options)
-
-      begin
-        read_strings_data
-        execute_command
-      rescue Twine::Error => e
-        puts e.message
-      end
+      read_strings_data
+      execute_command
     end
 
     def read_strings_data

@@ -17,7 +17,7 @@ module Twine
         if @strings.strings_map.include?(key)
           @strings.strings_map[key].translations[lang] = value
         elsif @options[:consume_all]
-          puts "Adding new string '#{key}' to strings data file."
+          STDERR.puts "Adding new string '#{key}' to strings data file."
           arr = @strings.sections.select { |s| s.name == 'Uncategorized' }
           current_section = arr ? arr[0] : nil
           if !current_section
@@ -29,7 +29,7 @@ module Twine
           @strings.strings_map[key] = current_row
           @strings.strings_map[key].translations[lang] = value
         else
-          puts "Warning: '#{key}' not found in strings data file."
+          STDERR.puts "Warning: '#{key}' not found in strings data file."
         end
         if !@strings.language_codes.include?(lang)
           @strings.add_language_code(lang)

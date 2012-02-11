@@ -12,7 +12,7 @@ module Twine
     end
 
     def parse_args
-      parser = OptionParser.new(@args) do |opts|
+      parser = OptionParser.new do |opts|
         opts.banner = 'Usage: twine COMMAND STRINGS_FILE [INPUT_OR_OUTPUT_PATH] [--lang LANG1,LANG2...] [--tag TAG1,TAG2,TAG3...] [--format FORMAT]'
         opts.separator ''
         opts.separator 'The purpose of this script is to convert back and forth between multiple data formats, allowing us to treat our strings (and translations) as data stored in a text file. We can then use the data file to create drops for the localization team, consume similar drops returned by the localization team, generate reports on the strings, as well as create iOS and Android string files to ship with our products.'
@@ -49,7 +49,7 @@ module Twine
             end
           end
           if !found_format
-            puts "Invalid format: #{format}"
+            STDERR.puts "Invalid format: #{format}"
           end
           @options[:format] = lformat
         end
@@ -77,7 +77,7 @@ module Twine
         opts.separator '> twine consume-loc-drop strings.txt LocDrop5.zip'
         opts.separator '> twine generate-report strings.txt'
       end
-      parser.parse!
+      parser.parse! @args
 
       if @args.length == 0
         puts parser.help
@@ -87,13 +87,11 @@ module Twine
       @options[:command] = @args[0]
 
       if !VALID_COMMANDS.include? @options[:command]
-        puts "Invalid command: #{@options[:command]}"
-        exit
+        raise Twine::Error.new "Invalid command: #{@options[:command]}"
       end
 
       if @args.length == 1
-        puts 'You must specify your strings file.'
-        exit
+        raise Twine::Error.new 'You must specify your strings file.'
       end
 
       @options[:strings_file] = @args[1]
@@ -103,68 +101,54 @@ module Twine
         if @args.length == 3
           @options[:output_path] = @args[2]
         elsif @args.length > 3
-          puts "Unknown argument: #{@args[3]}"
-          exit
+          raise Twine::Error.new "Unknown argument: #{@args[3]}"
         else
-          puts 'Not enough arguments.'
-          exit
+          raise Twine::Error.new 'Not enough arguments.'
         end
         if @options[:languages] and @options[:languages].length > 1
-          puts 'Please only specify a single language for the generate-string-file command.'
-          exit
+          raise Twine::Error.new 'Please only specify a single language for the generate-string-file command.'
         end
       when 'generate-all-string-files'
         if ARGV.length == 3
           @options[:output_path] = @args[2]
         elsif @args.length > 3
-          puts "Unknown argument: #{@args[3]}"
-          exit
+          raise Twine::Error.new "Unknown argument: #{@args[3]}"
         else
-          puts 'Not enough arguments.'
-          exit
+          raise Twine::Error.new 'Not enough arguments.'
         end
       when 'consume-string-file'
         if @args.length == 3
           @options[:input_path] = @args[2]
         elsif @args.length > 3
-          puts "Unknown argument: #{@args[3]}"
-          exit
+          raise Twine::Error.new "Unknown argument: #{@args[3]}"
         else
-          puts 'Not enough arguments.'
-          exit
+          raise Twine::Error.new 'Not enough arguments.'
         end
         if @options[:languages] and @options[:languages].length > 1
-          puts 'Please only specify a single language for the consume-string-file command.'
-          exit
+          raise Twine::Error.new 'Please only specify a single language for the consume-string-file command.'
         end
       when 'generate-loc-drop'
         if @args.length == 3
           @options[:output_path] = @args[2]
         elsif @args.length > 3
-          puts "Unknown argument: #{@args[3]}"
-          exit
+          raise Twine::Error.new "Unknown argument: #{@args[3]}"
         else
-          puts 'Not enough arguments.'
-          exit
+          raise Twine::Error.new 'Not enough arguments.'
         end
         if !@options[:format]
-          puts 'You must specify a format.'
-          exit
+          raise Twine::Error.new 'You must specify a format.'
         end
       when 'consume-loc-drop'
         if @args.length == 3
           @options[:input_path] = @args[2]
         elsif @args.length > 3
-          puts "Unknown argument: #{@args[3]}"
-          exit
+          raise Twine::Error.new "Unknown argument: #{@args[3]}"
         else
-          puts 'Not enough arguments.'
-          exit
+          raise Twine::Error.new 'Not enough arguments.'
         end
       when 'generate-report'
         if @args.length > 2
-          puts "Unknown argument: #{@args[2]}"
-          exit
+          raise Twine::Error.new "Unknown argument: #{@args[2]}"
         end
       end
     end
