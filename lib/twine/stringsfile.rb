@@ -94,7 +94,7 @@ module Twine
               parsed = true
             end
           else
-            match = /^([^=]+)=(.+)$/.match(line)
+            match = /^([^=]+)=(.*)$/.match(line)
             if match
               key = match[1].strip
               value = match[2].strip
