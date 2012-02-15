@@ -40,6 +40,7 @@ module Twine
             key = ele.attributes["name"]
             value = ele.text || ''
             value.gsub!('\\\'', '\'')
+            value.gsub!('\\"', '"')
             value.gsub!(/\n/, '')
             value.gsub!('%s', '%@')
             set_translation_for_key(key, lang, value)
