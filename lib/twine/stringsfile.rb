@@ -41,7 +41,18 @@ module Twine
     end
     
     def translated_string_for_lang(lang, default_lang=nil)
-      @translations[lang] || @translations[default_lang]
+      if @translations[lang]
+        return @translations[lang]
+      elsif default_lang.respond_to?("each")
+        default_lang.each do |def_lang|
+          if @translations[def_lang]
+            return @translations[def_lang]
+          end
+        end
+        return nil
+      else
+        return @translations[default_lang]
+      end
     end
   end
 
