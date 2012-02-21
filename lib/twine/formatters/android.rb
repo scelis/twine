@@ -24,7 +24,7 @@ module Twine
       ]
 
       def self.can_handle_directory?(path)
-        Dir.entries(path).any? { |item| /^values-.+$/.match(item) }
+        Dir.entries(path).any? { |item| /^values.*$/.match(item) }
       end
 
       def default_file_name
@@ -34,12 +34,16 @@ module Twine
       def determine_language_given_path(path)
         path_arr = path.split(File::SEPARATOR)
         path_arr.each do |segment|
-          match = /^values-(.*)$/.match(segment)
-          if match
-            lang = match[1]
-            lang = LANG_CODES.fetch(lang, lang)
-            lang.sub!('-r', '-')
-            return lang
+          if segment == 'values'
+            return @strings.language_codes[0]
+          else
+            match = /^values-(.*)$/.match(segment)
+            if match
+              lang = match[1]
+              lang = LANG_CODES.fetch(lang, lang)
+              lang.sub!('-r', '-')
+              return lang
+            end
           end
         end
 
