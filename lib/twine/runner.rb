@@ -137,7 +137,7 @@ module Twine
               file_name = lang + formatter.class::EXTENSION
               real_path = File.join(dir, file_name)
               zip_path = File.join('Locales', file_name)
-              formatter.write_file(real_path, lang, @options[:tags], @strings)
+              formatter.write_file(real_path, lang)
               zipfile.add(zip_path, real_path)
             end
           end
