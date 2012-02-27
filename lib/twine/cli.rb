@@ -56,6 +56,9 @@ module Twine
         opts.on('-a', '--all', 'Normally, when consuming a string file, Twine will ignore any string keys that do not exist in your master file. This flag will also cause any Android string files that are generated to include strings that have not yet been translated for the current language.') do |a|
           @options[:consume_generate_all] = true
         end
+        opts.on('-e', '--encoding ENCODING', 'Twine defaults to encoding all output files in UTF-8. This flag will tell Twine to use an alternate encoding for these files. For example, you could use this to write Apple .strings files in UTF-16. This flag currently only works with Apple .strings files and is currently only supported in Ruby 1.9.3 or greater.') do |e|
+          @options[:output_encoding] = e
+        end
         opts.on('-o', '--output-file OUTPUT_FILE', 'Write the new strings database to this file instead of replacing the original file. This flag is only useful when running the consume-string-file or consume-loc-drop commands.') do |o|
           @options[:output_path] = o
         end
