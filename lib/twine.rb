@@ -3,6 +3,7 @@ module Twine
   end
   
   require 'twine/cli'
+  require 'twine/encoding'
   require 'twine/formatters'
   require 'twine/runner'
   require 'twine/stringsfile'

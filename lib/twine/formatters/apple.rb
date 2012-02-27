@@ -26,8 +26,35 @@ module Twine
       end
 
       def read_file(path, lang)
-        File.open(path, 'r:UTF-8') do |f|
-          while line = f.gets
+        encoding = Twine::Encoding.encoding_for_path(path)
+        sep = nil
+        if !encoding.respond_to?(:encode)
+          # This code is not necessary in 1.9.3 and does not work as it did in 1.8.7.
+          if encoding.end_with? 'LE'
+            sep = "\x0a\x00"
+          elsif encoding.end_with? 'BE'
+            sep = "\x00\x0a"
+          else
+            sep = "\n"
+          end
+        end
+
+        if encoding.index('UTF-16')
+          mode = "rb:#{encoding}"
+        else
+          mode = "r:#{encoding}"
+        end
+
+        File.open(path, mode) do |f|
+          while line = (sep) ? f.gets(sep) : f.gets
+            if encoding.index('UTF-16')
+              if line.respond_to? :encode!
+                line.encode!('UTF-8')
+              else
+                require 'iconv'
+                line = Iconv.iconv('UTF-8', encoding, line).join
+              end
+            end
             match = /"((?:[^"\\]|\\.)+)"\s*=\s*"((?:[^"\\]|\\.)*)"/.match(line)
             if match
               key = match[1]
