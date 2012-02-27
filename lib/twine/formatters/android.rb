@@ -90,6 +90,10 @@ module Twine
                 key = row.key
 
                 value = row.translated_string_for_lang(lang, default_lang)
+                if !value && @options[:consume_generate_all]
+                  value = row.translated_string_for_lang(@strings.language_codes[0])
+                end
+
                 if value # if values is nil, there was no appropriate translation, so let Android handle the defaulting
                   value = String.new(value) # use a copy to prevent modifying the original
                   
