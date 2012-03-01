@@ -16,7 +16,7 @@ module Twine
       def set_translation_for_key(key, lang, value)
         if @strings.strings_map.include?(key)
           @strings.strings_map[key].translations[lang] = value
-        elsif @options[:consume_generate_all]
+        elsif @options[:consume_all]
           STDERR.puts "Adding new string '#{key}' to strings data file."
           arr = @strings.sections.select { |s| s.name == 'Uncategorized' }
           current_section = arr ? arr[0] : nil
