@@ -216,7 +216,9 @@ module Twine
         end
       end
 
-      if keys_without_tags.length > 0
+      if keys_without_tags.length == total_strings
+        puts "\nNone of your strings have tags."
+      elsif keys_without_tags.length > 0
         puts "\nStrings without tags:"
         keys_without_tags.each do |key|
           puts key
