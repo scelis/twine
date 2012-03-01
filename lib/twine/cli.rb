@@ -39,16 +39,13 @@ module Twine
         opts.on('-t', '--tags TAGS', Array, 'The tag(s) to use for the specified action. Only strings with that tag will be processed.') do |tags|
           @options[:tags] = tags
         end
-        opts.on('-f', '--format FORMAT', 'The file format to read or write (iOS, Android). Additional formatters can be placed in the formats/ directory.') do |format|
+        formats = []
+        Formatters::FORMATTERS.each do |formatter|
+          formats << formatter::FORMAT_NAME
+        end
+        opts.on('-f', '--format FORMAT', "The file format to read or write (#{formats.join(', ')}). Additional formatters can be placed in the formats/ directory.") do |format|
           lformat = format.downcase
-          found_format = false
-          Formatters::FORMATTERS.each do |formatter|
-            if formatter::FORMAT_NAME == lformat
-              found_format = true
-              break
-            end
-          end
-          if !found_format
+          if !formats.include?(lformat)
             STDERR.puts "Invalid format: #{format}"
           end
           @options[:format] = lformat
