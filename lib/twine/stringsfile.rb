@@ -22,13 +22,13 @@ module Twine
       @translations = {}
     end
     
-    def matches_tags?(tags)
+    def matches_tags?(tags, include_untagged)
       if tags == nil || tags.length == 0
         # The user did not specify any tags. Everything passes.
         return true
       elsif @tags == nil || @tags.length == 0
-        # This row has no tags. Never match
-        return false
+        # This row has no tags.
+        return (include_untagged) ? true : false
       else
         tags.each do |tag|
           if @tags.include? tag

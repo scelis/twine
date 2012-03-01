@@ -36,8 +36,11 @@ module Twine
         opts.on('-l', '--lang LANGUAGES', Array, 'The language code(s) to use for the specified action.') do |langs|
           @options[:languages] = langs
         end
-        opts.on('-t', '--tags TAGS', Array, 'The tag(s) to use for the specified action. Only strings with that tag will be processed.') do |tags|
+        opts.on('-t', '--tags TAGS', Array, 'The tag(s) to use for the specified action. Only strings with that tag will be processed. Do not specify any tags to match all strings in the strings data file.') do |tags|
           @options[:tags] = tags
+        end
+        opts.on('-u', '--untagged', 'If you have specified tags using the --tags flag, then only those tags will be selected. If you also want to select all strings that are untagged, then you can specify this option to do so.') do |u|
+          @options[:untagged] = true
         end
         formats = []
         Formatters::FORMATTERS.each do |formatter|
