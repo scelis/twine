@@ -75,7 +75,7 @@ module Twine
           @strings.sections.each do |section|
             printed_section = false
             section.rows.each do |row|
-              if row.matches_tags?(@options[:tags])
+              if row.matches_tags?(@options[:tags], @options[:untagged])
                 if !printed_section
                   f.puts ''
                   if section.name && section.name.length > 0

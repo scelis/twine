@@ -77,7 +77,7 @@ module Twine
           @strings.sections.each do |section|
             printed_section = false
             section.rows.each do |row|
-              if row.matches_tags?(@options[:tags])
+              if row.matches_tags?(@options[:tags], @options[:untagged])
                 if !printed_section
                   f.puts ''
                   if section.name && section.name.length > 0
@@ -90,7 +90,7 @@ module Twine
                 key = row.key
 
                 value = row.translated_string_for_lang(lang, default_lang)
-                if !value && @options[:consume_generate_all]
+                if !value && @options[:include_untranslated]
                   value = row.translated_string_for_lang(@strings.language_codes[0])
                 end
 

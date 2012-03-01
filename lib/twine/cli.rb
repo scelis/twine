@@ -25,7 +25,7 @@ module Twine
         opts.separator ''
         opts.separator 'consume-string-file -- Slurps all of the strings from a translated strings file into the specified STRINGS_FILE. If you have some files returned to you by your translators you can use this command to incorporate all of their changes. This script will attempt to guess both the language and the format given the filename and extension. For example, "ja.strings" will assume that the file is a Japanese iOS strings file.'
         opts.separator ''
-        opts.separator 'generate-loc-drop -- Generates a zip archive of strings files in any format. The purpose of this command is to create a very simple archive that can be handed off to a translation team. The translation team can unzip the archive, translate all of the strings in the archived files, zip everything back up, and then hand that final archive back to be consumed by the consume-loc-drop command. This command assumes that --all has been specified on the command line.'
+        opts.separator 'generate-loc-drop -- Generates a zip archive of strings files in any format. The purpose of this command is to create a very simple archive that can be handed off to a translation team. The translation team can unzip the archive, translate all of the strings in the archived files, zip everything back up, and then hand that final archive back to be consumed by the consume-loc-drop command. This command assumes that --include-untranslated has been specified on the command line.'
         opts.separator ''
         opts.separator 'consume-loc-drop -- Consumes an archive of translated files. This archive should be in the same format as the one created by the generate-loc-drop command.'
         opts.separator ''
@@ -36,34 +36,37 @@ module Twine
         opts.on('-l', '--lang LANGUAGES', Array, 'The language code(s) to use for the specified action.') do |langs|
           @options[:languages] = langs
         end
-        opts.on('-t', '--tags TAGS', Array, 'The tag(s) to use for the specified action. Only strings with that tag will be processed.') do |tags|
+        opts.on('-t', '--tags TAGS', Array, 'The tag(s) to use for the specified action. Only strings with that tag will be processed. Do not specify any tags to match all strings in the strings data file.') do |tags|
           @options[:tags] = tags
         end
-        opts.on('-f', '--format FORMAT', 'The file format to read or write (iOS, Android). Additional formatters can be placed in the formats/ directory.') do |format|
+        opts.on('-u', '--untagged', 'If you have specified tags using the --tags flag, then only those tags will be selected. If you also want to select all strings that are untagged, then you can specify this option to do so.') do |u|
+          @options[:untagged] = true
+        end
+        formats = []
+        Formatters::FORMATTERS.each do |formatter|
+          formats << formatter::FORMAT_NAME
+        end
+        opts.on('-f', '--format FORMAT', "The file format to read or write (#{formats.join(', ')}). Additional formatters can be placed in the formats/ directory.") do |format|
           lformat = format.downcase
-          found_format = false
-          Formatters::FORMATTERS.each do |formatter|
-            if formatter::FORMAT_NAME == lformat
-              found_format = true
-              break
-            end
-          end
-          if !found_format
+          if !formats.include?(lformat)
             STDERR.puts "Invalid format: #{format}"
           end
           @options[:format] = lformat
         end
-        opts.on('-a', '--all', 'Normally, when consuming a string file, Twine will ignore any string keys that do not exist in your master file. This flag will also cause any Android string files that are generated to include strings that have not yet been translated for the current language.') do |a|
-          @options[:consume_generate_all] = true
+        opts.on('-a', '--consume-all', 'Normally, when consuming a string file, Twine will ignore any string keys that do not exist in your master file.') do |a|
+          @options[:consume_all] = true
+        end
+        opts.on('-s', '--include-untranslated', 'This flag will cause any Android string files that are generated to include strings that have not yet been translated for the current language.') do |s|
+          @options[:include_untranslated] = true
+        end
+        opts.on('-o', '--output-file OUTPUT_FILE', 'Write the new strings database to this file instead of replacing the original file. This flag is only useful when running the consume-string-file or consume-loc-drop commands.') do |o|
+          @options[:output_path] = o
         end
         opts.on('-e', '--encoding ENCODING', 'Twine defaults to encoding all output files in UTF-8. This flag will tell Twine to use an alternate encoding for these files. For example, you could use this to write Apple .strings files in UTF-16. This flag currently only works with Apple .strings files and is currently only supported in Ruby 1.9.3 or greater.') do |e|
           if !"".respond_to?(:encode)
             raise Twine::Error.new "The --encoding flag is only supported on Ruby 1.9.3 or greater."
           end
           @options[:output_encoding] = e
-        end
-        opts.on('-o', '--output-file OUTPUT_FILE', 'Write the new strings database to this file instead of replacing the original file. This flag is only useful when running the consume-string-file or consume-loc-drop commands.') do |o|
-          @options[:output_path] = o
         end
         opts.on('-h', '--help', 'Show this message.') do |h|
           puts opts.help
@@ -134,7 +137,7 @@ module Twine
           raise Twine::Error.new 'Please only specify a single language for the consume-string-file command.'
         end
       when 'generate-loc-drop'
-        @options[:consume_generate_all] = true
+        @options[:include_untranslated] = true
         if @args.length == 3
           @options[:output_path] = @args[2]
         elsif @args.length > 3

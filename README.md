@@ -29,7 +29,7 @@ Each grouping section contains N string definitions. These string definitions st
 
 ### Tags
 
-Tags are used by Twine as a way to only work with a subset of your strings at any given point in time. Each string can be assigned zero or more tags which are separated by commas. When a string has no tags, that string will never be selected by Twine. You can get a list of all strings currently missing tags by executing the `generate-report` command.
+Tags are used by Twine as a way to only work with a subset of your strings at any given point in time. Each string can be assigned zero or more tags which are separated by commas. Tags are optional, though highly recommended. You can get a list of all strings currently missing tags by executing the `generate-report` command.
 
 ### Whitespace
 
