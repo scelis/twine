@@ -58,9 +58,9 @@ module Twine
             value.gsub!('\\\'', '\'')
             value.gsub!('\\"', '"')
             value.gsub!(/\n/, '')
-            value.gsub!(/%([0-9\$]*)s/, '%\1@')
             value.gsub!('&lt;', '<')
             value.gsub!('&amp;', '&')
+            value = iosify_substitutions(value)
             set_translation_for_key(key, lang, value)
           end
         end
@@ -105,7 +105,7 @@ module Twine
                   value.gsub!('&', '&amp;')
                   value.gsub!('<', '&lt;')
                   #  3) fix substitutions (e.g. %s/%@)
-                  value = fix_substitutions(value)
+                  value = androidify_substitutions(value)
   
                   comment = row.comment
                   if comment
@@ -125,7 +125,47 @@ module Twine
         end
       end
       
-      def fix_substitutions(str)
+      def iosify_substitutions(str)
+        # 1) use "@" instead of "s" for substituting strings
+        str.gsub!(/%([0-9\$]*)s/, '%\1@')
+        
+        # 2) if substitutions are numbered, see if we can remove the numbering safely
+        expectedSub = 1
+        startFound = false
+        foundSub = 0
+        str.each_char do |c|
+          if startFound
+            if c == "%"
+              # this is a literal %, keep moving
+              startFound = false
+            elsif c.match(/\d/)
+              foundSub *= 10
+              foundSub += Integer(c)
+            elsif c == "$"
+              if expectedSub == foundSub
+                # okay to keep going
+                startFound = false
+                expectedSub += 1
+              else
+                # the numbering appears to be important (or non-existent), leave it alone
+                return str
+              end
+            end
+          elsif c == "%"
+            startFound = true
+            foundSub = 0
+          end
+        end
+        
+        # if we got this far, then the numbering (if any) is in order left-to-right and safe to remove
+        if expectedSub > 1
+          str.gsub!(/%\d+\$(.)/, '%\1')
+        end
+        
+        return str
+      end
+      
+      def androidify_substitutions(str)
         # 1) use "s" instead of "@" for substituting strings
         str.gsub!(/%([0-9\$]*)@/, '%\1s')
         
