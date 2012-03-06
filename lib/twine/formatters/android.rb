@@ -104,8 +104,8 @@ module Twine
                   #  2) ampersand and less-than must be in XML-escaped form
                   value.gsub!('&', '&amp;')
                   value.gsub!('<', '&lt;')
-                  #  3) use "s" instead of "@" for substituting strings
-                  value.gsub!(/%([0-9\$]*)@/, '%\1s')
+                  #  3) fix substitutions (e.g. %s/%@)
+                  value = fix_substitutions(value)
   
                   comment = row.comment
                   if comment
@@ -124,6 +124,52 @@ module Twine
           f.puts '</resources>'
         end
       end
+      
+      def fix_substitutions(str)
+        # 1) use "s" instead of "@" for substituting strings
+        str.gsub!(/%([0-9\$]*)@/, '%\1s')
+        
+        # 2) if there is more than one substitution in a string, make sure they are numbered
+        substituteCount = 0
+        startFound = false
+        str.each_char do |c|
+          if startFound
+            if c == "%"
+              # ignore as this is a literal %
+            elsif c.match(/\d/)
+              # leave the string alone if it already has numbered substitutions
+              return str
+            else
+              substituteCount += 1
+            end
+            startFound = false
+          elsif c == "%"
+            startFound = true
+          end
+        end
+        
+        if substituteCount > 1
+          currentSub = 1
+          startFound = false
+          newstr = ""
+          str.each_char do |c|
+            if startFound
+              if !(c == "%")
+                newstr = newstr + "#{currentSub}$"
+                currentSub += 1
+              end
+              startFound = false
+            elsif c == "%"
+              startFound = true
+            end
+            newstr = newstr + c
+          end
+          return newstr
+        else
+          return str
+        end
+      end
+      
     end
   end
 end
