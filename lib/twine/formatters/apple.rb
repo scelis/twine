@@ -79,7 +79,7 @@ module Twine
                 if !printed_section
                   f.puts ''
                   if section.name && section.name.length > 0
-                    f.print "/* #{section.name} */\n\n"
+                    f.print "/********** #{section.name} **********/\n\n"
                   end
                   printed_section = true
                 end
@@ -97,8 +97,6 @@ module Twine
 
                 if comment && comment.length > 0
                   f.print "/* #{comment} */\n"
-                else
-                  f.print "\n"
                 end
 
                 f.print "\"#{key}\" = \"#{value}\";\n\n"
