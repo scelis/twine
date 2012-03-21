@@ -76,8 +76,8 @@ module Twine
             printed_section = false
             section.rows.each do |row|
               if row.matches_tags?(@options[:tags], @options[:untagged])
+                f.puts ''
                 if !printed_section
-                  f.puts ''
                   if section.name && section.name.length > 0
                     f.print "/********** #{section.name} **********/\n\n"
                   end
@@ -99,7 +99,7 @@ module Twine
                   f.print "/* #{comment} */\n"
                 end
 
-                f.print "\"#{key}\" = \"#{value}\";\n\n"
+                f.print "\"#{key}\" = \"#{value}\";\n"
              end
             end
           end

@@ -1,3 +1,4 @@
+require 'ERB'
 require 'test/unit'
 require 'twine'
 
@@ -6,7 +7,7 @@ class TwineTest < Test::Unit::TestCase
     Dir.mktmpdir do |dir|
       output_path = File.join(dir, 'fr.xml')
       Twine::Runner.run(%W(generate-string-file test/fixtures/strings-1.txt #{output_path} --include-untranslated))
-      assert_equal(File.read('test/fixtures/test-output-1.txt'), File.read(output_path))
+      assert_equal(ERB.new(File.read('test/fixtures/test-output-1.txt')).result, File.read(output_path))
     end
   end
 
@@ -14,7 +15,7 @@ class TwineTest < Test::Unit::TestCase
     Dir.mktmpdir do |dir|
       output_path = File.join(dir, 'en.strings')
       Twine::Runner.run(%W(generate-string-file test/fixtures/strings-1.txt #{output_path} -t tag1))
-      assert_equal(File.read('test/fixtures/test-output-2.txt'), File.read(output_path))
+      assert_equal(ERB.new(File.read('test/fixtures/test-output-2.txt')).result, File.read(output_path))
     end
   end
 
@@ -33,7 +34,7 @@ class TwineTest < Test::Unit::TestCase
       assert_equal(File.read('test/fixtures/test-output-4.txt'), File.read(output_path))
     end
   end
-  
+
   def test_generate_report_1
     Twine::Runner.run(%w(generate-report test/fixtures/strings-1.txt))
   end
