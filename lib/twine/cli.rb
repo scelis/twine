@@ -19,7 +19,7 @@ module Twine
         opts.separator ''
         opts.separator 'Commands:'
         opts.separator ''
-        opts.separator 'generate-strings-file -- Generates a string file in a certain LANGUAGE given a particular FORMAT. This script will attempt to guess both the language and the format given the filename and extension. For example, "ko.xml" will generate a Korean language file for Android.'
+        opts.separator 'generate-string-file -- Generates a string file in a certain LANGUAGE given a particular FORMAT. This script will attempt to guess both the language and the format given the filename and extension. For example, "ko.xml" will generate a Korean language file for Android.'
         opts.separator ''
         opts.separator 'generate-all-string-files -- Generates all the string files necessary for a given project. The parent directory to all of the locale-specific directories in your project should be specified as the INPUT_OR_OUTPUT_PATH. This command will most often be executed by your build script so that each build always contains the most recent strings.'
         opts.separator ''
