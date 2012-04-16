@@ -1,7 +1,7 @@
 module Twine
   class Error < StandardError
   end
-  
+
   require 'twine/cli'
   require 'twine/encoding'
   require 'twine/formatters'

@@ -47,7 +47,7 @@ Whitepace in this file is mostly ignored. If you absolutely need to put spaces a
 			en = No
 			fr = Non
 			ja = いいえ
-			
+	
 	[[Errors]]
 		[path_not_found_error]
 			en = The file '%@' could not be found.
@@ -57,7 +57,7 @@ Whitepace in this file is mostly ignored. If you absolutely need to put spaces a
 			en = The network is currently unavailable.
 			tags = app1
 			comment = An error describing when the device can not connect to the internet.
-			
+	
 	[[Escaping Example]]
 		[list_item_separator]
 			en = `, `
@@ -96,6 +96,12 @@ This command slurps all of the strings from a `.strings` or `.xml` file and inco
 	$ twine consume-string-file /path/to/strings.txt Localizable.strings --lang ja
 	$ twine consume-string-file /path/to/strings.txt es.xml
 
+#### `consume-all-string-files`
+
+This command reads in a folder containing many `.strings` or `.xml` files. These files should be in a standard folder hierarchy so that twine knows the language of each file. When combined with the `--developer-language` and `--consume-all` flags, this command is a great way to create your initial strings data file from an existing iOS or Android project. Just make sure that you create a blank strings.txt file, first!
+
+	$ twine consume-all-string-files strings.txt Resources/Locales --developer-language en --consume-all
+
 #### `generate-loc-drop`
 
 This command is a convenient way to generate a zip file containing files created by the `generate-string-file` command. It is often used for creating a single zip containing a large number of strings in all languages which you can then hand off to your translation team.
@@ -115,9 +121,16 @@ This command gives you useful information about your strings. It will tell you h
 
 	$ twine generate-report /path/to/strings.txt
 
+## Creating Your First strings.txt File
+
+The easiest way to create your first strings.txt file is to run the `consume-all-string-files` command. The one caveat is to first create a blank strings.txt file to use as your starting point. Then, just point the `consume-all-string-files` command at a directory in your project containing all of your iOS, OS X, or Android strings files.
+
+	$ touch strings.txt
+	$ twine consume-all-string-files strings.txt Resources/Locales --developer-language en --consume-all
+
 ## Twine and Your Build Process
 
-It is easy to incorporate Twine right into your iOS and Mac OS X app build processes.
+It is easy to incorporate Twine right into your iOS and OS X app build processes.
 
 1. In your project folder, create all of the `.lproj` directories that you need. It does not really matter where they are. We tend to put them in `Resources/Locales/`.
 2. Run the `generate-all-string-files` command to create all of the string files you need in these directories. For example,

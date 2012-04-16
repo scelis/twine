@@ -1,7 +1,7 @@
 require 'tmpdir'
 
 module Twine
-  VALID_COMMANDS = ['generate-string-file', 'generate-all-string-files', 'consume-string-file', 'generate-loc-drop', 'consume-loc-drop', 'generate-report']
+  VALID_COMMANDS = ['generate-string-file', 'generate-all-string-files', 'consume-string-file', 'consume-all-string-files', 'generate-loc-drop', 'consume-loc-drop', 'generate-report']
 
   class Runner
     def initialize(args)
@@ -25,6 +25,13 @@ module Twine
       @strings.read @options[:strings_file]
     end
 
+    def write_strings_data(path)
+      if @options[:developer_language]
+        @strings.set_developer_language_code(@options[:developer_language])
+      end
+      @strings.write(path)
+    end
+
     def execute_command
       case @options[:command]
       when 'generate-string-file'
@@ -33,6 +40,8 @@ module Twine
         generate_all_string_files
       when 'consume-string-file'
         consume_string_file
+      when 'consume-all-string-files'
+        consume_all_string_files
       when 'generate-loc-drop'
         generate_loc_drop
       when 'consume-loc-drop'
@@ -77,7 +86,26 @@ module Twine
 
       read_write_string_file(@options[:input_path], true, lang)
       output_path = @options[:output_path] || @options[:strings_file]
-      @strings.write(output_path)
+      write_strings_data(output_path)
+    end
+
+    def consume_all_string_files
+      if !File.directory?(@options[:input_path])
+        raise Twine::Error.new("Directory does not exist: #{@options[:output_path]}")
+      end
+
+      Dir.glob(File.join(@options[:input_path], "**/*")) do |item|
+        if File.file?(item)
+          begin
+            read_write_string_file(item, true, nil)
+          rescue Twine::Error => e
+            STDERR.puts "#{e.message}"
+          end
+        end
+      end
+
+      output_path = @options[:output_path] || @options[:strings_file]
+      write_strings_data(output_path)
     end
 
     def read_write_string_file(path, is_read, lang)
@@ -163,14 +191,18 @@ module Twine
               real_path = File.join(dir, entry.name)
               FileUtils.mkdir_p(File.dirname(real_path))
               zipfile.extract(entry.name, real_path)
-              read_write_string_file(real_path, true, nil)
+              begin
+                read_write_string_file(real_path, true, nil)
+              rescue Twine::Error => e
+                STDERR.puts "#{e.message}"
+              end
             end
           end
         end
       end
 
       output_path = @options[:output_path] || @options[:strings_file]
-      @strings.write(output_path)
+      write_strings_data(output_path)
     end
 
     def generate_report
