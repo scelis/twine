@@ -55,7 +55,7 @@ module Twine
       if !File.directory?(@options[:output_path])
         raise Twine::Error.new("Directory does not exist: #{@options[:output_path]}")
       end
-      
+
       format = @options[:format]
       if !format
         format = determine_format_given_directory(@options[:output_path])
@@ -159,7 +159,7 @@ module Twine
       Dir.mktmpdir do |dir|
         Zip::ZipFile.open(@options[:input_path]) do |zipfile|
           zipfile.each do |entry|
-            if !entry.name.end_with?'/'
+            if !entry.name.end_with?'/' and !File.basename(entry.name).start_with?'.'
               real_path = File.join(dir, entry.name)
               FileUtils.mkdir_p(File.dirname(real_path))
               zipfile.extract(entry.name, real_path)
