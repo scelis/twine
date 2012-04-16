@@ -67,6 +67,9 @@ module Twine
         opts.on('-d', '--developer-language LANG', 'When writing the strings data file, set the specified language as the "developer language". In practice, this just means that this language will appear first in the strings data file.') do |d|
           @options[:developer_language] = d
         end
+        opts.on('-c', '--consume-comments', 'Normally, when consuming a string file, Twine will ignore all comments in the file. With this flag set, any comments encountered will be read and parsed into the strings data file. This is especially useful when creating your first strings data file from an existing project.') do |c|
+          @options[:consume_comments] = true
+        end
         opts.on('-e', '--encoding ENCODING', 'Twine defaults to encoding all output files in UTF-8. This flag will tell Twine to use an alternate encoding for these files. For example, you could use this to write Apple .strings files in UTF-16. This flag currently only works with Apple .strings files and is currently only supported in Ruby 1.9.3 or greater.') do |e|
           if !"".respond_to?(:encode)
             raise Twine::Error.new "The --encoding flag is only supported on Ruby 1.9.3 or greater."

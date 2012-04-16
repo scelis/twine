@@ -46,6 +46,7 @@ module Twine
         end
 
         File.open(path, mode) do |f|
+          last_comment = nil
           while line = (sep) ? f.gets(sep) : f.gets
             if encoding.index('UTF-16')
               if line.respond_to? :encode!
@@ -62,6 +63,17 @@ module Twine
               value = match[2]
               value.gsub!('\\"', '"')
               set_translation_for_key(key, lang, value)
+              if last_comment
+                set_comment_for_key(key, last_comment)
+              end
+            end
+            if @options[:consume_comments]
+              match = /\/\* (.*) \*\//.match(line)
+              if match
+                last_comment = match[1]
+              else
+                last_comment = nil
+              end
             end
           end
         end

@@ -96,7 +96,7 @@ module Twine
 
                 if value # if values is nil, there was no appropriate translation, so let Android handle the defaulting
                   value = String.new(value) # use a copy to prevent modifying the original
-                  
+
                   # Android enforces the following rules on the values
                   #  1) apostrophes and quotes must be escaped with a backslash
                   value.gsub!('\'', '\\\\\'')
@@ -106,12 +106,12 @@ module Twine
                   value.gsub!('<', '&lt;')
                   #  3) fix substitutions (e.g. %s/%@)
                   value = androidify_substitutions(value)
-  
+
                   comment = row.comment
                   if comment
                     comment = comment.gsub('--', '—')
                   end
-  
+
                   if comment && comment.length > 0
                     f.puts "\t<!-- #{comment} -->\n"
                   end
@@ -124,11 +124,11 @@ module Twine
           f.puts '</resources>'
         end
       end
-      
+
       def iosify_substitutions(str)
         # 1) use "@" instead of "s" for substituting strings
         str.gsub!(/%([0-9\$]*)s/, '%\1@')
-        
+
         # 2) if substitutions are numbered, see if we can remove the numbering safely
         expectedSub = 1
         startFound = false
@@ -156,19 +156,19 @@ module Twine
             foundSub = 0
           end
         end
-        
+
         # if we got this far, then the numbering (if any) is in order left-to-right and safe to remove
         if expectedSub > 1
           str.gsub!(/%\d+\$(.)/, '%\1')
         end
-        
+
         return str
       end
-      
+
       def androidify_substitutions(str)
         # 1) use "s" instead of "@" for substituting strings
         str.gsub!(/%([0-9\$]*)@/, '%\1s')
-        
+
         # 2) if there is more than one substitution in a string, make sure they are numbered
         substituteCount = 0
         startFound = false
@@ -187,7 +187,7 @@ module Twine
             startFound = true
           end
         end
-        
+
         if substituteCount > 1
           currentSub = 1
           startFound = false
@@ -209,7 +209,7 @@ module Twine
           return str
         end
       end
-      
+
     end
   end
 end
