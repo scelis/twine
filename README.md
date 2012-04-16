@@ -98,9 +98,9 @@ This command slurps all of the strings from a `.strings` or `.xml` file and inco
 
 #### `consume-all-string-files`
 
-This command reads in a folder containing many `.strings` or `.xml` files. These files should be in a standard folder hierarchy so that twine knows the language of each file. When combined with the `--developer-language` and `--consume-all` flags, this command is a great way to create your initial strings data file from an existing iOS or Android project. Just make sure that you create a blank strings.txt file, first!
+This command reads in a folder containing many `.strings` or `.xml` files. These files should be in a standard folder hierarchy so that twine knows the language of each file. When combined with the `--developer-language`, `--consume-comments`, and `--consume-all` flags, this command is a great way to create your initial strings data file from an existing iOS or Android project. Just make sure that you create a blank strings.txt file, first!
 
-	$ twine consume-all-string-files strings.txt Resources/Locales --developer-language en --consume-all
+	$ twine consume-all-string-files strings.txt Resources/Locales --developer-language en --consume-all --consume-comments
 
 #### `generate-loc-drop`
 
@@ -126,7 +126,7 @@ This command gives you useful information about your strings. It will tell you h
 The easiest way to create your first strings.txt file is to run the `consume-all-string-files` command. The one caveat is to first create a blank strings.txt file to use as your starting point. Then, just point the `consume-all-string-files` command at a directory in your project containing all of your iOS, OS X, or Android strings files.
 
 	$ touch strings.txt
-	$ twine consume-all-string-files strings.txt Resources/Locales --developer-language en --consume-all
+	$ twine consume-all-string-files strings.txt Resources/Locales --developer-language en --consume-all --consume-comments
 
 ## Twine and Your Build Process
 
