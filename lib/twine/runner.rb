@@ -148,7 +148,7 @@ module Twine
       begin
         require 'zip/zip'
       rescue LoadError
-        raise Twine::Error.new "You must 'gem install rubyzip' in order to create or consume localization drops."
+        raise Twine::Error.new "You must run 'gem install rubyzip' in order to create or consume localization drops."
       end
 
       if File.file?(@options[:output_path])
@@ -181,7 +181,7 @@ module Twine
       begin
         require 'zip/zip'
       rescue LoadError
-        raise Twine::Error.new "You must 'gem install rubyzip' in order to create or consume localization drops."
+        raise Twine::Error.new "You must run 'gem install rubyzip' in order to create or consume localization drops."
       end
 
       Dir.mktmpdir do |dir|
