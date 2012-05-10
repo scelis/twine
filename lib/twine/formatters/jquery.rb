@@ -1,5 +1,3 @@
-require "json"
-
 module Twine
   module Formatters
     class JQuery < Abstract
@@ -28,6 +26,12 @@ module Twine
       end
 
       def read_file(path, lang)
+        begin
+          require "json"
+        rescue LoadError
+          raise Twine::Error.new "You must run 'gem install json' in order to read or write jquery-localize files."
+        end
+
         open(path) do |io|
           json = JSON.load(io)
           json.each do |key, value|
@@ -37,6 +41,12 @@ module Twine
       end
 
       def write_file(path, lang)
+        begin
+          require "json"
+        rescue LoadError
+          raise Twine::Error.new "You must run 'gem install json' in order to read or write jquery-localize files."
+        end
+
         default_lang = @strings.language_codes[0]
         encoding = @options[:output_encoding] || 'UTF-8'
         File.open(path, "w:#{encoding}") do |f|
