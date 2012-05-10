@@ -1,4 +1,5 @@
 require 'ERB'
+require 'rubygems'
 require 'test/unit'
 require 'twine'
 
