@@ -36,6 +36,12 @@ module Twine
         end
       end
 
+      def set_comment_for_key(key, comment)
+        if @strings.strings_map.include?(key)
+          @strings.strings_map[key].comment = comment
+        end
+      end
+
       def default_file_name
         raise NotImplementedError.new("You must implement default_file_name in your formatter class.")
       end

@@ -21,7 +21,7 @@ module Twine
       @tags = nil
       @translations = {}
     end
-    
+
     def matches_tags?(tags, include_untagged)
       if tags == nil || tags.length == 0
         # The user did not specify any tags. Everything passes.
@@ -39,7 +39,7 @@ module Twine
 
       return false
     end
-    
+
     def translated_string_for_lang(lang, default_lang=nil)
       if @translations[lang]
         return @translations[lang]
@@ -189,6 +189,13 @@ module Twine
         @language_codes.sort!
         @language_codes.insert(0, dev_lang)
       end
+    end
+
+    def set_developer_language_code(code)
+      if @language_codes.include?(code)
+        @language_codes.delete(code)
+      end
+      @language_codes.insert(0, code)
     end
   end
 end
