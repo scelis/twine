@@ -24,7 +24,7 @@ Gem::Specification.new do |s|
   s.executables  = %w( twine )
   s.description  = <<desc
   Twine is a command line tool for managing your strings and their translations.
-  
+
   It is geared toward Mac OS X, iOS, and Android developers.
 desc
 end
