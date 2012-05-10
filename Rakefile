@@ -1,5 +1,6 @@
 require 'rake'
 require 'rake/testtask'
+require 'rubygems'
 
 Rake::TestTask.new do |t|
   t.test_files = %w(test/twine_test.rb)
