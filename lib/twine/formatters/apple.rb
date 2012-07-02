@@ -100,19 +100,21 @@ module Twine
                 key = key.gsub('"', '\\\\"')
 
                 value = row.translated_string_for_lang(lang, default_lang)
-                value = value.gsub('"', '\\\\"')
+                if value
+                  value = value.gsub('"', '\\\\"')
 
-                comment = row.comment
-                if comment
-                  comment = comment.gsub('*/', '* /')
+                  comment = row.comment
+                  if comment
+                    comment = comment.gsub('*/', '* /')
+                  end
+
+                  if comment && comment.length > 0
+                    f.print "/* #{comment} */\n"
+                  end
+
+                  f.print "\"#{key}\" = \"#{value}\";\n"
                 end
-
-                if comment && comment.length > 0
-                  f.print "/* #{comment} */\n"
-                end
-
-                f.print "\"#{key}\" = \"#{value}\";\n"
-             end
+              end
             end
           end
         end
