@@ -62,6 +62,7 @@ module Twine
               key.gsub!('\\"', '"')
               value = match[2]
               value.gsub!('\\"', '"')
+              value = iosify_substitutions(value)
               set_translation_for_key(key, lang, value)
               if last_comment
                 set_comment_for_key(key, last_comment)
