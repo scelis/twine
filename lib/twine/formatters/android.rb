@@ -65,7 +65,7 @@ module Twine
             if value_line != nil
               value = value_line[1]
               value.gsub!('\\"', '"')
-              #value = iosify_substitutions(value)
+              value = iosify_substitutions(value)
             end
             if @options[:tags] != nil
               set_tags_for_key(key, @options[:tags])
