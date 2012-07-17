@@ -49,35 +49,44 @@ module Twine
       end
 
       def read_file(path, lang)
+        resources_regex = /<resources>(.*)<\/resources>/m
         key_regex = /<string name="(\w+)">/
         comment_regex = /<!-- (.*) -->/
         value_regex = /<string name="\w+">(.*)<\/string>/
-        comment = ""
-        key = ""
-        value = ""
-        File.open(path, 'r:UTF-8').each_line do |f|
+        key = nil
+        value = nil
+        comment = nil
 
-          key_line = key_regex.match(f)
-          if key_line != nil
-            key = key_line[1]
-            value_line = value_regex.match(f)
+        File.open(path, 'r:UTF-8') do |f|
+          content_match = resources_regex.match(f.read)
+          if content_match
+            for line in content_match[1].split(/\r?\n/)
+              key_match = key_regex.match(line)
+              if key_match
+                key = key_match[1]
+                value_match = value_regex.match(line)
+                if value_match
+                  value = value_match[1]
+                  value.gsub!('\\"', '"')
+                  value = iosify_substitutions(value)
+                else
+                  value = ""
+                end
+                if @options[:tags]
+                  set_tags_for_key(key, @options[:tags])
+                end
+                set_translation_for_key(key, lang, value)
+                if comment and comment.length > 0
+                  set_comment_for_key(key, comment)
+                end
+                comment = nil
+              end
 
-            if value_line != nil
-              value = value_line[1]
-              value.gsub!('\\"', '"')
-              value = iosify_substitutions(value)
+              comment_match = comment_regex.match(line)
+              if comment_match
+                comment = comment_match[1]
+              end
             end
-            if @options[:tags] != nil
-              set_tags_for_key(key, @options[:tags])
-            end
-            set_translation_for_key(key, lang, value)
-            set_comment_for_key(key, comment)
-            comment = ""
-          end
-
-          comment_line = comment_regex.match(f)
-          if comment_line != nil
-            comment = comment_line[1]
           end
         end
       end
