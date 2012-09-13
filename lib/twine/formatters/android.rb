@@ -78,7 +78,7 @@ module Twine
                   set_tags_for_key(key, @options[:tags])
                 end
                 set_translation_for_key(key, lang, value)
-                if comment and comment.length > 0
+                if comment and comment.length > 0 and !comment.start_with?("SECTION:")
                   set_comment_for_key(key, comment)
                 end
                 comment = nil
@@ -109,7 +109,7 @@ module Twine
                   f.puts ''
                   if section.name && section.name.length > 0
                     section_name = section.name.gsub('--', '—')
-                    f.puts "\t<!-- #{section_name} -->"
+                    f.puts "\t<!-- SECTION: #{section_name} -->"
                   end
                   printed_section = true
                 end
