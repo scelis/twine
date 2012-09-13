@@ -1,5 +1,5 @@
 # encoding: utf-8
-
+require 'CGI'
 require 'rexml/document'
 
 module Twine
@@ -67,6 +67,8 @@ module Twine
                 value_match = value_regex.match(line)
                 if value_match
                   value = value_match[1]
+                  value = CGI.unescapeHTML(value)
+                  value.gsub!('\\\'', '\'')
                   value.gsub!('\\"', '"')
                   value = iosify_substitutions(value)
                 else
@@ -126,9 +128,8 @@ module Twine
                   #  1) apostrophes and quotes must be escaped with a backslash
                   value.gsub!('\'', '\\\\\'')
                   value.gsub!('"', '\\\\"')
-                  #  2) ampersand and less-than must be in XML-escaped form
-                  value.gsub!('&', '&amp;')
-                  value.gsub!('<', '&lt;')
+                  #  2) HTML escape the string
+                  value = CGI.escapeHTML(value)
                   #  3) fix substitutions (e.g. %s/%@)
                   value = androidify_substitutions(value)
 
