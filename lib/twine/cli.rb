@@ -64,6 +64,9 @@ module Twine
         opts.on('-o', '--output-file OUTPUT_FILE', 'Write the new strings database to this file instead of replacing the original file. This flag is only useful when running the consume-string-file or consume-loc-drop commands.') do |o|
           @options[:output_path] = o
         end
+        opts.on('-n', '--file-name FILE_NAME', 'When running the generate-all-string-files command, this flag may be used to overwrite the default file name of the format.') do |n|
+          @options[:file_name] = n
+        end
         opts.on('-d', '--developer-language LANG', 'When writing the strings data file, set the specified language as the "developer language". In practice, this just means that this language will appear first in the strings data file.') do |d|
           @options[:developer_language] = d
         end

@@ -148,10 +148,11 @@ module Twine
           raise Twine::Error.new("Directory does not exist: #{path}")
         end
 
+        file_name = @options[:file_name] || default_file_name
         Dir.foreach(path) do |item|
           lang = determine_language_given_path(item)
           if lang
-            write_file(File.join(path, item, default_file_name), lang)
+            write_file(File.join(path, item, file_name), lang)
           end
         end
       end
