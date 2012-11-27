@@ -1,5 +1,5 @@
 # encoding: utf-8
-require 'CGI'
+require 'cgi'
 require 'rexml/document'
 
 module Twine
