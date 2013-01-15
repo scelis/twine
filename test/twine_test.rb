@@ -1,4 +1,4 @@
-require 'ERB'
+require 'erb'
 require 'rubygems'
 require 'test/unit'
 require 'twine'
