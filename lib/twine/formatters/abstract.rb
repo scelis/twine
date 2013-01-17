@@ -57,6 +57,9 @@ module Twine
         # 1) use "s" instead of "@" for substituting strings
         str.gsub!(/%([0-9\$]*)@/, '%\1s')
 
+        # 1a) escape strings that begin with a lone "@"
+        str.sub!(/^@ /, '\\@ ')
+
         # 2) if there is more than one substitution in a string, make sure they are numbered
         substituteCount = 0
         startFound = false
