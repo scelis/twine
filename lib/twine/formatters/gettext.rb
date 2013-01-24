@@ -81,7 +81,7 @@ module Twine
                   end
 
                   if comment && comment.length > 0
-                    f.print ".# \"#{comment}\"\n"
+                    f.print "#. \"#{comment}\"\n"
                   end
 
                   f.print "msgctxt \"#{key}\"\nmsgid \"#{basetrans}\"\n"
