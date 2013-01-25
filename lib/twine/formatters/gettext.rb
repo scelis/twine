@@ -26,9 +26,9 @@ module Twine
       end
 
       def read_file(path, lang)
-        comment_regex = /#. "(.*)"$/
-        key_regex = /msgctxt "(.*)"$/
-        value_regex = /msgstr "(.*)"$/m
+        comment_regex = /#.? *"(.*)"$/
+        key_regex = /msgctxt *"(.*)"$/
+        value_regex = /msgstr *"(.*)"$/m
         File.open(path, 'r:UTF-8') do |f|
           while item = f.gets("\n\n")
             key = nil
@@ -49,7 +49,6 @@ module Twine
                 value = value_match[1].gsub('\\"', '"')
               end
             end
-            puts "found item: #{key}"
             if key and key.length > 0 and value and value.length > 0
               set_translation_for_key(key, lang, value)
               if comment and comment.length > 0
