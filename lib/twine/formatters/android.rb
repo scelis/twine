@@ -74,9 +74,6 @@ module Twine
                 else
                   value = ""
                 end
-                if @options[:tags]
-                  set_tags_for_key(key, @options[:tags])
-                end
                 set_translation_for_key(key, lang, value)
                 if comment and comment.length > 0 and !comment.start_with?("SECTION:")
                   set_comment_for_key(key, comment)
