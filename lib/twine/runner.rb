@@ -205,11 +205,12 @@ module Twine
       write_strings_data(output_path)
     end
 
-    def generate_report
+    def generate_report 
       total_strings = 0
       strings_per_lang = {}
       all_keys = Set.new
-      duplicate_keys = Set.new
+      translation_keys = Set.new
+      duplicate_keys = Set.new 
       keys_without_tags = Set.new
       @strings.language_codes.each do |code|
         strings_per_lang[code] = 0
@@ -222,31 +223,71 @@ module Twine
           if all_keys.include? row.key
             duplicate_keys.add(row.key)
           else
-            all_keys.add(row.key)
+            all_keys.add(row.key) 
           end
 
           row.translations.each_key do |code|
-            strings_per_lang[code] += 1
+            strings_per_lang[code] += 1 
           end
+
+          hash = {row.key => row.translations}
+
+          translation_keys.add(hash)
 
           if row.tags == nil || row.tags.length == 0
             keys_without_tags.add(row.key)
           end
         end
-      end
+      end 
 
+      missing_words = Set.new 
+ 
       # Print the report.
       puts "Total number of strings = #{total_strings}"
       @strings.language_codes.each do |code|
         puts "#{code}: #{strings_per_lang[code]}"
-      end
 
+        all_keys.each do |keyword|   
+          words = translation_keys.select { |item| item[keyword] } 
+
+          if words.count > 0
+
+            hashy = words.first[keyword] 
+
+            if !hashy[code]    
+              missing_words.add(hashy["en"]) #change default "en" to base lang 
+            end 
+          end 
+
+        end
+         puts "untranslated words: "<<missing_words.count.to_s<<"\n\n" 
+
+        if missing_words.count>0 
+
+          missing_words_string = "" 
+          
+          missing_words.each_with_index do |val, index|
+            
+            missing_words_string<<val 
+
+            if index<(missing_words.count-1) 
+              missing_words_string<<", " 
+            end 
+             
+          end
+
+          puts missing_words_string << "\n\n"
+
+        end
+
+      end 
+ 
       if duplicate_keys.length > 0
         puts "\nDuplicate string keys:"
         duplicate_keys.each do |key|
           puts key
         end
-      end
+      end 
 
       if keys_without_tags.length == total_strings
         puts "\nNone of your strings have tags."
@@ -255,8 +296,9 @@ module Twine
         keys_without_tags.each do |key|
           puts key
         end
-      end
-    end
+      end 
+
+    end 
 
     def determine_language_given_path(path)
       code = File.basename(path, File.extname(path))
