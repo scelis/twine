@@ -85,7 +85,7 @@ module Twine
           newstr = ""
           str.each_char do |c|
             if startFound
-              if !(c == "%")
+              if (c == "s")
                 newstr = newstr + "#{currentSub}$"
                 currentSub += 1
               end
