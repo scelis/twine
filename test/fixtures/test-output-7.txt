@@ -3,7 +3,7 @@ msgstr ""
 "Language: en\n"
 "X-Generator: Twine <%= Twine::VERSION %>\n"
 
-.# "This is a comment"
+#. "This is a comment"
 msgctxt "key1"
 msgid "key1-english"
 msgstr "key1-english"
