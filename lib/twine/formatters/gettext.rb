@@ -35,19 +35,17 @@ module Twine
             value = nil
             comment = nil
 
-            for line in item.split(/\r?\n/)
-              comment_match = comment_regex.match(line)
-              if comment_match
-                comment = comment_match[1]
-              end
-              key_match = key_regex.match(line)
-              if key_match
-                key = key_match[1].gsub('\\"', '"')
-              end
-              value_match = value_regex.match(line)
-              if value_match
-                value = value_match[1].gsub('\\"', '"')
-              end
+            comment_match = comment_regex.match(item)
+            if comment_match
+              comment = comment_match[1]
+            end
+            key_match = key_regex.match(item)
+            if key_match
+              key = key_match[1].gsub('\\"', '"')
+            end
+            value_match = value_regex.match(item)
+            if value_match
+              value = value_match[1].gsub(/"\n"/, '').gsub('\\"', '"')
             end
             if key and key.length > 0 and value and value.length > 0
               set_translation_for_key(key, lang, value)
