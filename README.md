@@ -30,6 +30,8 @@ Provides a fully featured GUI App written in Java Swing. You dont need to have t
 	$ cd twine/java-ui
 	$ ant run #or ant jar to get a jar which you can then move
 
+![gui_app](https://raw.github.com/Daij-Djan/twine/master/java-ui/twine_gui.png)
+
 ## String File Format
 
 Twine stores all of its strings in a single file. The format of this file is a slight variant of the [Git][git] config file format, which itself is based on the old [Windows INI file][INI] format. The entire file is broken up into sections, which are created by placing the section name between two pairs of square brackets. Sections are optional, but they are a recommended way of breaking your strings into smaller, more manageable chunks.
