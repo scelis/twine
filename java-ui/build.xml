@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project basedir="." default="jar" name="java-ui">
+    <property environment="env"/>
+    <property name="ruby_twine.link" value="../lib"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="1.6"/>
+    <property name="source" value="1.6"/>
+    <path id="java-ui.classpath">
+        <pathelement location="bin"/>
+        <pathelement location="jruby.jar"/>
+    </path>
+    <target name="init">
+        <mkdir dir="bin"/>
+        <copy includeemptydirs="false" todir="bin">
+            <fileset dir="src">
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+        <copy includeemptydirs="false" todir="bin">
+            <fileset dir="ruby">
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+        <copy includeemptydirs="false" todir="bin">
+            <fileset dir="${ruby_twine.link}">
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+    </target>
+    <target name="clean">
+        <delete dir="bin"/>
+        <delete file="twine.jar"/>
+    </target>
+    <target depends="build-subprojects,build-project" name="build"/>
+    <target name="build-subprojects"/>
+    <target depends="init" name="build-project">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="bin" includeantruntime="false" source="${source}" target="${target}">
+            <src path="src"/>
+            <src path="ruby"/>
+            <src path="${ruby_twine.link}"/>
+            <classpath refid="java-ui.classpath"/>
+        </javac>
+    </target>
+    <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
+    <target name="MainFrame">
+        <java classname="info.pich.twine.gui.MainFrame" failonerror="true" fork="yes">
+            <classpath refid="java-ui.classpath"/>
+        </java>
+    </target>
+    <target description="Wraps all in a runnable jar file" name="jar" depends="build">
+        <delete file="twine.jar"/>
+        <jar destfile="twine.jar" basedir="bin" includes="**/*">
+             <manifest>
+                <attribute name="Main-Class" value="info.pich.twine.gui.MainFrame"/>
+                <attribute name="Built-By" value="${user.name}"/>
+                <attribute name="Built-Date" value="${TODAY}"/>
+                <attribute name="Class-Path" value="jruby.jar"/>
+            </manifest>
+        </jar>
+        <delete dir="bin"/>
+    </target>
+    <target description="Runs the built jar" name="run" depends="jar">
+        <java jar="twine.jar" fork="true"/>
+    </target>
+</project>

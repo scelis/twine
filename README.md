@@ -4,13 +4,14 @@ Twine is a command line tool for managing your strings and their translations. T
 
 ## Install
 
-### As a Gem
+###Command line tool 
+##### As a Gem
 
 Twine is most easily installed as a Gem.
 
 	$ gem install twine
 
-### From Source
+##### From Source
 
 You can also run Twine directly from source. However, it requires [rubyzip][rubyzip] in order to create and read standard zip files.
 
@@ -20,6 +21,14 @@ You can also run Twine directly from source. However, it requires [rubyzip][ruby
 	$ ./twine --help
 
 Make sure you run the `twine` executable at the root of the project as it properly sets up your Ruby library path. The `bin/twine` executable does not.
+
+### Java GUI App
+
+Provides a fully featured GUI App written in Java Swing. You dont need to have the command line tool installed to use the GUI App. It is self contained and only needs the jruby.jar to be present.
+
+	$ git clone git://github.com/mobiata/twine.git
+	$ cd twine/java-ui
+	$ ant run #or ant jar to get a jar which you can then move
 
 ## String File Format
 
