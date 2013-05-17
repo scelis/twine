@@ -157,6 +157,17 @@ It is easy to incorporate Twine right into your iOS and OS X app build processes
 
 Now, whenever you build your application, Xcode will automatically invoke Twine to make sure that your `.strings` files are up-to-date.
 
+## Contributors
+
+Many thanks to all of the contributors to the Twine project, including:
+
+* [Ishitoya Kentaro](https://github.com/kent013)
+* [Kevin Everets](https://github.com/keverets)
+* [Kevin Wood](https://github.com/kwood)
+* [Mohammad Hejazi](https://github.com/MohammadHejazi)
+* [Robert Guo](http://www.robertguo.me/)
+
+
 [rubyzip]: http://rubygems.org/gems/rubyzip
 [git]: http://git-scm.org/
 [INI]: http://en.wikipedia.org/wiki/INI_file
