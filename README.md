@@ -157,6 +157,10 @@ It is easy to incorporate Twine right into your iOS and OS X app build processes
 
 Now, whenever you build your application, Xcode will automatically invoke Twine to make sure that your `.strings` files are up-to-date.
 
+## User Interface
+
+* [Twine TextMate 2 Bundle](https://github.com/mobiata/twine.tmbundle) — This [TextMate 2](https://github.com/textmate/textmate) bundle will make it easier for you to work with Twine strings files. In particular, it lets you use code folding to easily collapse and expand both strings and sections.
+
 ## Contributors
 
 Many thanks to all of the contributors to the Twine project, including:
