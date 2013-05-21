@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project basedir="." default="jar" name="java-ui">
     <property environment="env"/>
-    <property name="ruby_twine.link" value="../lib"/>
+    <property name="ruby_twine.link" value="core/lib"/>
     <property name="debuglevel" value="source,lines,vars"/>
     <property name="target" value="1.6"/>
     <property name="source" value="1.6"/>
