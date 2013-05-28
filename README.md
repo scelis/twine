@@ -160,6 +160,7 @@ Now, whenever you build your application, Xcode will automatically invoke Twine 
 ## User Interface
 
 * [Twine TextMate 2 Bundle](https://github.com/mobiata/twine.tmbundle) — This [TextMate 2](https://github.com/textmate/textmate) bundle will make it easier for you to work with Twine strings files. In particular, it lets you use code folding to easily collapse and expand both strings and sections.
+* [twine_ui](https://github.com/Daij-Djan/twine_ui) — A user interface for Twine written by [Daij-Djan](https://github.com/Daij-Djan/). Consider using this if you would prefer to use Twine without dropping to a command line.
 
 ## Contributors
 
