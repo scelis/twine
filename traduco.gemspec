@@ -1,9 +1,8 @@
 $LOAD_PATH.unshift 'library'
-require 'traduco/version'
 
 Gem::Specification.new do |s|
   s.name         = "traduco"
-  s.version      = Traduco::VERSION
+  s.version      = "0.9.0"
   s.date         = Time.now.strftime('%Y-%m-%d')
   s.summary      = "Manage strings and their translations for your iOS and Android projects."
   s.homepage     = "https://github.com/mobiata/traduco"

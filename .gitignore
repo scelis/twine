@@ -29,6 +29,9 @@ local.properties
 proguard.cfg
 proguard-project.txt
 
+#Ruby
+*.gem
+
 #Other
 .DS_Store
 tmp

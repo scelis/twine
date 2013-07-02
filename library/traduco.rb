@@ -6,6 +6,5 @@ module Traduco
   require 'traduco/encoding'
   require 'traduco/formatters'
   require 'traduco/runner'
-  require 'traduco/stringsfile'
-  require 'traduco/version'
+  require 'traduco/l10nfile'
 end
