@@ -1,6 +1,6 @@
 require 'optparse'
 
-module Twine
+module Traduco
   class CLI
     def initialize(args, options)
       @options = options
@@ -15,7 +15,7 @@ module Twine
       parser = OptionParser.new do |opts|
         opts.banner = 'Usage: twine COMMAND STRINGS_FILE [INPUT_OR_OUTPUT_PATH] [--lang LANG1,LANG2...] [--tags TAG1,TAG2,TAG3...] [--format FORMAT]'
         opts.separator ''
-        opts.separator 'The purpose of this script is to convert back and forth between multiple data formats, allowing us to treat our strings (and translations) as data stored in a text file. We can then use the data file to create drops for the localization team, consume similar drops returned by the localization team, generate reports on the strings, as well as create formatted string files to ship with your products. Twine currently supports iOS, OS X, Android, gettext, and jquery-localize string files.'
+        opts.separator 'The purpose of this script is to convert back and forth between multiple data formats, allowing us to treat our strings (and translations) as data stored in a text file. We can then use the data file to create drops for the localization team, consume similar drops returned by the localization team, generate reports on the strings, as well as create formatted string files to ship with your products. Traduco currently supports iOS, OS X, Android, gettext, and jquery-localize string files.'
         opts.separator ''
         opts.separator 'Commands:'
         opts.separator ''
@@ -55,7 +55,7 @@ module Twine
           end
           @options[:format] = lformat
         end
-        opts.on('-a', '--consume-all', 'Normally, when consuming a string file, Twine will ignore any string keys that do not exist in your master file.') do |a|
+        opts.on('-a', '--consume-all', 'Normally, when consuming a string file, Traduco will ignore any string keys that do not exist in your master file.') do |a|
           @options[:consume_all] = true
         end
         opts.on('-s', '--include-untranslated', 'This flag will cause any Android string files that are generated to include strings that have not yet been translated for the current language.') do |s|
@@ -70,12 +70,12 @@ module Twine
         opts.on('-d', '--developer-language LANG', 'When writing the strings data file, set the specified language as the "developer language". In practice, this just means that this language will appear first in the strings data file.') do |d|
           @options[:developer_language] = d
         end
-        opts.on('-c', '--consume-comments', 'Normally, when consuming a string file, Twine will ignore all comments in the file. With this flag set, any comments encountered will be read and parsed into the strings data file. This is especially useful when creating your first strings data file from an existing project.') do |c|
+        opts.on('-c', '--consume-comments', 'Normally, when consuming a string file, Traduco will ignore all comments in the file. With this flag set, any comments encountered will be read and parsed into the strings data file. This is especially useful when creating your first strings data file from an existing project.') do |c|
           @options[:consume_comments] = true
         end
-        opts.on('-e', '--encoding ENCODING', 'Twine defaults to encoding all output files in UTF-8. This flag will tell Twine to use an alternate encoding for these files. For example, you could use this to write Apple .strings files in UTF-16. This flag currently only works with Apple .strings files and is currently only supported in Ruby 1.9.3 or greater.') do |e|
+        opts.on('-e', '--encoding ENCODING', 'Traduco defaults to encoding all output files in UTF-8. This flag will tell Traduco to use an alternate encoding for these files. For example, you could use this to write Apple .strings files in UTF-16. This flag currently only works with Apple .strings files and is currently only supported in Ruby 1.9.3 or greater.') do |e|
           if !"".respond_to?(:encode)
-            raise Twine::Error.new "The --encoding flag is only supported on Ruby 1.9.3 or greater."
+            raise Traduco::Error.new "The --encoding flag is only supported on Ruby 1.9.3 or greater."
           end
           @options[:output_encoding] = e
         end
@@ -84,7 +84,7 @@ module Twine
           exit
         end
         opts.on('--version', 'Print the version number and exit.') do |x|
-          puts "Twine version #{Twine::VERSION}"
+          puts "Traduco version #{Traduco::VERSION}"
           exit
         end
         opts.separator ''
@@ -108,11 +108,11 @@ module Twine
       @options[:command] = @args[0]
 
       if !VALID_COMMANDS.include? @options[:command]
-        raise Twine::Error.new "Invalid command: #{@options[:command]}"
+        raise Traduco::Error.new "Invalid command: #{@options[:command]}"
       end
 
       if @args.length == 1
-        raise Twine::Error.new 'You must specify your strings file.'
+        raise Traduco::Error.new 'You must specify your strings file.'
       end
 
       @options[:strings_file] = @args[1]
@@ -122,63 +122,63 @@ module Twine
         if @args.length == 3
           @options[:output_path] = @args[2]
         elsif @args.length > 3
-          raise Twine::Error.new "Unknown argument: #{@args[3]}"
+          raise Traduco::Error.new "Unknown argument: #{@args[3]}"
         else
-          raise Twine::Error.new 'Not enough arguments.'
+          raise Traduco::Error.new 'Not enough arguments.'
         end
         if @options[:languages] and @options[:languages].length > 1
-          raise Twine::Error.new 'Please only specify a single language for the generate-string-file command.'
+          raise Traduco::Error.new 'Please only specify a single language for the generate-string-file command.'
         end
       when 'generate-all-string-files'
         if ARGV.length == 3
           @options[:output_path] = @args[2]
         elsif @args.length > 3
-          raise Twine::Error.new "Unknown argument: #{@args[3]}"
+          raise Traduco::Error.new "Unknown argument: #{@args[3]}"
         else
-          raise Twine::Error.new 'Not enough arguments.'
+          raise Traduco::Error.new 'Not enough arguments.'
         end
       when 'consume-string-file'
         if @args.length == 3
           @options[:input_path] = @args[2]
         elsif @args.length > 3
-          raise Twine::Error.new "Unknown argument: #{@args[3]}"
+          raise Traduco::Error.new "Unknown argument: #{@args[3]}"
         else
-          raise Twine::Error.new 'Not enough arguments.'
+          raise Traduco::Error.new 'Not enough arguments.'
         end
         if @options[:languages] and @options[:languages].length > 1
-          raise Twine::Error.new 'Please only specify a single language for the consume-string-file command.'
+          raise Traduco::Error.new 'Please only specify a single language for the consume-string-file command.'
         end
       when 'consume-all-string-files'
         if @args.length == 3
           @options[:input_path] = @args[2]
         elsif @args.length > 3
-          raise Twine::Error.new "Unknown argument: #{@args[3]}"
+          raise Traduco::Error.new "Unknown argument: #{@args[3]}"
         else
-          raise Twine::Error.new 'Not enough arguments.'
+          raise Traduco::Error.new 'Not enough arguments.'
         end
       when 'generate-loc-drop'
         @options[:include_untranslated] = true
         if @args.length == 3
           @options[:output_path] = @args[2]
         elsif @args.length > 3
-          raise Twine::Error.new "Unknown argument: #{@args[3]}"
+          raise Traduco::Error.new "Unknown argument: #{@args[3]}"
         else
-          raise Twine::Error.new 'Not enough arguments.'
+          raise Traduco::Error.new 'Not enough arguments.'
         end
         if !@options[:format]
-          raise Twine::Error.new 'You must specify a format.'
+          raise Traduco::Error.new 'You must specify a format.'
         end
       when 'consume-loc-drop'
         if @args.length == 3
           @options[:input_path] = @args[2]
         elsif @args.length > 3
-          raise Twine::Error.new "Unknown argument: #{@args[3]}"
+          raise Traduco::Error.new "Unknown argument: #{@args[3]}"
         else
-          raise Twine::Error.new 'Not enough arguments.'
+          raise Traduco::Error.new 'Not enough arguments.'
         end
       when 'generate-report'
         if @args.length > 2
-          raise Twine::Error.new "Unknown argument: #{@args[2]}"
+          raise Traduco::Error.new "Unknown argument: #{@args[2]}"
         end
       end
     end

@@ -1,4 +1,4 @@
-module Twine
+module Traduco
   module Encoding
     def self.encoding_for_path path
       File.open(path, 'rb') do |f|

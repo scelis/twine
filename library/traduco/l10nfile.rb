@@ -1,4 +1,4 @@
-module Twine
+module Traduco
   class StringsSection
     attr_reader :name
     attr_reader :rows
@@ -69,7 +69,7 @@ module Twine
 
     def read(path)
       if !File.file?(path)
-        raise Twine::Error.new("File does not exist: #{path}")
+        raise Traduco::Error.new("File does not exist: #{path}")
       end
 
       File.open(path, 'r:UTF-8') do |f|
@@ -85,6 +85,12 @@ module Twine
             next
           end
 
+          # comment
+          if line[0, 1] == '#'
+            next
+          end
+
+          # section
           if line.length > 4 && line[0, 2] == '[['
             match = /^\[\[(.+)\]\]$/.match(line)
             if match
@@ -92,6 +98,7 @@ module Twine
               @sections << current_section
               parsed = true
             end
+          # string
           elsif line.length > 2 && line[0, 1] == '['
             match = /^\[(.+)\]$/.match(line)
             if match
@@ -104,6 +111,7 @@ module Twine
               current_section.rows << current_row
               parsed = true
             end
+          # translation, comment or other
           else
             match = /^([^=]+)=(.*)$/.match(line)
             if match
@@ -129,7 +137,7 @@ module Twine
           end
 
           if !parsed
-            raise Twine::Error.new("Unable to parse line #{line_num} of #{path}: #{line}")
+            raise Traduco::Error.new("Unable to parse line #{line_num} of #{path}: #{line}")
           end
         end
       end

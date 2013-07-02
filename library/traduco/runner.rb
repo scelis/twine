@@ -1,6 +1,6 @@
 require 'tmpdir'
 
-module Twine
+module Traduco
   VALID_COMMANDS = ['generate-string-file', 'generate-all-string-files', 'consume-string-file', 'consume-all-string-files', 'generate-loc-drop', 'consume-loc-drop', 'generate-report']
 
   class Runner
@@ -62,7 +62,7 @@ module Twine
 
     def generate_all_string_files
       if !File.directory?(@options[:output_path])
-        raise Twine::Error.new("Directory does not exist: #{@options[:output_path]}")
+        raise Traduco::Error.new("Directory does not exist: #{@options[:output_path]}")
       end
 
       format = @options[:format]
@@ -70,7 +70,7 @@ module Twine
         format = determine_format_given_directory(@options[:output_path])
       end
       if !format
-        raise Twine::Error.new "Could not determine format given the contents of #{@options[:output_path]}"
+        raise Traduco::Error.new "Could not determine format given the contents of #{@options[:output_path]}"
       end
 
       formatter = formatter_for_format(format)
@@ -91,14 +91,14 @@ module Twine
 
     def consume_all_string_files
       if !File.directory?(@options[:input_path])
-        raise Twine::Error.new("Directory does not exist: #{@options[:output_path]}")
+        raise Traduco::Error.new("Directory does not exist: #{@options[:output_path]}")
       end
 
       Dir.glob(File.join(@options[:input_path], "**/*")) do |item|
         if File.file?(item)
           begin
             read_write_string_file(item, true, nil)
-          rescue Twine::Error => e
+          rescue Traduco::Error => e
             STDERR.puts "#{e.message}"
           end
         end
@@ -110,7 +110,7 @@ module Twine
 
     def read_write_string_file(path, is_read, lang)
       if is_read && !File.file?(path)
-        raise Twine::Error.new("File does not exist: #{path}")
+        raise Traduco::Error.new("File does not exist: #{path}")
       end
 
       format = @options[:format]
@@ -118,7 +118,7 @@ module Twine
         format = determine_format_given_path(path)
       end
       if !format
-        raise Twine::Error.new "Unable to determine format of #{path}"
+        raise Traduco::Error.new "Unable to determine format of #{path}"
       end
 
       formatter = formatter_for_format(format)
@@ -130,7 +130,7 @@ module Twine
         lang = formatter.determine_language_given_path(path)
       end
       if !lang
-        raise Twine::Error.new "Unable to determine language for #{path}"
+        raise Traduco::Error.new "Unable to determine language for #{path}"
       end
 
       if !@strings.language_codes.include? lang
@@ -148,7 +148,7 @@ module Twine
       begin
         require 'zip/zip'
       rescue LoadError
-        raise Twine::Error.new "You must run 'gem install rubyzip' in order to create or consume localization drops."
+        raise Traduco::Error.new "You must run 'gem install rubyzip' in order to create or consume localization drops."
       end
 
       if File.file?(@options[:output_path])
@@ -175,13 +175,13 @@ module Twine
 
     def consume_loc_drop
       if !File.file?(@options[:input_path])
-        raise Twine::Error.new("File does not exist: #{@options[:input_path]}")
+        raise Traduco::Error.new("File does not exist: #{@options[:input_path]}")
       end
 
       begin
         require 'zip/zip'
       rescue LoadError
-        raise Twine::Error.new "You must run 'gem install rubyzip' in order to create or consume localization drops."
+        raise Traduco::Error.new "You must run 'gem install rubyzip' in order to create or consume localization drops."
       end
 
       Dir.mktmpdir do |dir|
@@ -193,7 +193,7 @@ module Twine
               zipfile.extract(entry.name, real_path)
               begin
                 read_write_string_file(real_path, true, nil)
-              rescue Twine::Error => e
+              rescue Traduco::Error => e
                 STDERR.puts "#{e.message}"
               end
             end
