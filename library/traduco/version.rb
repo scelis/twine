@@ -1,3 +1,3 @@
-module Twine
+module Traduco
   VERSION = '0.4.0'
 end

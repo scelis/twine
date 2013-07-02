@@ -1,4 +1,4 @@
-module Twine
+module Traduco
   module Formatters
     class Abstract
       attr_accessor :strings
@@ -148,7 +148,7 @@ module Twine
 
       def write_all_files(path)
         if !File.directory?(path)
-          raise Twine::Error.new("Directory does not exist: #{path}")
+          raise Traduco::Error.new("Directory does not exist: #{path}")
         end
 
         file_name = @options[:file_name] || default_file_name
