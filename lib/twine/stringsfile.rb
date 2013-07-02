@@ -85,6 +85,12 @@ module Twine
             next
           end
 
+          # comment
+          if line[0, 1] == '#'
+            next
+          end
+
+          # section
           if line.length > 4 && line[0, 2] == '[['
             match = /^\[\[(.+)\]\]$/.match(line)
             if match
@@ -92,6 +98,7 @@ module Twine
               @sections << current_section
               parsed = true
             end
+          # string
           elsif line.length > 2 && line[0, 1] == '['
             match = /^\[(.+)\]$/.match(line)
             if match
@@ -104,6 +111,7 @@ module Twine
               current_section.rows << current_row
               parsed = true
             end
+          # translation, comment or other
           else
             match = /^([^=]+)=(.*)$/.match(line)
             if match
