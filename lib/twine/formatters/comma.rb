@@ -5,7 +5,7 @@ module Twine
     class Comma < Abstract
       FORMAT_NAME = 'csv'
       EXTENSION = '.csv'
-      DEFAULT_FILE_NAME = 'strings.properties'
+      DEFAULT_FILE_NAME = 'strings.csv'
       INSTRUCTIONS = 'Instructions: write translations in the column named'
 
       def self.can_handle_directory?(path)
