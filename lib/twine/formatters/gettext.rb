@@ -49,9 +49,10 @@ module Twine
             end
             if key and key.length > 0 and value and value.length > 0
               set_translation_for_key(key, lang, value)
-              if comment and comment.length > 0
+              if comment and comment.length > 0 and !comment.start_with?("SECTION:")
                 set_comment_for_key(key, comment)
               end
+              comment = nil
             end
           end
         end
@@ -66,6 +67,15 @@ module Twine
             printed_section = false
             section.rows.each do |row|
               if row.matches_tags?(@options[:tags], @options[:untagged])
+                if !printed_section
+                  f.puts ''
+                    if section.name && section.name.length > 0
+                      section_name = section.name.gsub('--', '—')
+                      f.puts "# SECTION: #{section_name}"
+                    end
+                  printed_section = true
+                end
+
                 basetrans = row.translated_string_for_lang(default_lang)
 
                 if basetrans
