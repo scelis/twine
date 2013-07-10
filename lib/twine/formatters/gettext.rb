@@ -61,7 +61,7 @@ module Twine
         default_lang = @strings.language_codes[0]
         encoding = @options[:output_encoding] || 'UTF-8'
         File.open(path, "w:#{encoding}") do |f|
-          f.puts "msgid \"\"\nmsgstr \"\"\n\"Language: #{lang}\\n\"\n\"X-Generator: Twine #{Twine::VERSION}\\n\"\n\n"
+          f.puts "msgid \"\"\nmsgstr \"\"\n\"Language: #{lang}\\n\"\n\"X-Generator: Twine #{Twine::VERSION}\\n\"\n\"Content-Type: text/plain; charset=#{encoding}\\n\"\n\n"
           @strings.sections.each do |section|
             printed_section = false
             section.rows.each do |row|
@@ -81,7 +81,7 @@ module Twine
                     f.print "#. \"#{comment}\"\n"
                   end
 
-                  f.print "msgctxt \"#{key}\"\nmsgid \"#{basetrans}\"\n"
+                  f.print "msgid \"#{key}\"\n"
                   value = row.translated_string_for_lang(lang)
                   if value
                     value = value.gsub('"', '\\\\"')
