@@ -66,27 +66,32 @@ module Twine
             printed_section = false
             section.rows.each do |row|
               if row.matches_tags?(@options[:tags], @options[:untagged])
-                basetrans = row.translated_string_for_lang(default_lang)
+                f.puts ''
+                if !printed_section
+                  if section.name && section.name.length > 0
+                    f.print "# #{section.name}\n"
+                  end
+                  printed_section = true
+                end
 
-                if basetrans
-                  key = row.key
-                  key = key.gsub('"', '\\\\"')
+                key = row.key
+                key = key.gsub('"', '\\\\"')
+
+                value = row.translated_string_for_lang(lang, default_lang)
+                if value
+                  value = value.gsub('"', '\\\\"')
 
                   comment = row.comment
                   if comment
-                    comment = comment.gsub('"', '\\\\"')
+                    comment = comment.gsub('*/', '* /')
                   end
 
                   if comment && comment.length > 0
-                    f.print "#. \"#{comment}\"\n"
+                    f.print "#/* #{comment} */\n"
                   end
 
                   f.print "msgid \"#{key}\"\n"
-                  value = row.translated_string_for_lang(lang)
-                  if value
-                    value = value.gsub('"', '\\\\"')
-                  end
-                  f.print "msgstr \"#{value}\"\n\n"
+                  f.print "msgstr \"#{value}\"\n"
                 end
               end
             end
