@@ -166,6 +166,7 @@ Now, whenever you build your application, Xcode will automatically invoke Twine 
 
 Many thanks to all of the contributors to the Twine project, including:
 
+* [Blake Watters](https://github.com/blakewatters)
 * [Ishitoya Kentaro](https://github.com/kent013)
 * [Joseph Earl](https://github.com/JosephEarl)
 * [Kevin Everets](https://github.com/keverets)
