@@ -120,16 +120,21 @@ module Twine
         file_name = @options[:file_name] || default_file_name
         langs_written = []
         Dir.foreach(path) do |item|
-          file = File.join(path, item)
-          if File.directory?(file)
-            lang = determine_language_given_path(file)
+          if item == "." or item == ".."
+            next
+          end
+          item = File.join(path, item)
+          if File.directory?(item)
+            lang = determine_language_given_path(item)
             if lang
-              write_file(File.join(path, item, file_name), lang)
+              write_file(File.join(item, file_name), lang)
               langs_written << lang
             end
           end
         end
-        raise Twine::Error.new("Failed to genertate any files: No languages found at #{path}") if langs_written.empty?
+        if langs_written.empty?
+          raise Twine::Error.new("Failed to genertate any files: No languages found at #{path}")
+        end
       end
     end
   end
