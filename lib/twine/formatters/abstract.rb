@@ -14,42 +14,8 @@ module Twine
       end
 
       def iosify_substitutions(str)
-        # 1) use "@" instead of "s" for substituting strings
+        # use "@" instead of "s" for substituting strings
         str.gsub!(/%([0-9\$]*)s/, '%\1@')
-
-        # 2) if substitutions are numbered, see if we can remove the numbering safely
-        expectedSub = 1
-        startFound = false
-        foundSub = 0
-        str.each_char do |c|
-          if startFound
-            if c == "%"
-              # this is a literal %, keep moving
-              startFound = false
-            elsif c.match(/\d/)
-              foundSub *= 10
-              foundSub += Integer(c)
-            elsif c == "$"
-              if expectedSub == foundSub
-                # okay to keep going
-                startFound = false
-                expectedSub += 1
-              else
-                # the numbering appears to be important (or non-existent), leave it alone
-                return str
-              end
-            end
-          elsif c == "%"
-            startFound = true
-            foundSub = 0
-          end
-        end
-
-        # if we got this far, then the numbering (if any) is in order left-to-right and safe to remove
-        if expectedSub > 1
-          str.gsub!(/%\d+\$(.)/, '%\1')
-        end
-
         return str
       end
 
