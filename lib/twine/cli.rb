@@ -61,6 +61,9 @@ module Twine
         opts.on('-s', '--include-untranslated', 'This flag will cause any Android string files that are generated to include strings that have not yet been translated for the current language.') do |s|
           @options[:include_untranslated] = true
         end
+        opts.on('-y', '--untranslated-only', 'This flag will cause any CSV files that are generated to include only strings that have not yet been translated for the current language.') do |s|
+          @options[:untranslated_only] = true
+        end
         opts.on('-o', '--output-file OUTPUT_FILE', 'Write the new strings database to this file instead of replacing the original file. This flag is only useful when running the consume-string-file or consume-loc-drop commands.') do |o|
           @options[:output_path] = o
         end
@@ -125,9 +128,6 @@ module Twine
           raise Twine::Error.new "Unknown argument: #{@args[3]}"
         else
           raise Twine::Error.new 'Not enough arguments.'
-        end
-        if @options[:languages] and @options[:languages].length > 1
-          raise Twine::Error.new 'Please only specify a single language for the generate-string-file command.'
         end
       when 'generate-all-string-files'
         if ARGV.length == 3

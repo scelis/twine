@@ -54,7 +54,7 @@ module Twine
     def generate_string_file
       lang = nil
       if @options[:languages]
-        lang = @options[:languages][0]
+        lang = @options[:languages]
       end
 
       read_write_string_file(@options[:output_path], false, lang)
@@ -131,6 +131,10 @@ module Twine
       end
       if !lang
         raise Twine::Error.new "Unable to determine language for #{path}"
+      end
+
+      if lang.length > 1 && !formatter.can_handle_mutiple_languages?()
+          raise Twine::Error.new "Please only specify a single language for this format."
       end
 
       if !@strings.language_codes.include? lang

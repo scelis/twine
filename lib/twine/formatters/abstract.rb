@@ -13,6 +13,10 @@ module Twine
         @options = options
       end
 
+      def can_handle_mutiple_languages?()
+        return false
+      end
+
       def iosify_substitutions(str)
         # use "@" instead of "s" for substituting strings
         str.gsub!(/%([0-9\$]*)s/, '%\1@')
