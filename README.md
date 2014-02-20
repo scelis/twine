@@ -76,6 +76,7 @@ Twine currently supports the following formats for outputting strings:
 * [Android String Resources][androidstrings] (format: android)
 * [Gettext PO Files][gettextpo] (format: gettext)
 * [jquery-localize Language Files][jquerylocalize] (format: jquery)
+* [Django PO Files][djangopo] (format: django)
 
 If you would like to enable twine to create language files in another format, create an appropriate formatter in `lib/twine/formatters`.
 
@@ -182,3 +183,4 @@ Many thanks to all of the contributors to the Twine project, including:
 [androidstrings]: http://developer.android.com/guide/topics/resources/string-resource.html
 [gettextpo]: http://www.gnu.org/savannah-checkouts/gnu/gettext/manual/html_node/PO-Files.html
 [jquerylocalize]: https://github.com/coderifous/jquery-localize
+[djangopo]: https://docs.djangoproject.com/en/dev/topics/i18n/translation/
