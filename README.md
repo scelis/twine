@@ -174,6 +174,7 @@ Many thanks to all of the contributors to the Twine project, including:
 * [Kevin Wood](https://github.com/kwood)
 * [Mohammad Hejazi](https://github.com/MohammadHejazi)
 * [Robert Guo](http://www.robertguo.me/)
+* [Shai Shamir](https://github.com/pichirichi)
 
 
 [rubyzip]: http://rubygems.org/gems/rubyzip
