@@ -49,7 +49,7 @@ module Twine
       end
 
       def read_file(path, lang)
-        resources_regex = /<resources>(.*)<\/resources>/m
+        resources_regex = /<resources(?:[^>]*)>(.*)<\/resources>/m
         key_regex = /<string name="(\w+)">/
         comment_regex = /<!-- (.*) -->/
         value_regex = /<string name="\w+">(.*)<\/string>/
