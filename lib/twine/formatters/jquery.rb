@@ -69,8 +69,8 @@ module Twine
                 key = key.gsub('"', '\\\\"')
 
                 value = row.translated_string_for_lang(lang, default_lang)
-                value = value.gsub('"', '\\\\"')
-
+		if value
+                  value = value.gsub('"', '\\\\"')
                 comment = row.comment
                 if comment
                   comment = comment.gsub('*/', '* /')
@@ -88,7 +88,7 @@ module Twine
           end
           f.seek(-2, IO::SEEK_CUR)
           f.puts "\n}"
-
+	end
         end
       end
     end
