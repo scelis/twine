@@ -58,9 +58,6 @@ module Twine
               if row.matches_tags?(@options[:tags], @options[:untagged])
                 if !printed_section
                   f.puts ''
-                  if section.name && section.name.length > 0
-                    f.puts "/* #{section.name} */"
-                  end
                   printed_section = true
                 end
 
@@ -77,11 +74,7 @@ module Twine
 
                 f.print "\"#{key}\":\"#{value}\","
 
-                if comment && comment.length > 0
-                  f.print "  /* #{comment} */\n"
-                else
-                  f.print "\n"
-                end
+                f.print "\n"
               end
             end
           end
