@@ -47,17 +47,22 @@ module Twine
           raise Twine::Error.new "You must run 'gem install json' in order to read or write jquery-localize files."
         end
 
+        printed_string = false
         default_lang = @strings.language_codes[0]
         encoding = @options[:output_encoding] || 'UTF-8'
         File.open(path, "w:#{encoding}") do |f|
-          f.puts "{"
+          f.print "{"
 
           @strings.sections.each_with_index do |section, si|
             printed_section = false
             section.rows.each_with_index do |row, ri|
               if row.matches_tags?(@options[:tags], @options[:untagged])
+                if printed_string
+                  f.print ",\n"
+                end
+
                 if !printed_section
-                  f.puts ''
+                  f.print "\n"
                   printed_section = true
                 end
 
@@ -67,18 +72,11 @@ module Twine
                 value = row.translated_string_for_lang(lang, default_lang)
                 value = value.gsub('"', '\\\\"')
 
-                comment = row.comment
-                if comment
-                  comment = comment.gsub('*/', '* /')
-                end
-
-                f.print "\"#{key}\":\"#{value}\","
-
-                f.print "\n"
+                f.print "\"#{key}\":\"#{value}\""
+                printed_string = true
               end
             end
           end
-          f.seek(-2, IO::SEEK_CUR)
           f.puts "\n}"
 
         end
