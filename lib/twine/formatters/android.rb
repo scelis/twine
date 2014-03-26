@@ -71,6 +71,7 @@ module Twine
                   value.gsub!('\\\'', '\'')
                   value.gsub!('\\"', '"')
                   value = iosify_substitutions(value)
+                  value.gsub!(/(\\u0020)*|(\\u0020)*\z/) { |spaces| ' ' * (spaces.length / 6) }
                 else
                   value = ""
                 end
@@ -129,6 +130,8 @@ module Twine
                   value = CGI.escapeHTML(value)
                   #  3) fix substitutions (e.g. %s/%@)
                   value = androidify_substitutions(value)
+                  #  4) replace beginning and end spaces with \0020. Otherwise Android strips them.
+                  value.gsub!(/\A *| *\z/) { |spaces| '\u0020' * spaces.length }
 
                   comment = row.comment
                   if comment
