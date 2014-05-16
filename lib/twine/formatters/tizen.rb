@@ -161,7 +161,7 @@ module Twine
                   if comment && comment.length > 0
                     f.puts "\t<!-- #{comment} -->\n"
                   end
-                  f.puts "\t<text id=\"#{key}\">#{value}</text>"
+                  f.puts "\t<text id=\"IDS_#{key.upcase}\">#{value}</text>"
                 end
               end
             end
