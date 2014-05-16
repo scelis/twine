@@ -9,16 +9,18 @@ module Twine
       EXTENSION = '.xml'
       DEFAULT_FILE_NAME = 'strings.xml'
       LANG_CODES = Hash[
-        'zh' => 'zh-Hans',
-        'zh-rCN' => 'zh-Hans',
-        'zh-rHK' => 'zh-Hant',
-        'en-rGB' => 'en-UK',
-        'in' => 'id',
-        'nb' => 'no'
-        # TODO: spanish
+        'eng-GB' => 'en',
+        'rus-RU' => 'ru',
+        'fra-FR' => 'fr',
+        'deu-DE' => 'de',
+        'spa-ES' => 'es',
+        'ita-IT' => 'it',
+        'ces-CZ' => 'cs',
+        'pol-PL' => 'pl',
+        'por-PT' => 'pt',
+        'ukr-UA' => 'uk'
       ]
       DEFAULT_LANG_CODES = Hash[
-        'zh-TW' => 'zh-Hant' # if we don't have a zh-TW translation, try zh-Hant before en
       ]
 
       def self.can_handle_directory?(path)
@@ -29,22 +31,40 @@ module Twine
         return DEFAULT_FILE_NAME
       end
 
-      def determine_language_given_path(path)
-        path_arr = path.split(File::SEPARATOR)
-        path_arr.each do |segment|
-          if segment == 'values'
-            return @strings.language_codes[0]
-          else
-            match = /^values-(.*)$/.match(segment)
-            if match
-              lang = match[1]
-              lang = LANG_CODES.fetch(lang, lang)
-              lang.sub!('-r', '-')
-              return lang
+      def write_all_files(path)
+        if !File.directory?(path)
+          raise Twine::Error.new("Directory does not exist: #{path}")
+        end
+
+        langs_written = []
+        Dir.foreach(path) do |item|
+          if item == "." or item == ".."
+            next
+          end
+          item = File.join(path, item)
+          if !File.directory?(item)
+            lang = determine_language_given_path(item)
+            if lang
+              write_file(item, lang)
+              langs_written << lang
             end
           end
         end
+        if langs_written.empty?
+          raise Twine::Error.new("Failed to genertate any files: No languages found at #{path}")
+        end
+      end
 
+      def determine_language_given_path(path)
+        path_arr = path.split(File::SEPARATOR)
+        path_arr.each do |segment|
+          match = /^(.*-.*)\.xml$/.match(segment)
+          if match
+            lang = match[1]
+            lang = LANG_CODES.fetch(lang, nil)
+            return lang
+          end
+        end
         return
       end
 
