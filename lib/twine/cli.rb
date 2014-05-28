@@ -93,7 +93,7 @@ module Twine
         opts.separator '> twine generate-string-file strings.txt ko.xml --tags FT'
         opts.separator '> twine generate-all-string-files strings.txt Resources/Locales/ --tags FT,FB'
         opts.separator '> twine consume-string-file strings.txt ja.strings'
-        opts.separator '> twine consume-all-string-files strings.txt Resources/Locales/ --developer-language en'
+        opts.separator '> twine consume-all-string-files strings.txt Resources/Locales/ --developer-language en --tags DefaultTag1,DefaultTag2'
         opts.separator '> twine generate-loc-drop strings.txt LocDrop5.zip --tags FT,FB --format android --lang de,en,en-GB,ja,ko'
         opts.separator '> twine consume-loc-drop strings.txt LocDrop5.zip'
         opts.separator '> twine generate-report strings.txt'
