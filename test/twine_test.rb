@@ -60,6 +60,14 @@ class TwineTest < Test::Unit::TestCase
     end
   end
 
+  def test_generate_string_file_8
+    Dir.mktmpdir do |dir|
+      output_path = File.join(dir, 'fr.xml')
+      Twine::Runner.run(%W(generate-string-file --format tizen test/fixtures/strings-1.txt #{output_path} --include-untranslated))
+      assert_equal(ERB.new(File.read('test/fixtures/test-output-12.txt')).result, File.read(output_path))
+    end
+  end
+
   def test_consume_string_file_1
     Dir.mktmpdir do |dir|
       output_path = File.join(dir, 'strings.txt')
