@@ -77,6 +77,7 @@ Twine currently supports the following formats for outputting strings:
 * [Gettext PO Files][gettextpo] (format: gettext)
 * [jquery-localize Language Files][jquerylocalize] (format: jquery)
 * [Django PO Files][djangopo] (format: django)
+* [Tizen String Resources][https://developer.tizen.org/documentation/articles/localization] (format: tizen)
 
 If you would like to enable twine to create language files in another format, create an appropriate formatter in `lib/twine/formatters`.
 
