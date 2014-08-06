@@ -1,2 +1,4 @@
 #Ruby gem
 *.gem
+.idea/
+.DS_*
