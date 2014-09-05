@@ -45,7 +45,7 @@ module Twine
           @options[:untagged] = true
         end
         formats = []
-        Formatters::FORMATTERS.each do |formatter|
+        Formatters.formatters.each do |formatter|
           formats << formatter::FORMAT_NAME
         end
         opts.on('-f', '--format FORMAT', "The file format to read or write (#{formats.join(', ')}). Additional formatters can be placed in the formats/ directory.") do |format|
