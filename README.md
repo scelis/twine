@@ -164,27 +164,27 @@ Now, whenever you build your application, Xcode will automatically invoke Twine 
 * [Twine TextMate 2 Bundle](https://github.com/mobiata/twine.tmbundle) — This [TextMate 2](https://github.com/textmate/textmate) bundle will make it easier for you to work with Twine strings files. In particular, it lets you use code folding to easily collapse and expand both strings and sections.
 * [twine_ui](https://github.com/Daij-Djan/twine_ui) — A user interface for Twine written by [Dominik Pich](https://github.com/Daij-Djan/). Consider using this if you would prefer to use Twine without dropping to a command line.
 
-## Plugin
+## Plugin Support
 
-Twine will read a yaml config file from three locations.
+Twine supports a basic plugin infrastructure, allowing third-party code to provide support for additional formatters. Twine will read a yaml config file specifying which plugins to load from three locations.
 
 0. `./twine.yml`    The current working directory
 0. `~/.twine`       The home directory
 0. `/etc/twine.yml` The etc directory
 
-Plugins are specified as values for the gems key. The following is an example config.
+Plugins are specified as values for the `gems` key. The following is an example config:
 
 ```
 gems: appium_twine
 ```
 
-Multiple gems are also supported.
+Multiple gems can also be specfied in the yaml file.
 
 ```
 gems: [appium_twine, some_other_plugin]
 ```
 
-* [appium_twine](https://github.com/appium/appium_twine) is a sample plugin used to provide C# output.
+[appium_twine](https://github.com/appium/appium_twine) is a sample plugin used to provide a C# formatter.
 
 ## Contributors
 
