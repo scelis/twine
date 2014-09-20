@@ -1,5 +1,7 @@
 require 'tmpdir'
 
+Twine::Plugin.new # Initialize plugins first in Runner.
+
 module Twine
   VALID_COMMANDS = ['generate-string-file', 'generate-all-string-files', 'consume-string-file', 'consume-all-string-files', 'generate-loc-drop', 'consume-loc-drop', 'generate-report']
 
@@ -269,7 +271,7 @@ module Twine
 
     def determine_format_given_path(path)
       ext = File.extname(path)
-      Formatters::FORMATTERS.each do |formatter|
+      Formatters.formatters.each do |formatter|
         if formatter::EXTENSION == ext
           return formatter::FORMAT_NAME
         end
@@ -279,7 +281,7 @@ module Twine
     end
 
     def determine_format_given_directory(directory)
-      Formatters::FORMATTERS.each do |formatter|
+      Formatters.formatters.each do |formatter|
         if formatter.can_handle_directory?(directory)
           return formatter::FORMAT_NAME
         end
@@ -289,7 +291,7 @@ module Twine
     end
 
     def formatter_for_format(format)
-      Formatters::FORMATTERS.each do |formatter|
+      Formatters.formatters.each do |formatter|
         if formatter::FORMAT_NAME == format
           return formatter.new(@strings, @options)
         end
