@@ -103,11 +103,15 @@ This command is a convenient way to call `generate-string-file` multiple times. 
 
 #### `consume-string-file`
 
-This command slurps all of the strings from a `.strings` or `.xml` file and incorporates the translated text into the master strings data file. This is a simple way to incorporate any changes made to a single file by one of your translators. It will only identify strings that already exist in the master data file.
+This command imports all of the existing strings from a `*.strings` or `*.xml` file, and incorporates the translated text into the master strings data file `strings.txt`. This is a simple way to incorporate any changes made to a single file by one of your translators. It will only identify strings that already exist in the master data file.
 
-	$ twine consume-string-file /path/to/strings.txt fr.strings
-	$ twine consume-string-file /path/to/strings.txt Localizable.strings --lang ja
-	$ twine consume-string-file /path/to/strings.txt es.xml
+	[For Mac OS X]
+	$ twine consume-string-file /path/to/strings.txt fr.strings --consume-all
+	[For iOS]
+	$ twine consume-string-file /path/to/strings.txt Localizable.strings --lang ja --consume-all
+	[For Android]
+	$ twine consume-string-file /path/to/strings.txt res/values-es/strings.xml --consume-all
+	$ twine consume-string-file /path/to/strings.txt res/values/strings.xml --lang en --consume-all
 
 #### `consume-all-string-files`
 
