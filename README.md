@@ -191,6 +191,7 @@ gems: [appium_twine, some_other_plugin]
 Many thanks to all of the contributors to the Twine project, including:
 
 * [Blake Watters](https://github.com/blakewatters)
+* [bootstraponline](https://github.com/bootstraponline)
 * [Ishitoya Kentaro](https://github.com/kent013)
 * [Joseph Earl](https://github.com/JosephEarl)
 * [Kevin Everets](https://github.com/keverets)
