@@ -11,15 +11,25 @@ module Twine
 
   class StringsRow
     attr_reader :key
+    attr_reader :alternate_keys
     attr_accessor :comment
     attr_accessor :tags
     attr_reader :translations
 
     def initialize(key)
       @key = key
+      @alternate_keys = {}
       @comment = nil
       @tags = nil
       @translations = {}
+    end
+
+    def get_key(alternate_key=nil)
+      if @alternate_keys[alternate_key]
+        return @alternate_keys[alternate_key]
+      end
+
+      return @key
     end
 
     def matches_tags?(tags, include_untagged)
@@ -118,6 +128,8 @@ module Twine
                 current_row.comment = value
               when 'tags'
                 current_row.tags = value.split(',')
+              when  /^key_/
+                current_row.alternate_keys[key[4..-1]] = value
               else
                 if !@language_codes.include? key
                   add_language_code(key)

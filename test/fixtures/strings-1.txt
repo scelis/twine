@@ -5,6 +5,7 @@
 		comment = This is a comment
 		es = key1-spanish
 		fr = key1-french
+		key_alt = key1-alt
 	[key2]
 		en = key2-english
 		tags = tag2

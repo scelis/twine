@@ -109,7 +109,7 @@ module Twine
                 
                 basetrans = row.translated_string_for_lang(default_lang)
 
-                key = row.key
+                key = row.get_key(@options[:alternate_key])
                 key = key.gsub('"', '\\\\"')
 
                 value = row.translated_string_for_lang(lang, default_lang)
