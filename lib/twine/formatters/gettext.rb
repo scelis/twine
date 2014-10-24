@@ -81,7 +81,7 @@ module Twine
                 basetrans = row.translated_string_for_lang(default_lang)
 
                 if basetrans
-                  key = row.key
+                  key = row.get_key(@options[:alternate_key])
                   key = key.gsub('"', '\\\\"')
 
                   comment = row.comment

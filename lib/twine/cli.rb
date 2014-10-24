@@ -55,6 +55,9 @@ module Twine
           end
           @options[:format] = lformat
         end
+        opts.on('-k', '--alternate-key KEY', Array, 'With this option you can specify that Twine has to lookup a different value to use as the key in the output. This can be used to use both a human-readable Android key and the Object ID\'s that are used in Storyboards. If in the strings file you specify "key_storyboard = Lf7-1k-UjD.text" as part of a string definition it will be activated as the main key by using the option "--alternate-key storyboard". Twine will default to the normal key if no such key is specified.') do |k|
+          @options[:alternate_key] = k[0]
+        end
         opts.on('-a', '--consume-all', 'Normally, when consuming a string file, Twine will ignore any string keys that do not exist in your master file.') do |a|
           @options[:consume_all] = true
         end

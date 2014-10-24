@@ -112,7 +112,7 @@ module Twine
                   printed_section = true
                 end
 
-                key = row.key
+                key = row.get_key(@options[:alternate_key])
 
                 value = row.translated_string_for_lang(lang, default_lang)
                 if !value && @options[:include_untranslated]
