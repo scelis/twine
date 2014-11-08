@@ -211,6 +211,7 @@ module Twine
       total_strings = 0
       strings_per_lang = {}
       all_keys = Set.new
+      translation_keys = Set.new
       duplicate_keys = Set.new
       keys_without_tags = Set.new
       @strings.language_codes.each do |code|
@@ -231,16 +232,56 @@ module Twine
             strings_per_lang[code] += 1
           end
 
+          hash = {row.key => row.translations}
+
+          translation_keys.add(hash)
+
           if row.tags == nil || row.tags.length == 0
             keys_without_tags.add(row.key)
           end
         end
       end
 
+      missing_words = Set.new
+
       # Print the report.
       puts "Total number of strings = #{total_strings}"
       @strings.language_codes.each do |code|
         puts "#{code}: #{strings_per_lang[code]}"
+
+        all_keys.each do |keyword|
+          words = translation_keys.select { |item| item[keyword] }
+
+          if words.count > 0
+
+            hashy = words.first[keyword]
+
+            if !hashy[code]
+              missing_words.add(hashy["en"]) #change default "en" to base lang
+            end
+          end
+
+        end
+         puts "untranslated words: "<<missing_words.count.to_s<<"\n\n"
+
+        if missing_words.count>0
+
+          missing_words_string = ""
+
+          missing_words.each_with_index do |val, index|
+
+            missing_words_string<<val
+
+            if index<(missing_words.count-1)
+              missing_words_string<<", "
+            end
+
+          end
+
+          puts missing_words_string << "\n\n"
+
+        end
+
       end
 
       if duplicate_keys.length > 0
@@ -258,6 +299,7 @@ module Twine
           puts key
         end
       end
+
     end
 
     def determine_language_given_path(path)
