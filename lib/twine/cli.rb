@@ -33,6 +33,8 @@ module Twine
         opts.separator ''
         opts.separator 'generate-report -- Generates a report containing data about your strings. For example, it will tell you if you have any duplicate strings or if any of your strings are missing tags. In addition, it will tell you how many strings you have and how many of those strings have been translated into each language.'
         opts.separator ''
+        opts.separator 'validate-strings-file -- Validates that the given strings file is parseable, contains no duplicates, and that every string has a tag. Exits with a non-zero exit code if those criteria are not met.'
+        opts.separator ''
         opts.separator 'General Options:'
         opts.separator ''
         opts.on('-l', '--lang LANGUAGES', Array, 'The language code(s) to use for the specified action.') do |langs|
@@ -97,6 +99,7 @@ module Twine
         opts.separator '> twine generate-loc-drop strings.txt LocDrop5.zip --tags FT,FB --format android --lang de,en,en-GB,ja,ko'
         opts.separator '> twine consume-loc-drop strings.txt LocDrop5.zip'
         opts.separator '> twine generate-report strings.txt'
+        opts.separator '> twine validate-strings-file strings.txt'
       end
       parser.parse! @args
 

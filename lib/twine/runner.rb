@@ -3,7 +3,7 @@ require 'tmpdir'
 Twine::Plugin.new # Initialize plugins first in Runner.
 
 module Twine
-  VALID_COMMANDS = ['generate-string-file', 'generate-all-string-files', 'consume-string-file', 'consume-all-string-files', 'generate-loc-drop', 'consume-loc-drop', 'generate-report']
+  VALID_COMMANDS = ['generate-string-file', 'generate-all-string-files', 'consume-string-file', 'consume-all-string-files', 'generate-loc-drop', 'consume-loc-drop', 'generate-report', 'validate-strings-file']
 
   class Runner
     def initialize(args)
@@ -50,6 +50,8 @@ module Twine
         consume_loc_drop
       when 'generate-report'
         generate_report
+      when 'validate-strings-file'
+        validate_strings_file
       end
     end
 
@@ -258,6 +260,43 @@ module Twine
           puts key
         end
       end
+    end
+
+    def validate_strings_file
+      total_strings = 0
+      all_keys = Set.new
+      duplicate_keys = Set.new
+      keys_without_tags = Set.new
+
+      @strings.sections.each do |section|
+        section.rows.each do |row|
+          total_strings += 1
+
+          if all_keys.include? row.key
+            duplicate_keys.add(row.key)
+          else
+            all_keys.add(row.key)
+          end
+
+          if row.tags == nil || row.tags.length == 0
+            keys_without_tags.add(row.key)
+          end
+        end
+      end
+
+      if duplicate_keys.length > 0
+        error_body = duplicate_keys.to_a.join("\n  ")
+        raise Twine::Error.new "Found duplicate string key(s):\n  #{error_body}"
+      end
+
+      if keys_without_tags.length == total_strings
+        raise Twine::Error.new "None of your strings have tags."
+      elsif keys_without_tags.length > 0
+        error_body = keys_without_tags.to_a.join("\n  ")
+        raise Twine::Error.new "Found strings(s) without tags:\n  #{error_body}"
+      end
+
+      puts "#{@options[:strings_file]} is valid."
     end
 
     def determine_language_given_path(path)
