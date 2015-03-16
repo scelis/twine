@@ -134,6 +134,12 @@ This command gives you useful information about your strings. It will tell you h
 
 	$ twine generate-report /path/to/strings.txt
 
+#### `validate-strings-file`
+
+This command validates that the strings file can be parsed, contains no duplicate keys, and that all strings have at least one tag. It will exit with a status code other than zero if any of those criteria are not met.
+
+	$ twine validate-strings-file /path/to/strings.txt
+
 ## Creating Your First strings.txt File
 
 The easiest way to create your first strings.txt file is to run the `consume-all-string-files` command. The one caveat is to first create a blank strings.txt file to use as your starting point. Then, just point the `consume-all-string-files` command at a directory in your project containing all of your iOS, OS X, or Android strings files.
