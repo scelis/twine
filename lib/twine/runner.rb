@@ -212,9 +212,6 @@ module Twine
     def generate_report
       total_strings = 0
       strings_per_lang = {}
-      all_keys = Set.new
-      duplicate_keys = Set.new
-      keys_without_tags = Set.new
       @strings.language_codes.each do |code|
         strings_per_lang[code] = 0
       end
@@ -223,18 +220,8 @@ module Twine
         section.rows.each do |row|
           total_strings += 1
 
-          if all_keys.include? row.key
-            duplicate_keys.add(row.key)
-          else
-            all_keys.add(row.key)
-          end
-
           row.translations.each_key do |code|
             strings_per_lang[code] += 1
-          end
-
-          if row.tags == nil || row.tags.length == 0
-            keys_without_tags.add(row.key)
           end
         end
       end
@@ -243,22 +230,6 @@ module Twine
       puts "Total number of strings = #{total_strings}"
       @strings.language_codes.each do |code|
         puts "#{code}: #{strings_per_lang[code]}"
-      end
-
-      if duplicate_keys.length > 0
-        puts "\nDuplicate string keys:"
-        duplicate_keys.each do |key|
-          puts key
-        end
-      end
-
-      if keys_without_tags.length == total_strings
-        puts "\nNone of your strings have tags."
-      elsif keys_without_tags.length > 0
-        puts "\nStrings without tags:"
-        keys_without_tags.each do |key|
-          puts key
-        end
       end
     end
 

@@ -130,13 +130,13 @@ This command is a convenient way of taking a zip file and executing the `consume
 
 #### `generate-report`
 
-This command gives you useful information about your strings. It will tell you how many strings you have, how many have been translated into each language, and whether your master strings data file has any duplicate string keys.
+This command gives you useful information about your strings. It will tell you how many strings you have and how many have been translated into each language.
 
 	$ twine generate-report /path/to/strings.txt
 
 #### `validate-strings-file`
 
-This command validates that the strings file can be parsed, contains no duplicate keys, and that all strings have at least one tag. It will exit with a status code other than zero if any of those criteria are not met.
+This command validates that the strings file can be parsed, contains no duplicate keys, and that all strings have at least one tag. It will exit with a non-zero status code if any of those criteria are not met.
 
 	$ twine validate-strings-file /path/to/strings.txt
 
