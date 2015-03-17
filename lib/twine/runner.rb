@@ -238,6 +238,7 @@ module Twine
       all_keys = Set.new
       duplicate_keys = Set.new
       keys_without_tags = Set.new
+      errors = []
 
       @strings.sections.each do |section|
         section.rows.each do |row|
@@ -257,14 +258,18 @@ module Twine
 
       if duplicate_keys.length > 0
         error_body = duplicate_keys.to_a.join("\n  ")
-        raise Twine::Error.new "Found duplicate string key(s):\n  #{error_body}"
+        errors << "Found duplicate string key(s):\n  #{error_body}"
       end
 
       if keys_without_tags.length == total_strings
-        raise Twine::Error.new "None of your strings have tags."
+        errors << "None of your strings have tags."
       elsif keys_without_tags.length > 0
         error_body = keys_without_tags.to_a.join("\n  ")
-        raise Twine::Error.new "Found strings(s) without tags:\n  #{error_body}"
+        errors << "Found strings(s) without tags:\n  #{error_body}"
+      end
+
+      if errors.length > 0
+        raise Twine::Error.new errors.join("\n\n")
       end
 
       puts "#{@options[:strings_file]} is valid."
