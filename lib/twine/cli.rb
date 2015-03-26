@@ -183,6 +183,10 @@ module Twine
         if @args.length > 2
           raise Twine::Error.new "Unknown argument: #{@args[2]}"
         end
+      when 'validate-strings-file'
+        if @args.length > 2
+          raise Twine::Error.new "Unknown argument: #{@args[2]}"
+        end
       end
     end
   end
