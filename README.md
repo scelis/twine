@@ -178,6 +178,7 @@ task generateStrings {
         args '-c', script
     }
 }
+```
 
 Now every time you build your app the strings are generated from the twine file.
 
