@@ -47,7 +47,7 @@ Whitepace in this file is mostly ignored. If you absolutely need to put spaces a
 			en = No
 			fr = Non
 			ja = いいえ
-	
+
 	[[Errors]]
 		[path_not_found_error]
 			en = The file '%@' could not be found.
@@ -57,7 +57,7 @@ Whitepace in this file is mostly ignored. If you absolutely need to put spaces a
 			en = The network is currently unavailable.
 			tags = app1
 			comment = An error describing when the device can not connect to the internet.
-	
+
 	[[Escaping Example]]
 		[list_item_separator]
 			en = `, `
@@ -84,7 +84,7 @@ If you would like to enable twine to create language files in another format, cr
 ## Usage
 
 	Usage: twine COMMAND STRINGS_FILE [INPUT_OR_OUTPUT_PATH] [--lang LANG1,LANG2...] [--tags TAG1,TAG2,TAG3...] [--format FORMAT]
-	
+
 ### Commands
 
 #### `generate-string-file`
@@ -149,6 +149,8 @@ The easiest way to create your first strings.txt file is to run the `consume-all
 
 ## Twine and Your Build Process
 
+### Xcode
+
 It is easy to incorporate Twine right into your iOS and OS X app build processes.
 
 1. In your project folder, create all of the `.lproj` directories that you need. It does not really matter where they are. We tend to put them in `Resources/Locales/`.
@@ -164,6 +166,21 @@ It is easy to incorporate Twine right into your iOS and OS X app build processes
 7. Edit your script to run the exact same command you ran in step (2) above.
 
 Now, whenever you build your application, Xcode will automatically invoke Twine to make sure that your `.strings` files are up-to-date.
+
+### Android Studio/Gradle
+
+Add the following task at the top level in app/build.gradle:
+```
+task generateStrings {
+    String script = 'if hash twine 2>/dev/null; then twine generate-string-file strings.txt ./src/main/res/values/generated_strings.xml; fi'
+    exec {
+        executable "sh"
+        args '-c', script
+    }
+}
+
+Now every time you build your app the strings are generated from the twine file.
+
 
 ## User Interface
 
