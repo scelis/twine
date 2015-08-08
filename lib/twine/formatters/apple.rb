@@ -18,7 +18,9 @@ module Twine
         path_arr.each do |segment|
           match = /^(.+)\.lproj$/.match(segment)
           if match
-            return match[1]
+            if match[1] != "Base"
+              return match[1]
+            end
           end
         end
 
