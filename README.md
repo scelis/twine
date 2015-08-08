@@ -29,7 +29,7 @@ Each grouping section contains N string definitions. These string definitions st
 
 ### Tags
 
-Tags are used by Twine as a way to only work with a subset of your strings at any given point in time. Each string can be assigned zero or more tags which are separated by commas. Tags are optional, though highly recommended. You can get a list of all strings currently missing tags by executing the `generate-report` command.
+Tags are used by Twine as a way to only work with a subset of your strings at any given point in time. Each string can be assigned zero or more tags which are separated by commas. Tags are optional, though highly recommended. You can get a list of all strings currently missing tags by executing the `validate-strings-file` command.
 
 ### Whitespace
 
@@ -127,12 +127,6 @@ This command is a convenient way to generate a zip file containing files created
 This command is a convenient way of taking a zip file and executing the `consume-string-file` command on each file within the archive. It is most often used to incorporate all of the changes made by the translation team after they have completed work on a localization drop.
 
 	$ twine consume-loc-drop /path/to/strings.txt LocDrop2.zip
-
-#### `generate-report`
-
-This command gives you useful information about your strings. It will tell you how many strings you have and how many have been translated into each language.
-
-	$ twine generate-report /path/to/strings.txt
 
 #### `validate-strings-file`
 

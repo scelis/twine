@@ -15,7 +15,7 @@ module Twine
       parser = OptionParser.new do |opts|
         opts.banner = 'Usage: twine COMMAND STRINGS_FILE [INPUT_OR_OUTPUT_PATH] [--lang LANG1,LANG2...] [--tags TAG1,TAG2,TAG3...] [--format FORMAT]'
         opts.separator ''
-        opts.separator 'The purpose of this script is to convert back and forth between multiple data formats, allowing us to treat our strings (and translations) as data stored in a text file. We can then use the data file to create drops for the localization team, consume similar drops returned by the localization team, generate reports on the strings, as well as create formatted string files to ship with your products. Twine currently supports iOS, OS X, Android, gettext, and jquery-localize string files.'
+        opts.separator 'The purpose of this script is to convert back and forth between multiple data formats, allowing us to treat our strings (and translations) as data stored in a text file. We can then use the data file to create drops for the localization team, consume similar drops returned by the localization team, and create formatted string files to ship with your products. Twine currently supports iOS, OS X, Android, gettext, and jquery-localize string files.'
         opts.separator ''
         opts.separator 'Commands:'
         opts.separator ''
@@ -30,8 +30,6 @@ module Twine
         opts.separator 'generate-loc-drop -- Generates a zip archive of strings files in any format. The purpose of this command is to create a very simple archive that can be handed off to a translation team. The translation team can unzip the archive, translate all of the strings in the archived files, zip everything back up, and then hand that final archive back to be consumed by the consume-loc-drop command. This command assumes that --include-untranslated has been specified on the command line.'
         opts.separator ''
         opts.separator 'consume-loc-drop -- Consumes an archive of translated files. This archive should be in the same format as the one created by the generate-loc-drop command.'
-        opts.separator ''
-        opts.separator 'generate-report -- Generates a report containing data about your strings. It will tell you how many strings you have and how many of those strings have been translated into each language.'
         opts.separator ''
         opts.separator 'validate-strings-file -- Validates that the given strings file is parseable, contains no duplicates, and that every string has a tag. Exits with a non-zero exit code if those criteria are not met.'
         opts.separator ''
@@ -98,7 +96,6 @@ module Twine
         opts.separator '> twine consume-all-string-files strings.txt Resources/Locales/ --developer-language en --tags DefaultTag1,DefaultTag2'
         opts.separator '> twine generate-loc-drop strings.txt LocDrop5.zip --tags FT,FB --format android --lang de,en,en-GB,ja,ko'
         opts.separator '> twine consume-loc-drop strings.txt LocDrop5.zip'
-        opts.separator '> twine generate-report strings.txt'
         opts.separator '> twine validate-strings-file strings.txt'
       end
       parser.parse! @args
@@ -178,10 +175,6 @@ module Twine
           raise Twine::Error.new "Unknown argument: #{@args[3]}"
         else
           raise Twine::Error.new 'Not enough arguments.'
-        end
-      when 'generate-report'
-        if @args.length > 2
-          raise Twine::Error.new "Unknown argument: #{@args[2]}"
         end
       when 'validate-strings-file'
         if @args.length > 2

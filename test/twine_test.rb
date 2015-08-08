@@ -116,10 +116,6 @@ class TwineTest < Test::Unit::TestCase
     end
   end
 
-  def test_generate_report_1
-    Twine::Runner.run(%w(generate-report test/fixtures/strings-1.txt))
-  end
-
   def test_json_line_breaks_consume
     Dir.mktmpdir do |dir|
       output_path = File.join(dir, 'strings.txt')

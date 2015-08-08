@@ -3,7 +3,7 @@ require 'tmpdir'
 Twine::Plugin.new # Initialize plugins first in Runner.
 
 module Twine
-  VALID_COMMANDS = ['generate-string-file', 'generate-all-string-files', 'consume-string-file', 'consume-all-string-files', 'generate-loc-drop', 'consume-loc-drop', 'generate-report', 'validate-strings-file']
+  VALID_COMMANDS = ['generate-string-file', 'generate-all-string-files', 'consume-string-file', 'consume-all-string-files', 'generate-loc-drop', 'consume-loc-drop', 'validate-strings-file']
 
   class Runner
     def initialize(args)
@@ -48,8 +48,6 @@ module Twine
         generate_loc_drop
       when 'consume-loc-drop'
         consume_loc_drop
-      when 'generate-report'
-        generate_report
       when 'validate-strings-file'
         validate_strings_file
       end
@@ -207,30 +205,6 @@ module Twine
 
       output_path = @options[:output_path] || @options[:strings_file]
       write_strings_data(output_path)
-    end
-
-    def generate_report
-      total_strings = 0
-      strings_per_lang = {}
-      @strings.language_codes.each do |code|
-        strings_per_lang[code] = 0
-      end
-
-      @strings.sections.each do |section|
-        section.rows.each do |row|
-          total_strings += 1
-
-          row.translations.each_key do |code|
-            strings_per_lang[code] += 1
-          end
-        end
-      end
-
-      # Print the report.
-      puts "Total number of strings = #{total_strings}"
-      @strings.language_codes.each do |code|
-        puts "#{code}: #{strings_per_lang[code]}"
-      end
     end
 
     def validate_strings_file
