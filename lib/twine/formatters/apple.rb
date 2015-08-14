@@ -1,3 +1,4 @@
+require 'cgi'
 module Twine
   module Formatters
     class Apple < Abstract
@@ -101,8 +102,16 @@ module Twine
 
                 key = row.key
                 key = key.gsub('"', '\\\\"')
-
+                                         
                 value = row.translated_string_for_lang(lang, default_lang)
+                                                  
+                if @options[:only_untranslated]
+                  valuelang = row.translated_string_for_lang(lang, lang)
+                  if valuelang
+                    value = nil;
+                  end
+                end
+                                                  
                 if value
                   value = value.gsub('"', '\\\\"')
 
