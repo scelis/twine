@@ -58,7 +58,7 @@ module Twine
         opts.on('-a', '--consume-all', 'Normally, when consuming a string file, Twine will ignore any string keys that do not exist in your master file.') do |a|
           @options[:consume_all] = true
         end
-        opts.on('-s', '--include-untranslated', 'This flag will cause any Android string files that are generated to include strings that have not yet been translated for the current language.') do |s|
+        opts.on('-s', '--include-untranslated', 'This flag will cause any string files that are generated to include strings that have not yet been translated for the current language.') do |s|
           @options[:include_untranslated] = true
         end
         opts.on('-o', '--output-file OUTPUT_FILE', 'Write the new strings database to this file instead of replacing the original file. This flag is only useful when running the consume-string-file or consume-loc-drop commands.') do |o|
