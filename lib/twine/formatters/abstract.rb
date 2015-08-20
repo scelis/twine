@@ -149,6 +149,9 @@ module Twine
 
       def format_row(row, lang, default_lang)
         value = row.translated_string_for_lang(lang, default_lang)
+        if value.nil? && @options[:include_untranslated]
+          value = row.translated_string_for_lang(@strings.language_codes[0])
+        end
         return nil unless value
 
         result = ""
@@ -157,7 +160,7 @@ module Twine
           result += comment + "\n" if comment
         end
 
-        result += key_value_pattern % { key: format_key(row.key), value: format_value(value) }
+        result += key_value_pattern % { key: format_key(row.key.dup), value: format_value(value.dup) }
       end
 
       def format_comment(comment)
@@ -168,11 +171,11 @@ module Twine
       end
 
       def format_key(key)
-        raise NotImplementedError.new("You must implement format_key in your formatter class.")
+        key
       end
 
       def format_value(value)
-        raise NotImplementedError.new("You must implement format_value in your formatter class.")
+        value
       end
 
       def write_file(path, lang)
