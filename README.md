@@ -35,6 +35,10 @@ Tags are used by Twine as a way to only work with a subset of your strings at an
 
 Whitepace in this file is mostly ignored. If you absolutely need to put spaces at the beginning or end of your translated string, you can wrap the entire string in a pair of `` ` `` characters. If your actual string needs to start *and* end with a grave accent, you can wrap it in another pair of `` ` `` characters. See the example, below.
 
+### References
+
+If you want a key to inherit the values of another key, you can use a reference. Any property not specified for a key will be taken from the reference.
+
 ### Example
 
 	[[General]]
@@ -57,6 +61,9 @@ Whitepace in this file is mostly ignored. If you absolutely need to put spaces a
 			en = The network is currently unavailable.
 			tags = app1
 			comment = An error describing when the device can not connect to the internet.
+    [dismiss_error]
+      ref = [yes]
+      en = Dismiss
 
 	[[Escaping Example]]
 		[list_item_separator]
