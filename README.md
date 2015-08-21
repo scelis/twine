@@ -61,9 +61,9 @@ If you want a key to inherit the values of another key, you can use a reference.
 			en = The network is currently unavailable.
 			tags = app1
 			comment = An error describing when the device can not connect to the internet.
-    [dismiss_error]
-      ref = [yes]
-      en = Dismiss
+		[dismiss_error]
+			ref = [yes]
+			en = Dismiss
 
 	[[Escaping Example]]
 		[list_item_separator]
