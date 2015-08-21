@@ -14,6 +14,7 @@ module Twine
     attr_accessor :comment
     attr_accessor :tags
     attr_reader :translations
+    attr_accessor :reference
 
     def initialize(key)
       @key = key
@@ -22,13 +23,19 @@ module Twine
       @translations = {}
     end
 
+    def comment
+      @comment || (reference.comment if reference)
+    end
+
     def matches_tags?(tags, include_untagged)
-      if tags == nil || tags.length == 0
+      if tags == nil || tags.empty?
         # The user did not specify any tags. Everything passes.
         return true
-      elsif @tags == nil || @tags.length == 0
+      elsif @tags == nil
         # This row has no tags.
-        return (include_untagged) ? true : false
+        return reference ? reference.matches_tags?(tags, include_untagged) : include_untagged
+      elsif @tags.empty?
+        return include_untagged
       else
         tags.each do |tag|
           if @tags.include? tag
@@ -41,16 +48,21 @@ module Twine
     end
 
     def translated_string_for_lang(lang, default_lang=nil)
-      if @translations[lang]
-        return @translations[lang]
-      elsif default_lang.respond_to?("each")
+      translation = [lang].flatten.map { |l| @translations[l] }.first
+
+      translation = reference.translated_string_for_lang(lang, default_lang) if translation.nil? && reference
+
+      return translation if translation
+      
+      # TODO: get rid of all this and the default_lang parameter once all formatters are converted to the new style
+      if default_lang.respond_to?("each")
         default_lang.each do |def_lang|
           if @translations[def_lang]
             return @translations[def_lang]
           end
         end
         return nil
-      else
+      elsif default_lang
         return @translations[default_lang]
       end
     end
@@ -60,6 +72,15 @@ module Twine
     attr_reader :sections
     attr_reader :strings_map
     attr_reader :language_codes
+
+    private
+
+    def match_key(text)
+      match = /^\[(.+)\]$/.match(text)
+      return match[1] if match
+    end
+
+    public
 
     def initialize
       @sections = []
@@ -93,9 +114,9 @@ module Twine
               parsed = true
             end
           elsif line.length > 2 && line[0, 1] == '['
-            match = /^\[(.+)\]$/.match(line)
-            if match
-              current_row = StringsRow.new(match[1])
+            key = match_key(line)
+            if key
+              current_row = StringsRow.new(key)
               @strings_map[current_row.key] = current_row
               if !current_section
                 current_section = StringsSection.new('')
@@ -114,10 +135,13 @@ module Twine
               end
 
               case key
-              when "comment"
+              when 'comment'
                 current_row.comment = value
               when 'tags'
                 current_row.tags = value.split(',')
+              when 'ref'
+                key = match_key(value)
+                current_row.reference = key if key
               else
                 if !@language_codes.include? key
                   add_language_code(key)
@@ -132,6 +156,12 @@ module Twine
             raise Twine::Error.new("Unable to parse line #{line_num} of #{path}: #{line}")
           end
         end
+      end
+
+      # resolve_references
+      @strings_map.each do |key, row|
+        next unless row.reference
+        row.reference = @strings_map[row.reference]
       end
     end
 
@@ -192,9 +222,7 @@ module Twine
     end
 
     def set_developer_language_code(code)
-      if @language_codes.include?(code)
-        @language_codes.delete(code)
-      end
+      @language_codes.delete(code)
       @language_codes.insert(0, code)
     end
   end

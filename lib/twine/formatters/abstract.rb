@@ -1,3 +1,5 @@
+require 'fileutils'
+
 module Twine
   module Formatters
     class Abstract
@@ -109,38 +111,130 @@ module Twine
         raise NotImplementedError.new("You must implement determine_language_given_path in your formatter class.")
       end
 
+      def output_path_for_language(lang)
+        lang
+      end
+
       def read_file(path, lang)
         raise NotImplementedError.new("You must implement read_file in your formatter class.")
       end
 
+      def default_language
+        @options[:developer_language] || @strings.language_codes[0]
+      end
+
+      def fallback_languages(lang)
+        [default_language]
+      end
+
+      def format_file(lang)
+        result = format_header(lang) + "\n"
+        result += format_sections(lang)
+      end
+
+      def format_header(lang)
+        raise NotImplementedError.new("You must implement format_header in your formatter class.")
+      end
+
+      def format_sections(lang)
+        sections = @strings.sections.map { |section| format_section(section, lang) }
+        sections.join("\n")
+      end
+
+      def format_section_header(section)
+      end
+
+      def format_section(section, lang)
+        rows = section.rows.select { |row| row.matches_tags?(@options[:tags], @options[:untagged]) }
+
+        result = ""
+        unless rows.empty?
+          if section.name && section.name.length > 0
+            section_header = format_section_header(section)
+            result += "\n#{section_header}" if section_header
+          end
+        end
+
+        rows.map! { |row| format_row(row, lang) }
+        rows.compact! # remove nil entries
+        rows.map! { |row| "\n#{row}" }  # prepend newline
+        result += rows.join
+      end
+
+      def format_row(row, lang)
+        value = row.translated_string_for_lang(lang)
+        
+        return if value && @options[:only_untranslated]
+
+        if value.nil? && (@options[:include_untranslated] || @options[:only_untranslated])
+          value = row.translated_string_for_lang(fallback_languages(lang))
+        end
+
+        return nil unless value
+
+        result = ""
+        if row.comment
+          comment = format_comment(row.comment)
+          result += comment + "\n" if comment
+        end
+
+        result += key_value_pattern % { key: format_key(row.key.dup), value: format_value(value.dup) }
+      end
+
+      def format_comment(comment)
+      end
+
+      def key_value_pattern
+        raise NotImplementedError.new("You must implement key_value_pattern in your formatter class.")
+      end
+
+      def format_key(key)
+        key
+      end
+
+      def format_value(value)
+        value
+      end
+
       def write_file(path, lang)
-        raise NotImplementedError.new("You must implement write_file in your formatter class.")
+        encoding = @options[:output_encoding] || 'UTF-8'
+
+        File.open(path, "w:#{encoding}") do |f|
+          f.puts format_file(lang)
+        end
       end
 
       def write_all_files(path)
-        if !File.directory?(path)
-          raise Twine::Error.new("Directory does not exist: #{path}")
-        end
-
         file_name = @options[:file_name] || default_file_name
-        langs_written = []
-        Dir.foreach(path) do |item|
-          if item == "." or item == ".."
-            next
+        if @options[:create_folders]
+          @strings.language_codes.each do |lang|
+            output_path = File.join(path, output_path_for_language(lang))
+
+            FileUtils.mkdir_p(output_path)
+
+            write_file(File.join(output_path, file_name), lang)
           end
-          item = File.join(path, item)
-          if File.directory?(item)
+        else
+          language_written = false
+          Dir.foreach(path) do |item|
+            next if item == "." or item == ".."
+
+            item = File.join(path, item)
+            next unless File.directory?(item)
+
             lang = determine_language_given_path(item)
-            if lang
-              write_file(File.join(item, file_name), lang)
-              langs_written << lang
-            end
+            next unless lang
+
+            write_file(File.join(item, file_name), lang)
+            language_written = true
           end
-        end
-        if langs_written.empty?
-          raise Twine::Error.new("Failed to generate any files: No languages found at #{path}")
+
+          if !language_written
+            raise Twine::Error.new("Failed to generate any files: No languages found at #{path}")
+          end
         end
       end
+
     end
   end
 end

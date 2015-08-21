@@ -58,8 +58,11 @@ module Twine
         opts.on('-a', '--consume-all', 'Normally, when consuming a string file, Twine will ignore any string keys that do not exist in your master file.') do |a|
           @options[:consume_all] = true
         end
-        opts.on('-s', '--include-untranslated', 'This flag will cause any Android string files that are generated to include strings that have not yet been translated for the current language.') do |s|
+        opts.on('-s', '--include-untranslated', 'This flag will cause any string files that are generated to include strings that have not yet been translated for the current language.') do |s|
           @options[:include_untranslated] = true
+        end
+        opts.on('-u', '--only-untranslated', 'This flag will cause any generated files to include only the strings that have not been translated.') do |c|
+          @options[:only_untranslated] = true
         end
         opts.on('-o', '--output-file OUTPUT_FILE', 'Write the new strings database to this file instead of replacing the original file. This flag is only useful when running the consume-string-file or consume-loc-drop commands.') do |o|
           @options[:output_path] = o
@@ -67,13 +70,16 @@ module Twine
         opts.on('-n', '--file-name FILE_NAME', 'When running the generate-all-string-files command, this flag may be used to overwrite the default file name of the format.') do |n|
           @options[:file_name] = n
         end
-        opts.on('-d', '--developer-language LANG', 'When writing the strings data file, set the specified language as the "developer language". In practice, this just means that this language will appear first in the strings data file.') do |d|
+        opts.on('-r', '--create-folders', "When running the generate-all-string-files command, this flag may be used to create output folders for all languages, if they don't exist yet. As a result all languages will be exported, not only the ones where an output folder already exists.") do |r|
+          @options[:create_folders] = true
+        end
+        opts.on('-d', '--developer-language LANG', 'When writing the strings data file, set the specified language as the "developer language". In practice, this just means that this language will appear first in the strings data file. When generating files this language will be used as default language and its translations will be used if a key is not localized for the output language.') do |d|
           @options[:developer_language] = d
         end
         opts.on('-c', '--consume-comments', 'Normally, when consuming a string file, Twine will ignore all comments in the file. With this flag set, any comments encountered will be read and parsed into the strings data file. This is especially useful when creating your first strings data file from an existing project.') do |c|
           @options[:consume_comments] = true
         end
-        opts.on('-e', '--encoding ENCODING', 'Twine defaults to encoding all output files in UTF-8. This flag will tell Twine to use an alternate encoding for these files. For example, you could use this to write Apple .strings files in UTF-16. This flag currently only works with Apple .strings files and is currently only supported in Ruby 1.9.3 or greater.') do |e|
+        opts.on('-e', '--encoding ENCODING', 'Twine defaults to encoding all output files in UTF-8. This flag will tell Twine to use an alternate encoding for these files. For example, you could use this to write Apple .strings files in UTF-16. This flag is currently only supported in Ruby 1.9.3 or greater.') do |e|
           if !"".respond_to?(:encode)
             raise Twine::Error.new "The --encoding flag is only supported on Ruby 1.9.3 or greater."
           end
