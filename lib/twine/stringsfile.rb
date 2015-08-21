@@ -222,9 +222,7 @@ module Twine
     end
 
     def set_developer_language_code(code)
-      if @language_codes.include?(code)
-        @language_codes.delete(code)
-      end
+      @language_codes.delete(code)
       @language_codes.insert(0, code)
     end
   end
