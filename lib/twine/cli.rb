@@ -70,6 +70,9 @@ module Twine
         opts.on('-n', '--file-name FILE_NAME', 'When running the generate-all-string-files command, this flag may be used to overwrite the default file name of the format.') do |n|
           @options[:file_name] = n
         end
+        opts.on('-r', '--create-folders', "When running the generate-all-string-files command, this flag may be used to create output folders for all languages, if they don't exist yet. As a result all languages will be exported, not only the ones where an output folder already exists.") do |r|
+          @options[:create_folders] = true
+        end
         opts.on('-d', '--developer-language LANG', 'When writing the strings data file, set the specified language as the "developer language". In practice, this just means that this language will appear first in the strings data file. When generating files this language will be used as default language and its translations will be used if a key is not localized for the output language.') do |d|
           @options[:developer_language] = d
         end
