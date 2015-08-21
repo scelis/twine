@@ -91,8 +91,8 @@ module Twine
         end
       end
 
-      def fallback_language(lang)
-        DEFAULT_LANG_CODES[lang] || super
+      def fallback_languages(lang)
+        [DEFAULT_LANG_CODES[lang], super].flatten.compact
       end
 
       def format_header(lang)

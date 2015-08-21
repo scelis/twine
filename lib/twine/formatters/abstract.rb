@@ -117,8 +117,8 @@ module Twine
         @options[:developer_language] || @strings.language_codes[0]
       end
 
-      def fallback_language(lang)
-        default_language
+      def fallback_languages(lang)
+        [default_language]
       end
 
       def format_file(lang)
@@ -156,9 +156,9 @@ module Twine
       end
 
       def format_row(row, lang)
-        value = row.translated_string_for_lang(lang, fallback_language(lang))
+        value = row.translated_string_for_lang(lang)
         if value.nil? && @options[:include_untranslated]
-          value = row.translated_string_for_lang(default_language)
+          value = row.translated_string_for_lang(fallback_languages(lang))
         end
         return nil unless value
 
