@@ -41,16 +41,18 @@ module Twine
     end
 
     def translated_string_for_lang(lang, default_lang=nil)
-      if @translations[lang]
-        return @translations[lang]
-      elsif default_lang.respond_to?("each")
+      translation = [lang].flatten.map { |l| @translations[l] }.first
+      return translation if translation
+      
+      # TODO: get rid of all this and the default_lang parameter once all formatters are converted to the new style
+      if default_lang.respond_to?("each")
         default_lang.each do |def_lang|
           if @translations[def_lang]
             return @translations[def_lang]
           end
         end
         return nil
-      else
+      elsif default_lang
         return @translations[default_lang]
       end
     end
