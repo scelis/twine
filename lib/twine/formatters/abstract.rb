@@ -115,13 +115,16 @@ module Twine
 
       def format_file(lang, default_lang)
         result = format_header(lang) + "\n"
-          
-        sections = @strings.sections.map { |section| format_section(section, lang, default_lang) }
-        result += sections.join("\n")
+        result += format_sections(lang, default_lang)
       end
 
       def format_header(lang)
         raise NotImplementedError.new("You must implement format_header in your formatter class.")
+      end
+
+      def format_sections(lang, default_lang)
+        sections = @strings.sections.map { |section| format_section(section, lang, default_lang) }
+        sections.join("\n")
       end
 
       def format_section_header(section)
@@ -134,13 +137,13 @@ module Twine
         unless rows.empty?
           if section.name && section.name.length > 0
             section_header = format_section_header(section)
-            result += "\n#{section_header}\n" if section_header
+            result += "\n#{section_header}" if section_header
           end
         end
 
         rows.map! { |row| format_row(row, lang, default_lang) }
         rows.compact! # remove nil entries
-        rows.map! { |row| "\n#{row}\n" }  # wrap with newlines
+        rows.map! { |row| "\n#{row}" }  # prepend newline
         result += rows.join
       end
 
