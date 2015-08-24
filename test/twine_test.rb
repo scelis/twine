@@ -147,4 +147,12 @@ class TwineTest < Test::Unit::TestCase
       assert_equal(ERB.new(File.read('test/fixtures/test-output-14.txt')).result, File.read(output_path))
     end
   end
+
+  def test_generate_string_file_14_references
+    Dir.mktmpdir do |dir|
+      output_path = File.join(dir, 'references.xml')
+      Twine::Runner.run(%W(generate-string-file test/fixtures/strings-4-references.txt #{output_path} -l fr -t tag1))
+      assert_equal(ERB.new(File.read('test/fixtures/test-output-14-references.txt')).result, File.read(output_path))
+    end
+  end  
 end
