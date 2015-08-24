@@ -1,4 +1,5 @@
 require 'tmpdir'
+require 'fileutils'
 
 Twine::Plugin.new # Initialize plugins first in Runner.
 
@@ -64,7 +65,11 @@ module Twine
 
     def generate_all_string_files
       if !File.directory?(@options[:output_path])
-        raise Twine::Error.new("Directory does not exist: #{@options[:output_path]}")
+        if @options[:create_folders]
+          FileUtils.mkdir_p(@options[:output_path])
+        else
+          raise Twine::Error.new("Directory does not exist: #{@options[:output_path]}")
+        end
       end
 
       format = @options[:format]

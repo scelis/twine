@@ -1,3 +1,5 @@
+require 'fileutils'
+
 module Twine
   module Formatters
     class Abstract
@@ -109,6 +111,10 @@ module Twine
         raise NotImplementedError.new("You must implement determine_language_given_path in your formatter class.")
       end
 
+      def output_path_for_language(lang)
+        lang
+      end
+
       def read_file(path, lang)
         raise NotImplementedError.new("You must implement read_file in your formatter class.")
       end
@@ -199,29 +205,36 @@ module Twine
       end
 
       def write_all_files(path)
-        if !File.directory?(path)
-          raise Twine::Error.new("Directory does not exist: #{path}")
-        end
-
         file_name = @options[:file_name] || default_file_name
-        langs_written = []
-        Dir.foreach(path) do |item|
-          if item == "." or item == ".."
-            next
+        if @options[:create_folders]
+          @strings.language_codes.each do |lang|
+            output_path = File.join(path, output_path_for_language(lang))
+
+            FileUtils.mkdir_p(output_path)
+
+            write_file(File.join(output_path, file_name), lang)
           end
-          item = File.join(path, item)
-          if File.directory?(item)
+        else
+          language_written = false
+          Dir.foreach(path) do |item|
+            next if item == "." or item == ".."
+
+            item = File.join(path, item)
+            next unless File.directory?(item)
+
             lang = determine_language_given_path(item)
-            if lang
-              write_file(File.join(item, file_name), lang)
-              langs_written << lang
-            end
+            next unless lang
+
+            write_file(File.join(item, file_name), lang)
+            language_written = true
           end
-        end
-        if langs_written.empty?
-          raise Twine::Error.new("Failed to generate any files: No languages found at #{path}")
+
+          if !language_written
+            raise Twine::Error.new("Failed to generate any files: No languages found at #{path}")
+          end
         end
       end
+
     end
   end
 end

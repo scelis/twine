@@ -27,6 +27,10 @@ module Twine
         return
       end
 
+      def output_path_for_language(lang)
+        "#{lang}.lproj"
+      end
+
       def read_file(path, lang)
         encoding = Twine::Encoding.encoding_for_path(path)
         sep = nil
