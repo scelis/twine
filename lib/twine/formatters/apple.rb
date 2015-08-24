@@ -87,7 +87,7 @@ module Twine
       end
 
       def format_section_header(section)
-        "/********** #{section.name} **********/\n" if section.name && section.name.length > 0
+        "/********** #{section.name} **********/\n"
       end
 
       def key_value_pattern
