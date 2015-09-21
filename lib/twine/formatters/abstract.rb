@@ -113,8 +113,78 @@ module Twine
         raise NotImplementedError.new("You must implement read_file in your formatter class.")
       end
 
+      def format_file(lang, default_lang)
+        result = format_header(lang) + "\n"
+        result += format_sections(lang, default_lang)
+      end
+
+      def format_header(lang)
+        raise NotImplementedError.new("You must implement format_header in your formatter class.")
+      end
+
+      def format_sections(lang, default_lang)
+        sections = @strings.sections.map { |section| format_section(section, lang, default_lang) }
+        sections.join("\n")
+      end
+
+      def format_section_header(section)
+      end
+
+      def format_section(section, lang, default_lang)
+        rows = section.rows.select { |row| row.matches_tags?(@options[:tags], @options[:untagged]) }
+
+        result = ""
+        unless rows.empty?
+          if section.name && section.name.length > 0
+            section_header = format_section_header(section)
+            result += "\n#{section_header}" if section_header
+          end
+        end
+
+        rows.map! { |row| format_row(row, lang, default_lang) }
+        rows.compact! # remove nil entries
+        rows.map! { |row| "\n#{row}" }  # prepend newline
+        result += rows.join
+      end
+
+      def format_row(row, lang, default_lang)
+        value = row.translated_string_for_lang(lang, default_lang)
+        if value.nil? && @options[:include_untranslated]
+          value = row.translated_string_for_lang(@strings.language_codes[0])
+        end
+        return nil unless value
+
+        result = ""
+        if row.comment
+          comment = format_comment(row.comment)
+          result += comment + "\n" if comment
+        end
+
+        result += key_value_pattern % { key: format_key(row.key.dup), value: format_value(value.dup) }
+      end
+
+      def format_comment(comment)
+      end
+
+      def key_value_pattern
+        raise NotImplementedError.new("You must implement key_value_pattern in your formatter class.")
+      end
+
+      def format_key(key)
+        key
+      end
+
+      def format_value(value)
+        value
+      end
+
       def write_file(path, lang)
-        raise NotImplementedError.new("You must implement write_file in your formatter class.")
+        default_lang = @strings.language_codes[0]
+        encoding = @options[:output_encoding] || 'UTF-8'
+
+        File.open(path, "w:#{encoding}") do |f|
+          f.puts format_file(lang, default_lang)
+        end
       end
 
       def write_all_files(path)
