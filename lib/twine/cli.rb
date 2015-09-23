@@ -27,7 +27,7 @@ module Twine
         opts.separator ''
         opts.separator 'consume-all-string-files -- Slurps all of the strings from a directory into the specified STRINGS_FILE. If you have some files returned to you by your translators you can use this command to incorporate all of their changes. This script will attempt to guess both the language and the format given the filename and extension. For example, "ja.strings" will assume that the file is a Japanese iOS strings file.'
         opts.separator ''
-        opts.separator 'generate-loc-drop -- Generates a zip archive of strings files in any format. The purpose of this command is to create a very simple archive that can be handed off to a translation team. The translation team can unzip the archive, translate all of the strings in the archived files, zip everything back up, and then hand that final archive back to be consumed by the consume-loc-drop command. This command assumes that --include-untranslated has been specified on the command line.'
+        opts.separator 'generate-loc-drop -- Generates a zip archive of strings files in any format. The purpose of this command is to create a very simple archive that can be handed off to a translation team. The translation team can unzip the archive, translate all of the strings in the archived files, zip everything back up, and then hand that final archive back to be consumed by the consume-loc-drop command.'
         opts.separator ''
         opts.separator 'consume-loc-drop -- Consumes an archive of translated files. This archive should be in the same format as the one created by the generate-loc-drop command.'
         opts.separator ''
@@ -58,8 +58,8 @@ module Twine
         opts.on('-a', '--consume-all', 'Normally, when consuming a string file, Twine will ignore any string keys that do not exist in your master file.') do |a|
           @options[:consume_all] = true
         end
-        opts.on('-s', '--include-untranslated', 'This flag will cause any string files that are generated to include strings that have not yet been translated for the current language.') do |s|
-          @options[:include_untranslated] = true
+        opts.on('-x', '--exclude-untranslated', 'This flag will cause any string files that are generated to not include strings that have not yet been translated for the current language.') do |s|
+          @options[:exclude_untranslated] = true
         end
         opts.on('-o', '--output-file OUTPUT_FILE', 'Write the new strings database to this file instead of replacing the original file. This flag is only useful when running the consume-string-file or consume-loc-drop commands.') do |o|
           @options[:output_path] = o
@@ -157,7 +157,6 @@ module Twine
           raise Twine::Error.new 'Not enough arguments.'
         end
       when 'generate-loc-drop'
-        @options[:include_untranslated] = true
         if @args.length == 3
           @options[:output_path] = @args[2]
         elsif @args.length > 3
