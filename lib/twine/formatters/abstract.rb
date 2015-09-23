@@ -113,24 +113,32 @@ module Twine
         raise NotImplementedError.new("You must implement read_file in your formatter class.")
       end
 
-      def format_file(lang, default_lang)
+      def default_language
+        @options[:developer_language] || @strings.language_codes[0]
+      end
+
+      def fallback_languages(lang)
+        [default_language]
+      end
+
+      def format_file(lang)
         result = format_header(lang) + "\n"
-        result += format_sections(lang, default_lang)
+        result += format_sections(lang)
       end
 
       def format_header(lang)
         raise NotImplementedError.new("You must implement format_header in your formatter class.")
       end
 
-      def format_sections(lang, default_lang)
-        sections = @strings.sections.map { |section| format_section(section, lang, default_lang) }
+      def format_sections(lang)
+        sections = @strings.sections.map { |section| format_section(section, lang) }
         sections.join("\n")
       end
 
       def format_section_header(section)
       end
 
-      def format_section(section, lang, default_lang)
+      def format_section(section, lang)
         rows = section.rows.select { |row| row.matches_tags?(@options[:tags], @options[:untagged]) }
 
         result = ""
@@ -141,16 +149,16 @@ module Twine
           end
         end
 
-        rows.map! { |row| format_row(row, lang, default_lang) }
+        rows.map! { |row| format_row(row, lang) }
         rows.compact! # remove nil entries
         rows.map! { |row| "\n#{row}" }  # prepend newline
         result += rows.join
       end
 
-      def format_row(row, lang, default_lang)
-        value = row.translated_string_for_lang(lang, default_lang)
-        if value.nil? && @options[:include_untranslated]
-          value = row.translated_string_for_lang(@strings.language_codes[0])
+      def format_row(row, lang)
+        value = row.translated_string_for_lang(lang)
+        if value.nil? and not @options[:exclude_untranslated]
+          value = row.translated_string_for_lang(fallback_languages(lang))
         end
         return nil unless value
 
@@ -179,11 +187,10 @@ module Twine
       end
 
       def write_file(path, lang)
-        default_lang = @strings.language_codes[0]
         encoding = @options[:output_encoding] || 'UTF-8'
 
         File.open(path, "w:#{encoding}") do |f|
-          f.puts format_file(lang, default_lang)
+          f.puts format_file(lang)
         end
       end
 

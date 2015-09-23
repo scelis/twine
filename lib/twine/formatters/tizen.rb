@@ -135,7 +135,7 @@ module Twine
                 key = row.key
 
                 value = row.translated_string_for_lang(lang, default_lang)
-                if !value && @options[:include_untranslated]
+                if !value && !@options[:exclude_untranslated]
                   value = row.translated_string_for_lang(@strings.language_codes[0])
                 end
 
