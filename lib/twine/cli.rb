@@ -58,11 +58,18 @@ module Twine
         opts.on('-a', '--consume-all', 'Normally, when consuming a string file, Twine will ignore any string keys that do not exist in your master file.') do |a|
           @options[:consume_all] = true
         end
-        opts.on('-x', '--exclude-untranslated', 'This flag will cause any string files that are generated to not include strings that have not yet been translated for the current language.') do |s|
-          @options[:exclude_untranslated] = true
+        opts.on('-i', '--include SET', "This flag will determine which strings are included when generating strings files. It's possible values:",
+                                        "  all: All strings both translated and untranslated for the specified language are included. This is the default value.",
+                                        "  translated: Only translated strings are included.",
+                                        "  untranslated: Only untranslated strings are included.") do |set|
+          set = set.downcase
+          unless ['all', 'translated', 'untranslated'].include?(set)
+            STDERR.puts "Invalid set: #{set}"
+          end
+          @options[:include] = set
         end
-        opts.on('-u', '--only-untranslated', 'This flag will cause any generated files to include only the strings that have not been translated.') do |c|
-          @options[:only_untranslated] = true
+        unless @options[:include]
+          @options[:include] = 'all' 
         end
         opts.on('-o', '--output-file OUTPUT_FILE', 'Write the new strings database to this file instead of replacing the original file. This flag is only useful when running the consume-string-file or consume-loc-drop commands.') do |o|
           @options[:output_path] = o

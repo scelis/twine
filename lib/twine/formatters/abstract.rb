@@ -158,9 +158,9 @@ module Twine
       def format_row(row, lang)
         value = row.translated_string_for_lang(lang)
 
-        return if value && @options[:only_untranslated]
+        return if value && @options[:include] == 'untranslated'
 
-        if value.nil? && (!@options[:exclude_untranslated] || @options[:only_untranslated])
+        if value.nil? && @options[:include] != 'translated'
           value = row.translated_string_for_lang(fallback_languages(lang))
         end
 

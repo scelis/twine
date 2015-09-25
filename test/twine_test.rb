@@ -68,10 +68,10 @@ class TwineTest < Test::Unit::TestCase
     end
   end
 
-  def test_exclude_untranslated
+  def test_include_translated
     Dir.mktmpdir do |dir|
       output_path = File.join(dir, 'fr.xml')
-      Twine::Runner.run(%W(generate-string-file test/fixtures/strings-1.txt #{output_path} --exclude-untranslated))
+      Twine::Runner.run(%W(generate-string-file test/fixtures/strings-1.txt #{output_path} --include translated))
       assert_equal(ERB.new(File.read('test/fixtures/test-output-13.txt')).result, File.read(output_path))
     end
   end
@@ -140,10 +140,10 @@ class TwineTest < Test::Unit::TestCase
     end
   end
 
-  def test_generate_string_file_14_only_untranslated
+  def test_generate_string_file_14_include_untranslated
     Dir.mktmpdir do |dir|
-      output_path = File.join(dir, 'only_untranslated.xml')
-      Twine::Runner.run(%W(generate-string-file test/fixtures/strings-1.txt #{output_path} --only-untranslated -l fr))
+      output_path = File.join(dir, 'include_untranslated.xml')
+      Twine::Runner.run(%W(generate-string-file test/fixtures/strings-1.txt #{output_path} --include untranslated -l fr))
       assert_equal(ERB.new(File.read('test/fixtures/test-output-14.txt')).result, File.read(output_path))
     end
   end
