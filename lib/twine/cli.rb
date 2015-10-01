@@ -51,7 +51,7 @@ module Twine
         opts.on('-f', '--format FORMAT', "The file format to read or write (#{formats.join(', ')}). Additional formatters can be placed in the formats/ directory.") do |format|
           lformat = format.downcase
           if !formats.include?(lformat)
-            STDERR.puts "Invalid format: #{format}"
+            raise Twine::Error.new "Invalid format: #{format}"
           end
           @options[:format] = lformat
         end
@@ -64,7 +64,7 @@ module Twine
                                         "  untranslated: Only untranslated strings are included.") do |set|
           set = set.downcase
           unless ['all', 'translated', 'untranslated'].include?(set)
-            STDERR.puts "Invalid set: #{set}"
+            raise Twine::Error.new "Invalid include flag: #{set}"
           end
           @options[:include] = set
         end
