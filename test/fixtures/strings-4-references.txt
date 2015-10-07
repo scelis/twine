@@ -8,12 +8,12 @@
 
 [[My Strings]]
   [key2]
-    ref = [key1]
+    ref = key1
   [key3]
-    ref = [key1]
+    ref = key1
     fr = key3-french
   [key4]
-    ref = [key1]
+    ref = key1
     comment = Different comment
   [key5]
     ref = [key1]

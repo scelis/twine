@@ -37,7 +37,7 @@ Whitepace in this file is mostly ignored. If you absolutely need to put spaces a
 
 ### References
 
-If you want a key to inherit the values of another key, you can use a reference. Any property not specified for a key will be taken from the reference.
+If you want a key to inherit the values of another key, you can use a reference. Any property not specified for a key will be taken from the reference. References may optionally be enclosed by square brackets like the keys the reference.
 
 ### Example
 
@@ -62,7 +62,7 @@ If you want a key to inherit the values of another key, you can use a reference.
 			tags = app1
 			comment = An error describing when the device can not connect to the internet.
 		[dismiss_error]
-			ref = [yes]
+			ref = yes
 			en = Dismiss
 
 	[[Escaping Example]]
