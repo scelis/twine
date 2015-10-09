@@ -1,0 +1,5 @@
+[[General]]
+	[key1]
+		en = key1-english
+	[key2]
+		ref = key1

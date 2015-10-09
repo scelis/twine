@@ -1,0 +1,7 @@
+[[General]]
+	[key1]
+		en = key1-english
+		tags = tag1
+	[key2]
+		en = key2-english
+		ref = key1

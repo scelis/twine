@@ -15,6 +15,7 @@ module Twine
     attr_accessor :tags
     attr_reader :translations
     attr_accessor :reference
+    attr_accessor :reference_key
 
     def initialize(key)
       @key = key
@@ -24,7 +25,11 @@ module Twine
     end
 
     def comment
-      @comment || (reference.comment if reference)
+      raw_comment || (reference.comment if reference)
+    end
+
+    def raw_comment
+      @comment
     end
 
     def matches_tags?(tags, include_untagged)
@@ -93,6 +98,25 @@ module Twine
       @language_codes = []
     end
 
+    def add_language_code(code)
+      if @language_codes.length == 0
+        @language_codes << code
+      elsif !@language_codes.include?(code)
+        dev_lang = @language_codes[0]
+        @language_codes << code
+        @language_codes.delete(dev_lang)
+        @language_codes.sort!
+        @language_codes.insert(0, dev_lang)
+      end
+    end
+
+    def set_developer_language_code(code)
+      if @language_codes.include?(code)
+        @language_codes.delete(code)
+      end
+      @language_codes.insert(0, code)
+    end
+
     def read(path)
       if !File.file?(path)
         raise Twine::Error.new("File does not exist: #{path}")
@@ -146,7 +170,7 @@ module Twine
                 current_row.tags = value.split(',')
               when 'ref'
                 key = match_reference(value)
-                current_row.reference = key if key
+                current_row.reference_key = key if key
               else
                 if !@language_codes.include? key
                   add_language_code(key)
@@ -165,13 +189,21 @@ module Twine
 
       # resolve_references
       @strings_map.each do |key, row|
-        next unless row.reference
-        row.reference = @strings_map[row.reference]
+        next unless row.reference_key
+        row.reference = @strings_map[row.reference_key]
       end
     end
 
     def write(path)
+      # TODO: use --developer-language here?
       dev_lang = @language_codes[0]
+
+      existing_file = begin
+        file = StringsFile.new
+        file.read(path)
+        file
+      rescue
+      end
 
       File.open(path, 'w:UTF-8') do |f|
         @sections.each do |section|
@@ -183,54 +215,45 @@ module Twine
 
           section.rows.each do |row|
             f.puts "\t[#{row.key}]"
-            value = row.translations[dev_lang]
-            if !value
-              puts "Warning: #{row.key} does not exist in developer language '#{dev_lang}'"
-            else
-              if value[0,1] == ' ' || value[-1,1] == ' ' || (value[0,1] == '`' && value[-1,1] == '`')
-                value = '`' + value + '`'
-              end
-              f.puts "\t\t#{dev_lang} = #{value}"
-            end
 
+            value = write_value(row, dev_lang, f, existing_file)
+            if !value && !row.reference_key
+              puts "Warning: #{row.key} does not exist in developer language '#{dev_lang}'"
+            end
+            
+            if row.reference_key
+              f.puts "\t\tref = #{row.reference_key}"
+            end
             if row.tags && row.tags.length > 0
               tag_str = row.tags.join(',')
               f.puts "\t\ttags = #{tag_str}"
             end
-            if row.comment && row.comment.length > 0
-              f.puts "\t\tcomment = #{row.comment}"
+            if row.raw_comment && row.raw_comment.length > 0
+              f.puts "\t\tcomment = #{row.raw_comment}"
             end
             @language_codes[1..-1].each do |lang|
-              value = row.translations[lang]
-              if value
-                if value[0,1] == ' ' || value[-1,1] == ' ' || (value[0,1] == '`' && value[-1,1] == '`')
-                  value = '`' + value + '`'
-                end
-                f.puts "\t\t#{lang} = #{value}"
-              end
+              write_value(row, lang, f, existing_file)
             end
           end
         end
       end
     end
 
-    def add_language_code(code)
-      if @language_codes.length == 0
-        @language_codes << code
-      elsif !@language_codes.include?(code)
-        dev_lang = @language_codes[0]
-        @language_codes << code
-        @language_codes.delete(dev_lang)
-        @language_codes.sort!
-        @language_codes.insert(0, dev_lang)
+    private
+
+    def write_value(row, language, file, existing_file)
+      value = row.translations[language]
+      return nil unless value
+
+      if value[0] == ' ' || value[-1] == ' ' || (value[0] == '`' && value[-1] == '`')
+        value = '`' + value + '`'
       end
+
+      if !existing_file or !row.reference_key or value != existing_file.strings_map[row.reference_key].translations[language]
+        file.puts "\t\t#{language} = #{value}"
+      end
+      return value
     end
 
-    def set_developer_language_code(code)
-      if @language_codes.include?(code)
-        @language_codes.delete(code)
-      end
-      @language_codes.insert(0, code)
-    end
   end
 end

@@ -1,0 +1,7 @@
+[[General]]
+	[key1]
+		en = key1-english
+		comment = Simple comment
+	[key2]
+		en = key2-english
+		ref = key1
