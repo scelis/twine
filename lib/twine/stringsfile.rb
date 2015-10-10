@@ -189,7 +189,6 @@ module Twine
     end
 
     def write(path)
-      # TODO: use --developer-language here?
       dev_lang = @language_codes[0]
 
       existing_file = begin
