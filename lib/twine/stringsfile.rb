@@ -191,13 +191,6 @@ module Twine
     def write(path)
       dev_lang = @language_codes[0]
 
-      existing_file = begin
-        file = StringsFile.new
-        file.read(path)
-        file
-      rescue
-      end
-
       File.open(path, 'w:UTF-8') do |f|
         @sections.each do |section|
           if f.pos > 0
@@ -207,7 +200,7 @@ module Twine
           f.puts "[[#{section.name}]]"
 
           section.rows.each do |row|
-            reference = existing_file.strings_map[row.reference_key] if existing_file and row.reference_key
+            reference = @strings_map[row.reference_key] if row.reference_key
 
             f.puts "\t[#{row.key}]"
 
