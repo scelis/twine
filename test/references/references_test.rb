@@ -40,18 +40,6 @@ class ReferencesTest < TwineTest
     assert_equal content(input), output_content
   end
 
-  def test_consuption_does_not_add_comment
-    input = 'twine_comment_reference.txt'
-    execute "consume-string-file #{f input} #{f 'empty.xml'} -o #{@output_path} -l en"
-    assert_equal content(input), output_content
-  end
-
-  def test_consumption_does_not_add_tags
-    input = 'twine_tag_reference.txt'
-    execute "consume-string-file #{f input} #{f 'empty.xml'} -o #{@output_path} -l en"
-    assert_equal content(input), output_content
-  end
-
   def test_consumption_does_not_add_unchanged_translation
     original = 'twine_value_reference.txt'
     FileUtils.copy fixture(original), @output_path
@@ -67,6 +55,30 @@ class ReferencesTest < TwineTest
     assert_equal content('twine_updated_value.txt'), output_content
   end
 
-  # TODO: update/keep comments
-  # TODO: update/keep
+  def test_consuption_does_not_add_comment
+    input = 'twine_comment_reference.txt'
+    execute "consume-string-file #{f input} #{f 'empty.xml'} -o #{@output_path} -l en"
+    assert_equal content(input), output_content
+  end
+
+  def test_consumption_does_not_add_unchanged_comment
+    original = 'twine_comment_reference.txt'
+    FileUtils.copy fixture(original), @output_path
+
+    execute "consume-string-file #{@output_path} #{f 'same_comment.xml'} -o #{@output_path} -l en -c"
+    assert_equal content(original), output_content
+  end
+
+  def test_consumption_adds_changed_comment
+    FileUtils.copy fixture('twine_comment_reference.txt'), @output_path
+
+    execute "consume-string-file #{@output_path} #{f 'different_comment.xml'} -o #{@output_path} -l en -c"
+    assert_equal content('twine_updated_comment.txt'), output_content
+  end
+
+  def test_consumption_does_not_add_tags
+    input = 'twine_tag_reference.txt'
+    execute "consume-string-file #{f input} #{f 'empty.xml'} -o #{@output_path} -l en -c"
+    assert_equal content(input), output_content
+  end
 end

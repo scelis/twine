@@ -207,9 +207,11 @@ module Twine
           f.puts "[[#{section.name}]]"
 
           section.rows.each do |row|
+            reference = existing_file.strings_map[row.reference_key] if existing_file and row.reference_key
+
             f.puts "\t[#{row.key}]"
 
-            value = write_value(row, dev_lang, f, existing_file)
+            value = write_value(row, dev_lang, f, reference)
             if !value && !row.reference_key
               puts "Warning: #{row.key} does not exist in developer language '#{dev_lang}'"
             end
@@ -221,11 +223,11 @@ module Twine
               tag_str = row.tags.join(',')
               f.puts "\t\ttags = #{tag_str}"
             end
-            if row.raw_comment && row.raw_comment.length > 0
+            if row.raw_comment and row.raw_comment.length > 0 and (!reference or row.raw_comment != reference.raw_comment)
               f.puts "\t\tcomment = #{row.raw_comment}"
             end
             @language_codes[1..-1].each do |lang|
-              write_value(row, lang, f, existing_file)
+              write_value(row, lang, f, reference)
             end
           end
         end
@@ -234,7 +236,7 @@ module Twine
 
     private
 
-    def write_value(row, language, file, existing_file)
+    def write_value(row, language, file, reference)
       value = row.translations[language]
       return nil unless value
 
@@ -242,7 +244,7 @@ module Twine
         value = '`' + value + '`'
       end
 
-      if !existing_file or !row.reference_key or value != existing_file.strings_map[row.reference_key].translations[language]
+      if !reference or value != reference.translations[language]
         file.puts "\t\t#{language} = #{value}"
       end
       return value
