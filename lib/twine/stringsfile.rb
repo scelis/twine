@@ -85,11 +85,6 @@ module Twine
       return match[1] if match
     end
 
-    def match_reference(text)
-      match = /^\[?(.+?)\]?$/.match(text)
-      return match[1] if match
-    end
-
     public
 
     def initialize
@@ -169,8 +164,7 @@ module Twine
               when 'tags'
                 current_row.tags = value.split(',')
               when 'ref'
-                key = match_reference(value)
-                current_row.reference_key = key if key
+                current_row.reference_key = value if value
               else
                 if !@language_codes.include? key
                   add_language_code(key)
