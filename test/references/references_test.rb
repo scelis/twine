@@ -1,6 +1,7 @@
 require 'erb'
 require 'rubygems'
 require 'test/unit'
+require 'securerandom'
 require 'twine'
 
 class TwineTest < Test::Unit::TestCase
