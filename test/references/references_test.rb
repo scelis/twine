@@ -1,41 +1,10 @@
-require 'erb'
-require 'rubygems'
-require 'test/unit'
-require 'securerandom'
-require 'twine'
+require 'twine_test_case'
 
-class TwineTest < Test::Unit::TestCase
-  def setup
-    super
-    @output_dir = Dir.mktmpdir
-    @output_path = File.join @output_dir, SecureRandom.uuid
+class ReferencesTest < TwineTestCase
+  def fixture_path
+    'references/fixtures'
   end
 
-  def teardown
-    FileUtils.remove_entry_secure @output_dir
-    super
-  end
-
-  def output_content
-    File.read @output_path
-  end
-
-  def execute(command)
-    command += "  -o #{@output_path}"
-    Twine::Runner.run(command.split(" "))
-  end
-
-  def fixture(filename)
-    "test/references/fixtures/#{filename}"
-  end
-  alias :f :fixture
-
-  def content(filename)
-    File.read fixture(filename)
-  end
-end
-
-class ReferencesTest < TwineTest
   def test_consumption_preserves_references
     input = 'twine_value_reference.txt'
     execute "consume-string-file #{f input} #{f 'empty.xml'} -l en"

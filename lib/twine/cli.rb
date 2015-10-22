@@ -143,7 +143,7 @@ module Twine
           raise Twine::Error.new 'Please only specify a single language for the generate-string-file command.'
         end
       when 'generate-all-string-files'
-        if ARGV.length == 3
+        if @args.length == 3
           @options[:output_path] = @args[2]
         elsif @args.length > 3
           raise Twine::Error.new "Unknown argument: #{@args[3]}"
