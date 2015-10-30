@@ -2,7 +2,7 @@ require 'twine_test_case'
 
 class ReferencesTest < TwineTestCase
   def fixture_path
-    'references/fixtures'
+    'fixtures/references'
   end
 
   def test_consumption_preserves_references
