@@ -1,9 +1,7 @@
-require 'erb'
-require 'rubygems'
-require 'test/unit'
-require 'twine'
+require 'twine_test_case'
 
-class TestTwine < Test::Unit::TestCase
+class TestTwine < TwineTestCase
+
   def test_generate_string_file_1
     Dir.mktmpdir do |dir|
       output_path = File.join(dir, 'fr.xml')
