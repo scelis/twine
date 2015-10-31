@@ -1,6 +1,6 @@
 require 'twine_test_case'
 
-class ReferencesTest < TwineTestCase
+class TestReferences < TwineTestCase
   def fixture_path
     'fixtures/references'
   end

@@ -3,7 +3,7 @@ require 'rubygems'
 require 'test/unit'
 require 'twine'
 
-class TwineTest < Test::Unit::TestCase
+class TestTwine < Test::Unit::TestCase
   def test_generate_string_file_1
     Dir.mktmpdir do |dir|
       output_path = File.join(dir, 'fr.xml')
