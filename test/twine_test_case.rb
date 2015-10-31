@@ -1,10 +1,9 @@
 require 'erb'
-require 'rubygems'
-require 'test/unit'
+require 'minitest/autorun'
 require 'securerandom'
 require 'twine'
 
-class TwineTestCase < Test::Unit::TestCase
+class TwineTestCase < Minitest::Test
   def setup
     super
     @output_dir = Dir.mktmpdir

@@ -2,15 +2,14 @@ require 'twine_test_case'
 
 class TestCreateFolders < TwineTestCase
   def test_generate_all_fails_if_output_folder_does_not_exist
-    assert_raise Twine::Error do
+    assert_raises Twine::Error do
       execute "generate-all-string-files #{f 'twine_key1_en_es.txt'} #{@output_dir} -f apple"
     end
   end
 
   def test_generate_all_creates_output_folder
-    assert_nothing_raised do
-      execute "generate-all-string-files #{f 'twine_key1_en_es.txt'} #{@output_dir} -f apple --create-folders"
-    end
+    # implicitly assert nothing raised
+    execute "generate-all-string-files #{f 'twine_key1_en_es.txt'} #{@output_dir} -f apple --create-folders"
   end
 
   def test_generate_all_does_not_create_folders
