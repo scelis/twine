@@ -4,6 +4,7 @@ require 'fileutils'
 Twine::Plugin.new # Initialize plugins first in Runner.
 
 module Twine
+  # TODO: this should be held where it's used, in CLI
   VALID_COMMANDS = ['generate-string-file', 'generate-all-string-files', 'consume-string-file', 'consume-all-string-files', 'generate-loc-drop', 'consume-loc-drop', 'validate-strings-file']
 
   class Runner
@@ -18,7 +19,7 @@ module Twine
 
     def run
       # Parse all CLI arguments.
-      CLI::parse_args(@args, @options)
+      CLI::parse_args(@args, @options)    # TODO: this parsing should not be done by Runner - simply initialize the runner with options
       read_strings_data
       execute_command
     end

@@ -90,7 +90,7 @@ module Twine
           end
           
           @strings.strings_map[key] = current_row
-          @strings.strings_map[key].translations[lang] = value
+          @strings.strings_map[key].translations[lang] = value    # TODO: set this on the row before associating - feels cleaner
         else
           STDERR.puts "Warning: '#{key}' not found in strings data file."
         end
