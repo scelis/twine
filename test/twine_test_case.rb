@@ -1,5 +1,6 @@
 require 'erb'
 require 'minitest/autorun'
+require "mocha/mini_test"
 require 'securerandom'
 require 'twine'
 
