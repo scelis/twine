@@ -35,6 +35,6 @@ class TwineTestCase < Minitest::Test
   alias :f :fixture
 
   def content(filename)
-    File.read fixture(filename)
+    ERB.new(File.read fixture(filename)).result
   end
 end

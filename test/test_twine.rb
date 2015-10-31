@@ -54,6 +54,67 @@ class TestGenerateStringFile < TwineTestCase
 
 end
 
+module TwineFileDSL
+  def build_twine_file(*languages)
+    @currently_built_twine_file = Twine::StringsFile.new
+    @currently_built_twine_file.language_codes.concat languages
+    yield
+    result = @currently_built_twine_file
+    @currently_built_twine_file = nil
+    return result
+  end
+
+  def add_section(name)
+    return unless @currently_built_twine_file
+    @currently_built_twine_file_section = Twine::StringsSection.new name
+    @currently_built_twine_file.sections << @currently_built_twine_file_section
+    yield
+    @currently_built_twine_file_section = nil
+  end
+
+  def add_row(parameters)
+    return unless @currently_built_twine_file
+    return unless @currently_built_twine_file_section
+
+    language = parameters[:language] || @currently_built_twine_file.language_codes.first
+
+    # this relies on Ruby 1.9 preserving the order of hash elements
+    row = Twine::StringsRow.new(parameters.first[0].to_s)
+    row.translations[language] = parameters.first[1]
+    row.comment = parameters[:comment] if parameters[:comment]
+
+    @currently_built_twine_file_section.rows << row
+    @currently_built_twine_file.strings_map[row.key] = row
+  end
+end
+
+class TestFormatters < TwineTestCase
+
+  include TwineFileDSL
+
+  def setup
+    super
+
+    @strings = build_twine_file 'en' do
+      add_section 'Section 1' do
+        add_row key1: 'key1-english', comment: 'comment key1'
+        add_row key2: 'key2-english'
+      end
+
+      add_section 'Section 2' do
+        add_row key3: 'key3-english'
+        add_row key4: 'key4-english', comment: 'comment key4'
+      end
+    end
+  end
+
+  def test_android
+    formatter = Twine::Formatters::Android.new @strings, {}
+    formatter.write_file @output_path, 'en'
+    assert_equal content('formatter_android.xml'), output_content
+  end
+end
+
 class TestTwine < TwineTestCase
 
   def test_generate_string_file_1
