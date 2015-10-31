@@ -3,6 +3,7 @@ require 'minitest/autorun'
 require "mocha/mini_test"
 require 'securerandom'
 require 'twine'
+require 'twine_file_dsl'
 
 class TwineTestCase < Minitest::Test
   def setup
