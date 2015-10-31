@@ -15,7 +15,7 @@ Gem::Specification.new do |s|
   s.files       += Dir.glob("lib/**/*")
   s.files       += Dir.glob("bin/**/*")
   s.files       += Dir.glob("test/**/*")
-  s.test_file    = 'test/twine_test.rb'
+  s.test_files   = Dir.glob("test/test_*")
 
   s.required_ruby_version = ">= 1.8.7"
   s.add_runtime_dependency('rubyzip', "~> 0.9.5")
