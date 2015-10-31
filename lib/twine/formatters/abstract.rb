@@ -2,9 +2,10 @@ require 'fileutils'
 
 module Twine
   module Formatters
+
     class Abstract
-      attr_accessor :strings
-      attr_accessor :options
+      attr_reader :strings
+      attr_reader :options
 
       def self.can_handle_directory?(path)
         return false
@@ -234,7 +235,8 @@ module Twine
           end
         end
       end
-
+      
     end
+
   end
 end
