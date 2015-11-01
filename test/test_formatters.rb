@@ -21,6 +21,10 @@ class FormatterTest < TwineTestCase
 end
 
 class TestAndroidFormatter < FormatterTest
+  # TODO
+  #   quote escaping
+  #   html entity escaping
+  #   placeholders
 
   def test_android_format
     formatter = Twine::Formatters::Android.new @strings, {}
