@@ -6,13 +6,13 @@ class TestFormatters < TwineTestCase
 
     @strings = build_twine_file 'en' do
       add_section 'Section 1' do
-        add_row key1: 'key1-english', comment: 'comment key1'
-        add_row key2: 'key2-english'
+        add_row key1: 'value1-english', comment: 'comment key1'
+        add_row key2: 'value2-english'
       end
 
       add_section 'Section 2' do
-        add_row key3: 'key3-english'
-        add_row key4: 'key4-english', comment: 'comment key4'
+        add_row key3: 'value3-english'
+        add_row key4: 'value4-english', comment: 'comment key4'
       end
     end
   end
