@@ -21,15 +21,6 @@ class TestTwine < TwineTestCase
     end
   end
 
-  def test_generate_string_file_7
-    Dir.mktmpdir do |dir|
-      # android space escaping
-      output_path = File.join(dir, 'en.xml')
-      Twine::Runner.run(%W(generate-string-file test/fixtures/strings-2.txt #{output_path} -t tag1))
-      assert_equal(ERB.new(File.read('test/fixtures/test-output-10.txt')).result, File.read(output_path))
-    end
-  end
-
   def test_generate_string_file_8
     Dir.mktmpdir do |dir|
       # tizen formatter
