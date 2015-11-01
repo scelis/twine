@@ -11,16 +11,6 @@ require 'twine_test_case'
 
 class TestTwine < TwineTestCase
 
-  def test_generate_string_file_4
-    Dir.mktmpdir do |dir|
-      # key with space
-      # value with space
-      output_path = File.join(dir, 'en.strings')
-      Twine::Runner.run(%W(generate-string-file test/fixtures/strings-2.txt #{output_path} -t tag1))
-      assert_equal(ERB.new(File.read('test/fixtures/test-output-6.txt')).result, File.read(output_path))
-    end
-  end
-
   def test_generate_string_file_5
     Dir.mktmpdir do |dir|
       # Django formatter recognition
