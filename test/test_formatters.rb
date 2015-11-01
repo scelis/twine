@@ -50,13 +50,28 @@ class TestAndroidFormatter < FormatterTest
 end
 
 class TestAppleFormatter < FormatterTest
+  def setup
+    super
+
+    @formatter = Twine::Formatters::Apple.new @strings, {}
+  end
 
   def test_format
-    formatter = Twine::Formatters::Apple.new @strings, {}
-    formatter.write_file @output_path, 'en'
+    @formatter.write_file @output_path, 'en'
     assert_equal content('formatter_apple.strings'), output_content
   end
 
+  def test_key_with_space
+    assert_equal 'key ', @formatter.format_key('key ')
+  end
+
+  def test_value_with_leading_space
+    assert_equal ' value', @formatter.format_value(' value')
+  end
+
+  def test_value_with_trailing_space
+    assert_equal 'value ', @formatter.format_value('value ')
+  end
 end
 
 class TestJQueryFormatter < FormatterTest
