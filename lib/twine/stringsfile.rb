@@ -42,7 +42,7 @@ module Twine
       elsif @tags.empty?
         return include_untagged
       else
-        tags.each do |tag|
+        tags.each do |tag|    # TODO: shorten
           if @tags.include? tag
             return true
           end
@@ -154,7 +154,7 @@ module Twine
             if match
               key = match[1].strip
               value = match[2].strip
-              if value[0,1] == '`' && value[-1,1] == '`'
+              if value[0,1] == '`' && value[-1,1] == '`'    # TODO: shorten this
                 value = value[1..-2]
               end
 
