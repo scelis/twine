@@ -23,7 +23,6 @@ module Twine
         result = StringsFile.new
 
         @strings.language_codes.each { |lang| result.language_codes << lang }
-        @strings.strings_map.each { |key, value| result.strings_map[key] = value }
         @strings.sections.each do |section|
           new_section = StringsSection.new section.name
 
@@ -44,6 +43,7 @@ module Twine
             new_row.translations[language] = value
 
             new_section.rows << new_row
+            result.strings_map[new_row.key] = new_row
           end
 
           result.sections << new_section

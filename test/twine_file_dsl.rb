@@ -26,6 +26,7 @@ module TwineFileDSL
     row = Twine::StringsRow.new(parameters.first[0].to_s)
     row.translations[language] = parameters.first[1]
     row.comment = parameters[:comment] if parameters[:comment]
+    row.tags = parameters[:tags] if parameters[:tags]
 
     @currently_built_twine_file_section.rows << row
     @currently_built_twine_file.strings_map[row.key] = row
