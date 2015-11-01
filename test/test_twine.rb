@@ -11,16 +11,6 @@ require 'twine_test_case'
 
 class TestTwine < TwineTestCase
 
-  def test_generate_string_file_5
-    Dir.mktmpdir do |dir|
-      # gettext formatter recognition
-      # gettext formatter
-      output_path = File.join(dir, 'en.po')
-      Twine::Runner.run(%W(generate-string-file test/fixtures/strings-1.txt #{output_path} -t tag1))
-      assert_equal(ERB.new(File.read('test/fixtures/test-output-7.txt')).result, File.read(output_path))
-    end
-  end
-
   def test_generate_string_file_6
     Dir.mktmpdir do |dir|
       output_path = File.join(dir, 'en.xml')
