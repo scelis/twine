@@ -28,4 +28,10 @@ class TestFormatters < TwineTestCase
     formatter.write_file @output_path, 'en'
     assert_equal content('formatter_apple.strings'), output_content
   end
+
+  def test_jquery
+    formatter = Twine::Formatters::JQuery.new @strings, {}
+    formatter.write_file @output_path, 'en'
+    assert_equal content('formatter_jquery.json'), output_content
+  end
 end
