@@ -12,8 +12,6 @@ class TestGenerateStringFile < TwineTestCase
 
     @mock_android_formatter = Twine::Formatters::Android.new(@mock_strings, {})
     Twine::Formatters::Android.stubs(:new).returns(@mock_android_formatter)
-    @mock_apple_formatter = Twine::Formatters::Apple.new(@mock_strings, {})
-    Twine::Formatters::Apple.stubs(:new).returns(@mock_apple_formatter)
   end
 
   def test_deducts_android_format_from_output_path
@@ -29,13 +27,15 @@ class TestGenerateStringFile < TwineTestCase
   end
 
   def test_deducts_apple_format_from_output_path
+    mock_apple_formatter = Twine::Formatters::Apple.new(@mock_strings, {})
+    Twine::Formatters::Apple.stubs(:new).returns(mock_apple_formatter)
     options = {
       output_path: File.join(@output_dir, 'fr.strings'),
       languages: ['fr']
     }
     runner = Twine::Runner.new(nil, options)
 
-    @mock_apple_formatter.expects(:write_file)
+    mock_apple_formatter.expects(:write_file)
 
     runner.generate_string_file
   end
