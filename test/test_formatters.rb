@@ -1,6 +1,7 @@
 require 'twine_test_case'
 
-class TestFormatters < TwineTestCase
+class FormatterTest < TwineTestCase
+
   def setup
     super
 
@@ -17,11 +18,19 @@ class TestFormatters < TwineTestCase
     end
   end
 
+end
+
+class TestAndroidFormatter < FormatterTest
+
   def test_android_format
     formatter = Twine::Formatters::Android.new @strings, {}
     formatter.write_file @output_path, 'en'
     assert_equal content('formatter_android.xml'), output_content
   end
+
+end
+
+class TestAppleFormatter < FormatterTest
 
   def test_apple_format
     formatter = Twine::Formatters::Apple.new @strings, {}
@@ -29,9 +38,14 @@ class TestFormatters < TwineTestCase
     assert_equal content('formatter_apple.strings'), output_content
   end
 
+end
+
+class TestJQueryFormatter < FormatterTest
+
   def test_jquery_format
     formatter = Twine::Formatters::JQuery.new @strings, {}
     formatter.write_file @output_path, 'en'
     assert_equal content('formatter_jquery.json'), output_content
   end
+
 end
