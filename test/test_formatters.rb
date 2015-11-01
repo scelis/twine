@@ -93,3 +93,13 @@ class TestGettextFormatter < FormatterTest
   end
 
 end
+
+class TestTizenFormatter < FormatterTest
+
+  def test_format
+    formatter = Twine::Formatters::Tizen.new @strings, {}
+    formatter.write_file @output_path, 'en'
+    assert_equal content('formatter_tizen.xml'), output_content
+  end
+
+end
