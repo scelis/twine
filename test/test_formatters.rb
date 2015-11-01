@@ -1,7 +1,6 @@
 require 'twine_test_case'
 
 class FormatterTest < TwineTestCase
-
   def setup
     super
 
@@ -26,10 +25,26 @@ class TestAndroidFormatter < FormatterTest
   #   html entity escaping
   #   placeholders
 
+  def setup
+    super
+    @formatter = Twine::Formatters::Android.new @strings, {}
+  end
+
   def test_android_format
-    formatter = Twine::Formatters::Android.new @strings, {}
-    formatter.write_file @output_path, 'en'
+    @formatter.write_file @output_path, 'en'
     assert_equal content('formatter_android.xml'), output_content
+  end
+
+  def test_key_with_space
+    assert_equal 'key ', @formatter.format_key('key ')
+  end
+
+  def test_value_with_trailing_space
+    assert_equal "\\u0020value", @formatter.format_value(' value')
+  end
+
+  def test_value_with_trailing_space
+    assert_equal "value\\u0020", @formatter.format_value('value ')
   end
 
 end
