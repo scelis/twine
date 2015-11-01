@@ -17,19 +17,19 @@ class TestFormatters < TwineTestCase
     end
   end
 
-  def test_android
+  def test_android_format
     formatter = Twine::Formatters::Android.new @strings, {}
     formatter.write_file @output_path, 'en'
     assert_equal content('formatter_android.xml'), output_content
   end
 
-  def test_apple
+  def test_apple_format
     formatter = Twine::Formatters::Apple.new @strings, {}
     formatter.write_file @output_path, 'en'
     assert_equal content('formatter_apple.strings'), output_content
   end
 
-  def test_jquery
+  def test_jquery_format
     formatter = Twine::Formatters::JQuery.new @strings, {}
     formatter.write_file @output_path, 'en'
     assert_equal content('formatter_jquery.json'), output_content
