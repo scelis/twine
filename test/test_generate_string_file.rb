@@ -54,6 +54,20 @@ class TestGenerateStringFile < TwineTestCase
     runner.generate_string_file
   end
 
+  def test_deducts_gettext_format_from_output_path
+    mock_gettext_formatter = Twine::Formatters::Gettext.new(@mock_strings, {})
+    Twine::Formatters::Gettext.stubs(:new).returns(mock_gettext_formatter)
+    options = {
+      output_path: File.join(@output_dir, 'fr.po'),
+      languages: ['fr']
+    }
+    runner = Twine::Runner.new(nil, options)
+
+    mock_gettext_formatter.expects(:write_file)
+
+    runner.generate_string_file
+  end
+
   def test_deducts_language_from_output_path
     random_language = @known_languages.sample
     options = {
