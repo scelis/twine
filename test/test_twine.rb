@@ -4,6 +4,9 @@ class TestTwine < TwineTestCase
 
   def test_generate_string_file_2
     Dir.mktmpdir do |dir|
+      # Aspects:
+      #  - Apple formatter
+      #  - Tags
       output_path = File.join(dir, 'en.strings')
       Twine::Runner.run(%W(generate-string-file test/fixtures/strings-1.txt #{output_path} -t tag1))
       assert_equal(ERB.new(File.read('test/fixtures/test-output-2.txt')).result, File.read(output_path))
@@ -12,6 +15,8 @@ class TestTwine < TwineTestCase
 
   def test_generate_string_file_3
     Dir.mktmpdir do |dir|
+      # jQuery formatter recognition
+      # jQuery formatter
       output_path = File.join(dir, 'en.json')
       Twine::Runner.run(%W(generate-string-file test/fixtures/strings-1.txt #{output_path} -t tag1))
       assert_equal(ERB.new(File.read('test/fixtures/test-output-5.txt')).result, File.read(output_path))
@@ -20,6 +25,8 @@ class TestTwine < TwineTestCase
 
   def test_generate_string_file_4
     Dir.mktmpdir do |dir|
+      # key with space
+      # value with space
       output_path = File.join(dir, 'en.strings')
       Twine::Runner.run(%W(generate-string-file test/fixtures/strings-2.txt #{output_path} -t tag1))
       assert_equal(ERB.new(File.read('test/fixtures/test-output-6.txt')).result, File.read(output_path))
@@ -28,6 +35,8 @@ class TestTwine < TwineTestCase
 
   def test_generate_string_file_5
     Dir.mktmpdir do |dir|
+      # Django formatter recognition
+      # Django formatter
       output_path = File.join(dir, 'en.po')
       Twine::Runner.run(%W(generate-string-file test/fixtures/strings-1.txt #{output_path} -t tag1))
       assert_equal(ERB.new(File.read('test/fixtures/test-output-7.txt')).result, File.read(output_path))
@@ -37,6 +46,8 @@ class TestTwine < TwineTestCase
   def test_generate_string_file_6
     Dir.mktmpdir do |dir|
       output_path = File.join(dir, 'en.xml')
+      # parametrized string
+      # percentage string
       Twine::Runner.run(%W(generate-string-file test/fixtures/strings-3.txt #{output_path}))
       assert_equal(ERB.new(File.read('test/fixtures/test-output-8.txt')).result, File.read(output_path))
     end
@@ -44,6 +55,7 @@ class TestTwine < TwineTestCase
 
   def test_generate_string_file_7
     Dir.mktmpdir do |dir|
+      # android space escaping
       output_path = File.join(dir, 'en.xml')
       Twine::Runner.run(%W(generate-string-file test/fixtures/strings-2.txt #{output_path} -t tag1))
       assert_equal(ERB.new(File.read('test/fixtures/test-output-10.txt')).result, File.read(output_path))
@@ -52,6 +64,7 @@ class TestTwine < TwineTestCase
 
   def test_generate_string_file_8
     Dir.mktmpdir do |dir|
+      # tizen formatter
       output_path = File.join(dir, 'fr.xml')
       Twine::Runner.run(%W(generate-string-file --format tizen test/fixtures/strings-1.txt #{output_path}))
       assert_equal(ERB.new(File.read('test/fixtures/test-output-12.txt')).result, File.read(output_path))
@@ -60,6 +73,7 @@ class TestTwine < TwineTestCase
 
   def test_include_translated
     Dir.mktmpdir do |dir|
+      # output processor: include translated
       output_path = File.join(dir, 'fr.xml')
       Twine::Runner.run(%W(generate-string-file test/fixtures/strings-1.txt #{output_path} --include translated))
       assert_equal(ERB.new(File.read('test/fixtures/test-output-13.txt')).result, File.read(output_path))
@@ -69,6 +83,21 @@ class TestTwine < TwineTestCase
   def test_consume_string_file_1
     Dir.mktmpdir do |dir|
       output_path = File.join(dir, 'strings.txt')
+      # TODO: think about consume option handling/tests
+        # maybe: manually feed translations to Abstract formatter
+
+      # android, apple, django, ... consumption
+
+      # consume updates existing translations
+      # consume leaves other translations untouched -> add_row key3: { en: 'key3-english', fr: 'key3-french' }
+      # consume deducts language
+      # consume deducts format (android, apple)
+
+      # consume does not add new translations
+      # consume adds new translations when -a is specified
+      # updates does not update comments
+      # updates comments when -c is used
+
       Twine::Runner.run(%W(consume-string-file test/fixtures/strings-1.txt test/fixtures/fr-1.xml -o #{output_path} -l fr))
       assert_equal(File.read('test/fixtures/test-output-3.txt'), File.read(output_path))
     end
