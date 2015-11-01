@@ -8,6 +8,8 @@ require 'twine_test_case'
 #     add accents around values with leading space
 #     add accents around values with trailing space
 #     add accents around values wrapped in accents
+# include options (translated, untranslated)
+# fallback to developer language
 
 class TestTwine < TwineTestCase
 
