@@ -68,3 +68,13 @@ class TestJQueryFormatter < FormatterTest
   end
 
 end
+
+class TestGettextFormatter < FormatterTest
+
+  def test_format
+    formatter = Twine::Formatters::Gettext.new @strings, {}
+    formatter.write_file @output_path, 'en'
+    assert_equal content('formatter_gettext.po'), output_content
+  end
+
+end
