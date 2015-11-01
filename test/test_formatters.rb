@@ -22,4 +22,10 @@ class TestFormatters < TwineTestCase
     formatter.write_file @output_path, 'en'
     assert_equal content('formatter_android.xml'), output_content
   end
+
+  def test_apple
+    formatter = Twine::Formatters::Apple.new @strings, {}
+    formatter.write_file @output_path, 'en'
+    assert_equal content('formatter_apple.strings'), output_content
+  end
 end
