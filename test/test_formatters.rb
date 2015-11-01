@@ -39,7 +39,7 @@ class TestAndroidFormatter < FormatterTest
     assert_equal 'key ', @formatter.format_key('key ')
   end
 
-  def test_value_with_trailing_space
+  def test_value_with_leading_space
     assert_equal "\\u0020value", @formatter.format_value(' value')
   end
 
