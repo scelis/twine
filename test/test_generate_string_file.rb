@@ -41,7 +41,7 @@ class TestGenerateStringFile < TwineTestCase
   end
 
   def test_deducts_jquery_format_from_output_path
-    mock_jquery_formatter = Twine::Formatters::Apple.new(@mock_strings, {})
+    mock_jquery_formatter = Twine::Formatters::JQuery.new(@mock_strings, {})
     Twine::Formatters::JQuery.stubs(:new).returns(mock_jquery_formatter)
     options = {
       output_path: File.join(@output_dir, 'fr.json'),
