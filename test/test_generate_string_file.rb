@@ -1,6 +1,12 @@
 require 'twine_test_case'
 
 class TestGenerateStringFile < TwineTestCase
+  def prepare_mock_formatter(formatter_class)
+    formatter = formatter_class.new(@mock_strings, {})
+    formatter_class.stubs(:new).returns(formatter)
+    formatter.expects(:write_file)
+  end
+
   def setup
     super
 
@@ -27,43 +33,34 @@ class TestGenerateStringFile < TwineTestCase
   end
 
   def test_deducts_apple_format_from_output_path
-    mock_apple_formatter = Twine::Formatters::Apple.new(@mock_strings, {})
-    Twine::Formatters::Apple.stubs(:new).returns(mock_apple_formatter)
+    prepare_mock_formatter Twine::Formatters::Apple
     options = {
       output_path: File.join(@output_dir, 'fr.strings'),
       languages: ['fr']
     }
     runner = Twine::Runner.new(nil, options)
 
-    mock_apple_formatter.expects(:write_file)
-
     runner.generate_string_file
   end
 
   def test_deducts_jquery_format_from_output_path
-    mock_jquery_formatter = Twine::Formatters::JQuery.new(@mock_strings, {})
-    Twine::Formatters::JQuery.stubs(:new).returns(mock_jquery_formatter)
+    prepare_mock_formatter Twine::Formatters::JQuery
     options = {
       output_path: File.join(@output_dir, 'fr.json'),
       languages: ['fr']
     }
     runner = Twine::Runner.new(nil, options)
 
-    mock_jquery_formatter.expects(:write_file)
-
     runner.generate_string_file
   end
 
   def test_deducts_gettext_format_from_output_path
-    mock_gettext_formatter = Twine::Formatters::Gettext.new(@mock_strings, {})
-    Twine::Formatters::Gettext.stubs(:new).returns(mock_gettext_formatter)
+    prepare_mock_formatter Twine::Formatters::Gettext
     options = {
       output_path: File.join(@output_dir, 'fr.po'),
       languages: ['fr']
     }
     runner = Twine::Runner.new(nil, options)
-
-    mock_gettext_formatter.expects(:write_file)
 
     runner.generate_string_file
   end
