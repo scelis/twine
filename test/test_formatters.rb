@@ -1,9 +1,6 @@
 require 'twine_test_case'
 
 class TestFormatters < TwineTestCase
-
-  include TwineFileDSL
-
   def setup
     super
 

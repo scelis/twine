@@ -6,6 +6,8 @@ require 'twine'
 require 'twine_file_dsl'
 
 class TwineTestCase < Minitest::Test
+  include TwineFileDSL
+  
   def setup
     super
     @output_dir = Dir.mktmpdir
