@@ -1,5 +1,6 @@
 require 'twine_test_case'
 
+# TODO: maybe this should be part of generate_all_test?
 class TestCreateFolders < TwineTestCase
   def test_generate_all_fails_if_output_folder_does_not_exist
     assert_raises Twine::Error do
