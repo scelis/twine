@@ -24,6 +24,7 @@ class TestAndroidFormatter < FormatterTest
   #   quote escaping
   #   html entity escaping
   #   placeholders
+  #   strings starting with an @  
 
   def setup
     super
