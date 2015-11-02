@@ -113,6 +113,7 @@ module Twine
       end
 
       def format_value(value)
+        value = value.dup
         # Android enforces the following rules on the values
         #  1) apostrophes and quotes must be escaped with a backslash
         value.gsub!("'", "\\\\'")
