@@ -47,6 +47,23 @@ class TestAndroidFormatter < FormatterTest
     assert_equal "value\\u0020", @formatter.format_value('value ')
   end
 
+
+  def test_transforms_string_placeholder
+    assert_equal '%s', @formatter.format_value('%@')
+  end
+
+  def test_transforms_ordered_string_placeholder
+    assert_equal '%1s', @formatter.format_value('%1@')
+  end
+
+  def test_transforming_ordered_placeholders_maintains_order
+    assert_equal '%2s %1d', @formatter.format_value('%2@ %1d')
+  end
+
+  def test_does_not_alter_double_percent
+    assert_equal '%%d%%', @formatter.format_value('%%d%%')
+  end
+
 end
 
 class TestAppleFormatter < FormatterTest
