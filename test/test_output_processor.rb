@@ -48,4 +48,11 @@ class TestOutputProcessor < TwineTestCase
 
     assert_equal %w(key4), result.strings_map.keys.sort
   end
+
+  def test_include_untranslated
+    processor = Twine::Processors::OutputProcessor.new(@strings, { include: 'untranslated' })
+    result = processor.process('fr')
+
+    assert_equal %w(key1 key2 key3), result.strings_map.keys.sort
+  end
 end
