@@ -48,6 +48,12 @@ class TestAndroidFormatter < FormatterTest
     assert_equal "value\\u0020", @formatter.format_value('value ')
   end
 
+  def test_escapes_single_quotes
+    skip
+    # TODO: not working with ruby 2.0
+    # http://stackoverflow.com/questions/18735608/cgiescapehtml-is-escaping-single-quote
+    assert_equal "not \\'so\\' easy", @formatter.format_value("not 'so' easy")
+  end
 
   def test_transforms_string_placeholder
     assert_equal '%s', @formatter.format_value('%@')
