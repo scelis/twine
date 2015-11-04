@@ -103,12 +103,22 @@ end
 
 class TestJQueryFormatter < FormatterTest
 
+  def setup
+    super
+
+    @formatter = Twine::Formatters::JQuery.new @strings, {}
+  end
+
   def test_format
-    formatter = Twine::Formatters::JQuery.new @strings, {}
-    formatter.write_file @output_path, 'en'
+    @formatter.write_file @output_path, 'en'
     assert_equal content('formatter_jquery.json'), output_content
   end
 
+  def test_value_with_line_break
+    skip
+    # this test will only work once the JQuery formatter is modularized
+    # assert_equal "value\nwith\nline\nbreaks", @formatter.format_value("value\nwith\nline\nbreaks")
+  end
 end
 
 class TestGettextFormatter < FormatterTest
