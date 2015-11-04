@@ -30,7 +30,8 @@ class TestAndroidFormatter < FormatterTest
   #   quote escaping
   #   html entity escaping
   #   placeholders
-  #   strings starting with an @  
+  #   strings starting with an @
+  #   more set_translation transformations
 
   def setup
     super Twine::Formatters::Android

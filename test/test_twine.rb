@@ -13,7 +13,6 @@ require 'twine_test_case'
 class TestTwine < TwineTestCase
   # TODO
   # android, apple, django, ... consumption
-  #   only process given language
 
   def test_consume_string_file_5
     Dir.mktmpdir do |dir|
