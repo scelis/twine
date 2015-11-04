@@ -1,10 +1,10 @@
 require 'twine_test_case'
 
 class FormatterTest < TwineTestCase
-  def setup
-    super
+  def setup(formatter_class)
+    super()
 
-    @strings = build_twine_file 'en' do
+    @twine_file = build_twine_file 'en' do
       add_section 'Section 1' do
         add_row key1: 'value1-english', comment: 'comment key1'
         add_row key2: 'value2-english'
@@ -15,6 +15,9 @@ class FormatterTest < TwineTestCase
         add_row key4: 'value4-english', comment: 'comment key4'
       end
     end
+
+    @strings = Twine::StringsFile.new
+    @formatter = formatter_class.new @strings, { consume_all: true }
   end
 end
 
@@ -30,12 +33,12 @@ class TestAndroidFormatter < FormatterTest
   #   strings starting with an @  
 
   def setup
-    super
-    @formatter = Twine::Formatters::Android.new @strings, {}
+    super Twine::Formatters::Android
   end
 
   def test_write_file_output_format
-    @formatter.write_file @output_path, 'en'
+    formatter = Twine::Formatters::Android.new @twine_file, {}
+    formatter.write_file @output_path, 'en'
     assert_equal content('formatter_android.xml'), output_content
   end
 
@@ -78,13 +81,12 @@ end
 
 class TestAppleFormatter < FormatterTest
   def setup
-    super
-
-    @formatter = Twine::Formatters::Apple.new @strings, {}
+    super Twine::Formatters::Apple
   end
 
   def test_write_file_output_format
-    @formatter.write_file @output_path, 'en'
+    formatter = Twine::Formatters::Apple.new @twine_file, {}
+    formatter.write_file @output_path, 'en'
     assert_equal content('formatter_apple.strings'), output_content
   end
 
@@ -104,13 +106,12 @@ end
 class TestJQueryFormatter < FormatterTest
 
   def setup
-    super
-
-    @formatter = Twine::Formatters::JQuery.new @strings, {}
+    super Twine::Formatters::JQuery
   end
 
   def test_write_file_output_format
-    @formatter.write_file @output_path, 'en'
+    formatter = Twine::Formatters::JQuery.new @twine_file, {}
+    formatter.write_file @output_path, 'en'
     assert_equal content('formatter_jquery.json'), output_content
   end
 
@@ -123,8 +124,12 @@ end
 
 class TestGettextFormatter < FormatterTest
 
+  def setup
+    super Twine::Formatters::Gettext
+  end
+
   def test_write_file_output_format
-    formatter = Twine::Formatters::Gettext.new @strings, {}
+    formatter = Twine::Formatters::Gettext.new @twine_file, {}
     formatter.write_file @output_path, 'en'
     assert_equal content('formatter_gettext.po'), output_content
   end
@@ -133,8 +138,12 @@ end
 
 class TestTizenFormatter < FormatterTest
 
+  def setup
+    super Twine::Formatters::Tizen
+  end
+
   def test_write_file_output_format
-    formatter = Twine::Formatters::Tizen.new @strings, {}
+    formatter = Twine::Formatters::Tizen.new @twine_file, {}
     formatter.write_file @output_path, 'en'
     assert_equal content('formatter_tizen.xml'), output_content
   end
