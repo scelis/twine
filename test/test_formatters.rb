@@ -34,43 +34,43 @@ class TestAndroidFormatter < FormatterTest
     @formatter = Twine::Formatters::Android.new @strings, {}
   end
 
-  def test_format
+  def test_write_file_output_format
     @formatter.write_file @output_path, 'en'
     assert_equal content('formatter_android.xml'), output_content
   end
 
-  def test_key_with_space
+  def test_format_key_with_space
     assert_equal 'key ', @formatter.format_key('key ')
   end
 
-  def test_value_with_leading_space
+  def test_format_value_with_leading_space
     assert_equal "\\u0020value", @formatter.format_value(' value')
   end
 
-  def test_value_with_trailing_space
+  def test_format_value_with_trailing_space
     assert_equal "value\\u0020", @formatter.format_value('value ')
   end
 
-  def test_escapes_single_quotes
+  def test_format_value_escapes_single_quotes
     skip
     # TODO: not working with ruby 2.0
     # http://stackoverflow.com/questions/18735608/cgiescapehtml-is-escaping-single-quote
     assert_equal "not \\'so\\' easy", @formatter.format_value("not 'so' easy")
   end
 
-  def test_transforms_string_placeholder
+  def test_format_value_transforms_string_placeholder
     assert_equal '%s', @formatter.format_value('%@')
   end
 
-  def test_transforms_ordered_string_placeholder
+  def test_format_value_transforms_ordered_string_placeholder
     assert_equal '%1s', @formatter.format_value('%1@')
   end
 
-  def test_transforming_ordered_placeholders_maintains_order
+  def test_format_value_transforming_ordered_placeholders_maintains_order
     assert_equal '%2s %1d', @formatter.format_value('%2@ %1d')
   end
 
-  def test_does_not_alter_double_percent
+  def test_format_value_does_not_alter_double_percent
     assert_equal '%%d%%', @formatter.format_value('%%d%%')
   end
 
@@ -83,20 +83,20 @@ class TestAppleFormatter < FormatterTest
     @formatter = Twine::Formatters::Apple.new @strings, {}
   end
 
-  def test_format
+  def test_write_file_output_format
     @formatter.write_file @output_path, 'en'
     assert_equal content('formatter_apple.strings'), output_content
   end
 
-  def test_key_with_space
+  def test_format_key_with_space
     assert_equal 'key ', @formatter.format_key('key ')
   end
 
-  def test_value_with_leading_space
+  def test_format_value_with_leading_space
     assert_equal ' value', @formatter.format_value(' value')
   end
 
-  def test_value_with_trailing_space
+  def test_format_value_with_trailing_space
     assert_equal 'value ', @formatter.format_value('value ')
   end
 end
@@ -109,12 +109,12 @@ class TestJQueryFormatter < FormatterTest
     @formatter = Twine::Formatters::JQuery.new @strings, {}
   end
 
-  def test_format
+  def test_write_file_output_format
     @formatter.write_file @output_path, 'en'
     assert_equal content('formatter_jquery.json'), output_content
   end
 
-  def test_value_with_line_break
+  def test_format_value_with_line_break
     skip
     # this test will only work once the JQuery formatter is modularized
     # assert_equal "value\nwith\nline\nbreaks", @formatter.format_value("value\nwith\nline\nbreaks")
@@ -123,7 +123,7 @@ end
 
 class TestGettextFormatter < FormatterTest
 
-  def test_format
+  def test_write_file_output_format
     formatter = Twine::Formatters::Gettext.new @strings, {}
     formatter.write_file @output_path, 'en'
     assert_equal content('formatter_gettext.po'), output_content
@@ -133,7 +133,7 @@ end
 
 class TestTizenFormatter < FormatterTest
 
-  def test_format
+  def test_write_file_output_format
     formatter = Twine::Formatters::Tizen.new @strings, {}
     formatter.write_file @output_path, 'en'
     assert_equal content('formatter_tizen.xml'), output_content
