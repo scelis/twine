@@ -128,6 +128,20 @@ class TestJQueryFormatter < FormatterTest
     super Twine::Formatters::JQuery
   end
 
+  def test_read_file_format
+    @formatter.read_file fixture('formatter_jquery.json'), 'en'
+
+    1.upto(4) do |i|
+      assert_equal "value#{i}-english", @strings.strings_map["key#{i}"].translations['en']
+    end
+  end
+
+  def test_set_translation_escapes_newlines
+    @formatter.set_translation_for_key 'key1', 'en', "new\nline"
+
+    assert_equal 'new\nline', @strings.strings_map['key1'].translations['en']
+  end
+
   def test_write_file_output_format
     formatter = Twine::Formatters::JQuery.new @twine_file, {}
     formatter.write_file @output_path, 'en'
