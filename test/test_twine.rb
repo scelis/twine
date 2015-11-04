@@ -15,15 +15,6 @@ class TestTwine < TwineTestCase
   # android, apple, django, ... consumption
   #   only process given language
 
-  def test_consume_string_file_1
-    Dir.mktmpdir do |dir|
-      output_path = File.join(dir, 'strings.txt')
-
-      Twine::Runner.run(%W(consume-string-file test/fixtures/strings-1.txt test/fixtures/fr-1.xml -o #{output_path} -l fr))
-      assert_equal(File.read('test/fixtures/test-output-3.txt'), File.read(output_path))
-    end
-  end
-
   def test_consume_string_file_2
     Dir.mktmpdir do |dir|
       output_path = File.join(dir, 'strings.txt')
