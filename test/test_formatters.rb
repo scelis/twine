@@ -16,7 +16,6 @@ class FormatterTest < TwineTestCase
       end
     end
   end
-
 end
 
 class TestAndroidFormatter < FormatterTest

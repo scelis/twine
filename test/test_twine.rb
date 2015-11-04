@@ -83,24 +83,12 @@ class TestAbstractFormatter < TwineTestCase
 end
 
 class TestTwine < TwineTestCase
+  # TODO
+  # android, apple, django, ... consumption
 
   def test_consume_string_file_1
     Dir.mktmpdir do |dir|
       output_path = File.join(dir, 'strings.txt')
-      # TODO: think about consume option handling/tests
-        # maybe: manually feed translations to Abstract formatter
-
-      # android, apple, django, ... consumption
-
-      # consume updates existing translations
-      # consume leaves other translations untouched -> add_row key3: { en: 'key3-english', fr: 'key3-french' }
-      # consume deducts language
-      # consume deducts format (android, apple)
-
-      # consume does not add new translations
-      # consume adds new translations when -a is specified
-      # updates does not update comments
-      # updates comments when -c is used
 
       Twine::Runner.run(%W(consume-string-file test/fixtures/strings-1.txt test/fixtures/fr-1.xml -o #{output_path} -l fr))
       assert_equal(File.read('test/fixtures/test-output-3.txt'), File.read(output_path))
