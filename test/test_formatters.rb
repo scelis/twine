@@ -102,6 +102,14 @@ class TestAppleFormatter < FormatterTest
     super Twine::Formatters::Apple
   end
 
+  def test_read_file_format
+    @formatter.read_file fixture('formatter_apple.strings'), 'en'
+
+    1.upto(4) do |i|
+      assert_equal "value#{i}-english", @strings.strings_map["key#{i}"].translations['en']
+    end
+  end
+
   def test_write_file_output_format
     formatter = Twine::Formatters::Apple.new @twine_file, {}
     formatter.write_file @output_path, 'en'
@@ -159,6 +167,14 @@ class TestGettextFormatter < FormatterTest
     super Twine::Formatters::Gettext
   end
 
+  def test_read_file_format
+    @formatter.read_file fixture('formatter_gettext.po'), 'en'
+
+    1.upto(4) do |i|
+      assert_equal "value#{i}-english", @strings.strings_map["key#{i}"].translations['en']
+    end
+  end
+
   def test_write_file_output_format
     formatter = Twine::Formatters::Gettext.new @twine_file, {}
     formatter.write_file @output_path, 'en'
@@ -171,6 +187,15 @@ class TestTizenFormatter < FormatterTest
 
   def setup
     super Twine::Formatters::Tizen
+  end
+
+  def test_read_file_format
+    skip 'the current implementation of Tizen formatter does not support read_file'
+    @formatter.read_file fixture('formatter_tizen.xml'), 'en'
+
+    1.upto(4) do |i|
+      assert_equal "value#{i}-english", @strings.strings_map["key#{i}"].translations['en']
+    end
   end
 
   def test_write_file_output_format
