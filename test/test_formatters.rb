@@ -134,7 +134,7 @@ class TestJQueryFormatter < FormatterTest
     assert_equal content('formatter_jquery.json'), output_content
   end
 
-  def test_format_value_with_line_break
+  def test_format_value_with_newline
     skip
     # this test will only work once the JQuery formatter is modularized
     # assert_equal "value\nwith\nline\nbreaks", @formatter.format_value("value\nwith\nline\nbreaks")
