@@ -45,6 +45,15 @@ module Twine
         return
       end
 
+      def set_translation_for_key(key, lang, value)
+        value = CGI.unescapeHTML(value)
+        value.gsub!('\\\'', '\'')
+        value.gsub!('\\"', '"')
+        value = iosify_substitutions(value)
+        value.gsub!(/(\\u0020)*|(\\u0020)*\z/) { |spaces| ' ' * (spaces.length / 6) }
+        super(key, lang, value)
+      end
+
       def read_file(path, lang)
         resources_regex = /<resources(?:[^>]*)>(.*)<\/resources>/m
         key_regex = /<string name="(\w+)">/
@@ -62,16 +71,8 @@ module Twine
               if key_match
                 key = key_match[1]
                 value_match = value_regex.match(line)
-                if value_match
-                  value = value_match[1]
-                  value = CGI.unescapeHTML(value)
-                  value.gsub!('\\\'', '\'')
-                  value.gsub!('\\"', '"')
-                  value = iosify_substitutions(value)
-                  value.gsub!(/(\\u0020)*|(\\u0020)*\z/) { |spaces| ' ' * (spaces.length / 6) }
-                else
-                  value = ""
-                end
+                value = value_match ? value_match[1] : ""
+
                 set_translation_for_key(key, lang, value)
                 if comment and comment.length > 0 and !comment.start_with?("SECTION:")
                   set_comment_for_key(key, comment)
