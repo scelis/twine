@@ -73,7 +73,12 @@ module Twine
       
       def set_translation_for_key(key, lang, value)
         if @strings.strings_map.include?(key)
-          @strings.strings_map[key].translations[lang] = value
+          row = @strings.strings_map[key]
+          reference = @strings.strings_map[row.reference_key] if row.reference_key
+
+          if !reference or value != reference.translations[lang]
+            row.translations[lang] = value
+          end
         elsif @options[:consume_all]
           STDERR.puts "Adding new string '#{key}' to strings data file."
           arr = @strings.sections.select { |s| s.name == 'Uncategorized' }
@@ -100,8 +105,12 @@ module Twine
       end
 
       def set_comment_for_key(key, comment)
-        if @strings.strings_map.include?(key)
-          @strings.strings_map[key].comment = comment
+        row = @strings.strings_map[key]
+        return unless row
+        reference = @strings.strings_map[row.reference_key] if row.reference_key
+
+        if !reference or comment != reference.raw_comment
+          row.comment = comment
         end
       end
 
