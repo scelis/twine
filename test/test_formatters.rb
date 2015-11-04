@@ -175,6 +175,12 @@ class TestGettextFormatter < FormatterTest
     end
   end
 
+  def test_read_file_with_multiple_line_value
+    @formatter.read_file fixture('gettext_multiline.po'), 'en'
+
+    assert_equal 'multiline\nstring', @strings.strings_map['key1'].translations['en']
+  end
+
   def test_write_file_output_format
     formatter = Twine::Formatters::Gettext.new @twine_file, {}
     formatter.write_file @output_path, 'en'
