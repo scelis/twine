@@ -36,6 +36,24 @@ class TestAndroidFormatter < FormatterTest
     super Twine::Formatters::Android
   end
 
+  def test_read_file_format
+    @formatter.read_file fixture('formatter_android.xml'), 'en'
+
+    1.upto(4) do |i|
+      assert_equal "value#{i}-english", @strings.strings_map["key#{i}"].translations['en']
+    end
+  end
+
+  def test_set_translation_transforms_leading_spaces
+    @formatter.set_translation_for_key 'key1', 'en', "\u0020value"
+    assert_equal ' value', @strings.strings_map['key1'].translations['en']
+  end
+
+  def test_set_translation_transforms_trailing_spaces
+    @formatter.set_translation_for_key 'key1', 'en', "value\u0020\u0020"
+    assert_equal 'value  ', @strings.strings_map['key1'].translations['en']
+  end
+
   def test_write_file_output_format
     formatter = Twine::Formatters::Android.new @twine_file, {}
     formatter.write_file @output_path, 'en'
