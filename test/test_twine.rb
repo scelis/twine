@@ -24,15 +24,6 @@ class TestTwine < TwineTestCase
     end
   end
 
-  def test_consume_string_file_6
-    Dir.mktmpdir do |dir|
-      # \u0020 -> <space>
-      output_path = File.join(dir, 'strings.txt')
-      Twine::Runner.run(%W(consume-string-file test/fixtures/strings-2.txt test/fixtures/en-3.xml -o #{output_path} -l en -a))
-      assert_equal(File.read('test/fixtures/test-output-11.txt'), File.read(output_path))
-    end
-  end
-
   def test_json_line_breaks_consume
     Dir.mktmpdir do |dir|
       # \n are preserved
