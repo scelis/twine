@@ -74,8 +74,7 @@ class TestAndroidFormatter < FormatterTest
   end
 
   def test_format_value_escapes_single_quotes
-    skip
-    # TODO: not working with ruby 2.0
+    skip 'not working with ruby 2.0'
     # http://stackoverflow.com/questions/18735608/cgiescapehtml-is-escaping-single-quote
     assert_equal "not \\'so\\' easy", @formatter.format_value("not 'so' easy")
   end
@@ -149,8 +148,7 @@ class TestJQueryFormatter < FormatterTest
   end
 
   def test_format_value_with_newline
-    skip
-    # this test will only work once the JQuery formatter is modularized
+    skip 'this test will only work once the JQuery formatter is modularized'
     # assert_equal "value\nwith\nline\nbreaks", @formatter.format_value("value\nwith\nline\nbreaks")
   end
 end

@@ -62,12 +62,10 @@ class TestAbstractFormatter < TwineTestCase
   end
 
   def test_set_comment_for_key_does_not_update_comment
-    # not supported by current implementation - see #97
-    skip
+    skip 'not supported by current implementation - see #97'
   end
 
   def test_set_comment_for_key_updates_comment_with_update_comments
-    # not supported by current implementation - see #97
-    skip
+    skip 'not supported by current implementation - see #97'
   end
 end
