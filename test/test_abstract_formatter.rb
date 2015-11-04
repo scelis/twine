@@ -1,6 +1,60 @@
 require 'twine_test_case'
 
 class TestAbstractFormatter < TwineTestCase
+  class ValueReference < TwineTestCase
+    def setup
+      super
+
+      @strings = build_twine_file 'en', 'fr' do
+        add_section 'Section' do
+          add_row refkey: 'ref-value'
+          add_row key: :refkey
+        end
+      end
+
+      @formatter = Twine::Formatters::Abstract.new(@strings, {})
+    end
+
+    def test_set_translation_does_not_add_unchanged_translation
+      @formatter.set_translation_for_key 'key', 'en', 'ref-value'
+
+      assert_nil @strings.strings_map['key'].translations['en']
+    end
+
+    def test_set_translation_adds_changed_translation
+      @formatter.set_translation_for_key 'key', 'en', 'changed value'
+
+      assert_equal 'changed value', @strings.strings_map['key'].translations['en']
+    end
+  end
+
+  class CommentReference < TwineTestCase
+    def setup
+      super
+
+      @strings = build_twine_file 'en', 'fr' do
+        add_section 'Section' do
+          add_row refkey: 'ref-value', comment: 'reference comment'
+          add_row key: 'value', ref: :refkey
+        end
+      end
+
+      @formatter = Twine::Formatters::Abstract.new(@strings, {})
+    end
+
+    def test_set_comment_does_not_add_unchanged_comment
+      @formatter.set_comment_for_key 'key', 'reference comment'
+      
+      assert_nil @strings.strings_map['key'].raw_comment
+    end
+
+    def test_set_comment_adds_changed_comment
+      @formatter.set_comment_for_key 'key', 'changed comment'
+
+      assert_equal 'changed comment', @strings.strings_map['key'].raw_comment
+    end
+  end
+
   def setup
     super
 

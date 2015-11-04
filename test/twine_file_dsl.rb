@@ -21,17 +21,24 @@ module TwineFileDSL
     return unless @currently_built_twine_file_section
 
     # this relies on Ruby 1.9 preserving the order of hash elements
-    row = Twine::StringsRow.new(parameters.first[0].to_s)
-    if parameters.first[1].is_a? Hash
-      parameters.first[1].each do |language, translation|
+    key, value = parameters.first
+    row = Twine::StringsRow.new(key.to_s)
+    if value.is_a? Hash
+      value.each do |language, translation|
         row.translations[language.to_s] = translation
       end
-    else
+    elsif !value.is_a? Symbol
       language = @currently_built_twine_file.language_codes.first
-      row.translations[language] = parameters.first[1]
+      row.translations[language] = value
     end
+
     row.comment = parameters[:comment] if parameters[:comment]
     row.tags = parameters[:tags] if parameters[:tags]
+    if parameters[:ref] || value.is_a?(Symbol)
+      reference_key = (parameters[:ref] || value).to_s
+      row.reference_key = reference_key
+      row.reference = @currently_built_twine_file.strings_map[reference_key]
+    end
 
     @currently_built_twine_file_section.rows << row
     @currently_built_twine_file.strings_map[row.key] = row
