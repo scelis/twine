@@ -19,10 +19,6 @@ class TwineTestCase < Minitest::Test
     super
   end
 
-  def fixture_path
-    'fixtures'
-  end
-
   def output_content
     File.read @output_path
   end
@@ -33,7 +29,7 @@ class TwineTestCase < Minitest::Test
   end
 
   def fixture(filename)
-    File.join __dir__, fixture_path, filename
+    File.join __dir__, 'fixtures', filename
   end
   alias :f :fixture
 
