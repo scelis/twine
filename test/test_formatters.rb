@@ -18,6 +18,10 @@ class FormatterTest < TwineTestCase
   end
 end
 
+# TODO
+#  Django
+#  Flash
+
 class TestAndroidFormatter < FormatterTest
   # TODO
   #   quote escaping
