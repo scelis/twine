@@ -5,7 +5,7 @@ class TestOutputProcessor < TwineTestCase
     super
 
     @strings = build_twine_file 'en', 'fr' do
-      add_section 'Section 1' do
+      add_section 'Section' do
         add_row key1: 'value1', tags: ['tag1']
         add_row key2: 'value2', tags: ['tag1', 'tag2']
         add_row key3: 'value3', tags: ['tag2']
