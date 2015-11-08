@@ -40,7 +40,7 @@ class TestConsumeStringFile < CommandTestCase
     new_runner('fr', 'fr.po').consume_string_file
   end
 
-  def test_deducts_language_from_output_path
+  def test_deducts_language_from_input_path
     random_language = @known_languages.sample
     formatter = prepare_mock_formatter Twine::Formatters::Android
     formatter.expects(:read_file).with(anything, random_language)
