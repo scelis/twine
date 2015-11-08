@@ -1,7 +1,7 @@
 require 'twine_test_case'
 
 class TestAbstractFormatter < TwineTestCase
-  class SetTranslation
+  class SetTranslation < TwineTestCase
     def setup
       super
 
@@ -90,7 +90,7 @@ class TestAbstractFormatter < TwineTestCase
     end
   end
 
-  class SetComment
+  class SetComment < TwineTestCase
     def test_set_comment_for_key_does_not_update_comment
       skip 'not supported by current implementation - see #97'
     end
