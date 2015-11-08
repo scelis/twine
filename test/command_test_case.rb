@@ -10,7 +10,7 @@ class CommandTestCase < TwineTestCase
   def setup
     super
 
-    @known_languages = %w(en fr de sp)
+    @known_languages = %w(en fr de es)
 
     @mock_strings = Twine::StringsFile.new
     @mock_strings.language_codes.concat @known_languages
