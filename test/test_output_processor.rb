@@ -55,4 +55,31 @@ class TestOutputProcessor < TwineTestCase
 
     assert_equal %w(key1 key2 key3), result.strings_map.keys.sort
   end
+
+  class TranslationFallback < TwineTestCase
+    def setup
+      super
+
+      @strings = build_twine_file 'en', 'fr', 'de' do
+        add_section 'Section' do
+          add_row key1: { en: 'value1-en', fr: 'value1-fr' }
+        end
+      end
+    end
+
+    def test_fallback_to_default_language
+      processor = Twine::Processors::OutputProcessor.new(@strings, {})
+      result = processor.process('de')
+      
+      assert_equal 'value1-en', result.strings_map['key1'].translations['de']
+    end
+
+    def test_fallback_to_developer_language
+      processor = Twine::Processors::OutputProcessor.new(@strings, {developer_language: 'fr'})
+      result = processor.process('de')
+      
+      assert_equal 'value1-fr', result.strings_map['key1'].translations['de']
+    end
+  end
+
 end

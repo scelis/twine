@@ -1,8 +1,5 @@
 require 'twine_test_case'
 
-# TODO:
-# fallback to developer language
-
 class TestStringsFile < TwineTestCase
   class Reading < TwineTestCase
     def setup
