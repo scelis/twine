@@ -150,7 +150,7 @@ module Twine
             if match
               key = match[1].strip
               value = match[2].strip
-              if value[0,1] == '`' && value[-1,1] == '`'    # TODO: shorten this
+              if value[0,1] == '`' && value[-1,1] == '`'
                 value = value[1..-2]
               end
 

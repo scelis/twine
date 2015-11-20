@@ -20,7 +20,7 @@ module Twine
 
     def run
       # Parse all CLI arguments.
-      CLI::parse_args(@args, @options)    # TODO: this parsing should not be done by Runner - simply initialize the runner with options
+      CLI::parse_args(@args, @options)
       read_strings_data
       execute_command
     end

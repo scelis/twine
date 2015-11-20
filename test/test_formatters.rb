@@ -21,18 +21,7 @@ class FormatterTest < TwineTestCase
   end
 end
 
-# TODO
-#  Django
-#  Flash
-
 class TestAndroidFormatter < FormatterTest
-  # TODO
-  #   quote escaping
-  #   html entity escaping
-  #   placeholders
-  #   strings starting with an @
-  #   more set_translation transformations
-
   def setup
     super Twine::Formatters::Android
   end

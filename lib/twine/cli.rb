@@ -11,7 +11,7 @@ module Twine
       new(args, options).parse_args
     end
 
-    def parse_args    # TODO: let this method take args and return options
+    def parse_args
       parser = OptionParser.new do |opts|
         opts.banner = 'Usage: twine COMMAND STRINGS_FILE [INPUT_OR_OUTPUT_PATH] [--lang LANG1,LANG2...] [--tags TAG1,TAG2,TAG3...] [--format FORMAT]'
         opts.separator ''

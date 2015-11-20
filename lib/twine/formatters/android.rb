@@ -114,8 +114,6 @@ module Twine
       end
 
       def format_value(value)
-        # TODO: this should be more sophisticated, i.e. only html escape if necessary (http://developer.android.com/guide/topics/resources/string-resource.html#FormattingAndStyling)
-
         value = value.dup
         # Android enforces the following rules on the values
         #  1) apostrophes and quotes must be escaped with a backslash
