@@ -5,6 +5,7 @@ module Twine
   require 'twine/plugin'
   require 'twine/cli'
   require 'twine/encoding'
+  require 'twine/output_processor'
   require 'twine/formatters'
   require 'twine/runner'
   require 'twine/stringsfile'
