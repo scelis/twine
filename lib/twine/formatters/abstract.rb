@@ -2,9 +2,10 @@ require 'fileutils'
 
 module Twine
   module Formatters
+
     class Abstract
-      attr_accessor :strings
-      attr_accessor :options
+      attr_reader :strings
+      attr_reader :options
 
       def self.can_handle_directory?(path)
         return false
@@ -13,6 +14,7 @@ module Twine
       def initialize(strings, options)
         @strings = strings
         @options = options
+        @output_processor = Processors::OutputProcessor.new @strings, @options
       end
 
       def iosify_substitutions(str)
@@ -71,7 +73,12 @@ module Twine
       
       def set_translation_for_key(key, lang, value)
         if @strings.strings_map.include?(key)
-          @strings.strings_map[key].translations[lang] = value
+          row = @strings.strings_map[key]
+          reference = @strings.strings_map[row.reference_key] if row.reference_key
+
+          if !reference or value != reference.translations[lang]
+            row.translations[lang] = value
+          end
         elsif @options[:consume_all]
           STDERR.puts "Adding new string '#{key}' to strings data file."
           arr = @strings.sections.select { |s| s.name == 'Uncategorized' }
@@ -81,14 +88,14 @@ module Twine
             @strings.sections.insert(0, current_section)
           end
           current_row = StringsRow.new(key)
-          current_section.rows << current_row
+          current_row.translations[lang] = value
           
           if @options[:tags] && @options[:tags].length > 0
-              current_row.tags = @options[:tags]            
+            current_row.tags = @options[:tags]            
           end
           
+          current_section.rows << current_row
           @strings.strings_map[key] = current_row
-          @strings.strings_map[key].translations[lang] = value
         else
           STDERR.puts "Warning: '#{key}' not found in strings data file."
         end
@@ -98,8 +105,12 @@ module Twine
       end
 
       def set_comment_for_key(key, comment)
-        if @strings.strings_map.include?(key)
-          @strings.strings_map[key].comment = comment
+        row = @strings.strings_map[key]
+        return unless row
+        reference = @strings.strings_map[row.reference_key] if row.reference_key
+
+        if !reference or comment != reference.raw_comment
+          row.comment = comment
         end
       end
 
@@ -119,25 +130,17 @@ module Twine
         raise NotImplementedError.new("You must implement read_file in your formatter class.")
       end
 
-      def default_language
-        @options[:developer_language] || @strings.language_codes[0]
-      end
-
-      def fallback_languages(lang)
-        [default_language]
-      end
-
-      def format_file(lang)
+      def format_file(strings, lang)
         result = format_header(lang) + "\n"
-        result += format_sections(lang)
+        result += format_sections(strings, lang)
       end
 
       def format_header(lang)
         raise NotImplementedError.new("You must implement format_header in your formatter class.")
       end
 
-      def format_sections(lang)
-        sections = @strings.sections.map { |section| format_section(section, lang) }
+      def format_sections(strings, lang)
+        sections = strings.sections.map { |section| format_section(section, lang) }
         sections.join("\n")
       end
 
@@ -145,17 +148,15 @@ module Twine
       end
 
       def format_section(section, lang)
-        rows = section.rows.select { |row| row.matches_tags?(@options[:tags], @options[:untagged]) }
-
         result = ""
-        unless rows.empty?
+        unless section.rows.empty?
           if section.name && section.name.length > 0
             section_header = format_section_header(section)
             result += "\n#{section_header}" if section_header
           end
         end
 
-        rows.map! { |row| format_row(row, lang) }
+        rows = section.rows.map { |row| format_row(row, lang) }
         rows.compact! # remove nil entries
         rows.map! { |row| "\n#{row}" }  # prepend newline
         result += rows.join
@@ -163,12 +164,6 @@ module Twine
 
       def format_row(row, lang)
         value = row.translated_string_for_lang(lang)
-
-        return if value && @options[:include] == 'untranslated'
-
-        if value.nil? && @options[:include] != 'translated'
-          value = row.translated_string_for_lang(fallback_languages(lang))
-        end
 
         return nil unless value
 
@@ -199,8 +194,10 @@ module Twine
       def write_file(path, lang)
         encoding = @options[:output_encoding] || 'UTF-8'
 
+        processed_strings = @output_processor.process(lang)
+
         File.open(path, "w:#{encoding}") do |f|
-          f.puts format_file(lang)
+          f.puts format_file(processed_strings, lang)
         end
       end
 
@@ -234,7 +231,8 @@ module Twine
           end
         end
       end
-
+      
     end
+
   end
 end

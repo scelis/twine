@@ -42,11 +42,7 @@ module Twine
       elsif @tags.empty?
         return include_untagged
       else
-        tags.each do |tag|
-          if @tags.include? tag
-            return true
-          end
-        end
+        return !(tags & @tags).empty?
       end
 
       return false
@@ -200,11 +196,9 @@ module Twine
           f.puts "[[#{section.name}]]"
 
           section.rows.each do |row|
-            reference = @strings_map[row.reference_key] if row.reference_key
-
             f.puts "\t[#{row.key}]"
 
-            value = write_value(row, dev_lang, f, reference)
+            value = write_value(row, dev_lang, f)
             if !value && !row.reference_key
               puts "Warning: #{row.key} does not exist in developer language '#{dev_lang}'"
             end
@@ -216,11 +210,11 @@ module Twine
               tag_str = row.tags.join(',')
               f.puts "\t\ttags = #{tag_str}"
             end
-            if row.raw_comment and row.raw_comment.length > 0 and (!reference or row.raw_comment != reference.raw_comment)
+            if row.raw_comment and row.raw_comment.length > 0
               f.puts "\t\tcomment = #{row.raw_comment}"
             end
             @language_codes[1..-1].each do |lang|
-              write_value(row, lang, f, reference)
+              write_value(row, lang, f)
             end
           end
         end
@@ -229,7 +223,7 @@ module Twine
 
     private
 
-    def write_value(row, language, file, reference)
+    def write_value(row, language, file)
       value = row.translations[language]
       return nil unless value
 
@@ -237,9 +231,7 @@ module Twine
         value = '`' + value + '`'
       end
 
-      if !reference or value != reference.translations[language]
-        file.puts "\t\t#{language} = #{value}"
-      end
+      file.puts "\t\t#{language} = #{value}"
       return value
     end
 
