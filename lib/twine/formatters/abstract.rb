@@ -13,6 +13,7 @@ module Twine
       def initialize(strings, options)
         @strings = strings
         @options = options
+        @output_processor = Processors::OutputProcessor.new @strings, @options
       end
 
       def iosify_substitutions(str)
@@ -119,25 +120,17 @@ module Twine
         raise NotImplementedError.new("You must implement read_file in your formatter class.")
       end
 
-      def default_language
-        @options[:developer_language] || @strings.language_codes[0]
-      end
-
-      def fallback_languages(lang)
-        [default_language]
-      end
-
-      def format_file(lang)
+      def format_file(strings, lang)
         result = format_header(lang) + "\n"
-        result += format_sections(lang)
+        result += format_sections(strings, lang)
       end
 
       def format_header(lang)
         raise NotImplementedError.new("You must implement format_header in your formatter class.")
       end
 
-      def format_sections(lang)
-        sections = @strings.sections.map { |section| format_section(section, lang) }
+      def format_sections(strings, lang)
+        sections = strings.sections.map { |section| format_section(section, lang) }
         sections.join("\n")
       end
 
@@ -145,7 +138,7 @@ module Twine
       end
 
       def format_section(section, lang)
-        rows = section.rows.select { |row| row.matches_tags?(@options[:tags], @options[:untagged]) }
+        rows = section.rows.dup
 
         result = ""
         unless rows.empty?
@@ -163,12 +156,6 @@ module Twine
 
       def format_row(row, lang)
         value = row.translated_string_for_lang(lang)
-
-        return if value && @options[:include] == 'untranslated'
-
-        if value.nil? && @options[:include] != 'translated'
-          value = row.translated_string_for_lang(fallback_languages(lang))
-        end
 
         return nil unless value
 
@@ -199,8 +186,10 @@ module Twine
       def write_file(path, lang)
         encoding = @options[:output_encoding] || 'UTF-8'
 
+        processed_strings = @output_processor.process(lang)
+
         File.open(path, "w:#{encoding}") do |f|
-          f.puts format_file(lang)
+          f.puts format_file(processed_strings, lang)
         end
       end
 
