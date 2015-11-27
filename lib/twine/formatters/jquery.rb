@@ -25,6 +25,11 @@ module Twine
         return
       end
 
+      def set_translation_for_key(key, lang, value)
+        value = value.gsub("\n","\\n")
+        super(key, lang, value)
+      end
+
       def read_file(path, lang)
         begin
           require "json"
@@ -35,7 +40,6 @@ module Twine
         open(path) do |io|
           json = JSON.load(io)
           json.each do |key, value|
-            value = value.gsub("\n","\\n")
             set_translation_for_key(key, lang, value)
           end
         end
