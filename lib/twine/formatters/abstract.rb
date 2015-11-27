@@ -90,7 +90,7 @@ module Twine
           current_section.rows << current_row
           
           if @options[:tags] && @options[:tags].length > 0
-              current_row.tags = @options[:tags]            
+            current_row.tags = @options[:tags]            
           end
           
           @strings.strings_map[key] = current_row
