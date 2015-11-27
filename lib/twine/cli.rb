@@ -2,7 +2,15 @@ require 'optparse'
 
 module Twine
   module CLI
-    VALID_COMMANDS = ['generate-string-file', 'generate-all-string-files', 'consume-string-file', 'consume-all-string-files', 'generate-loc-drop', 'consume-loc-drop', 'validate-strings-file']
+    NEEDED_COMMAND_ARGUMENTS = {
+      'generate-string-file' => 3,
+      'generate-all-string-files' => 3,
+      'consume-string-file' => 3,
+      'consume-all-string-files' => 3,
+      'generate-loc-drop' => 3,
+      'consume-loc-drop' => 3,
+      'validate-strings-file' => 2
+    }
 
     def self.parse(args)
       options = {}
@@ -38,16 +46,12 @@ module Twine
         opts.on('-u', '--untagged', 'If you have specified tags using the --tags flag, then only those tags will be selected. If you also want to select all strings that are untagged, then you can specify this option to do so.') do |u|
           options[:untagged] = true
         end
-        formats = []
-        Formatters.formatters.each do |formatter|
-          formats << formatter::FORMAT_NAME
-        end
+        formats = Formatters.formatters.map { |f| f::FORMAT_NAME }
         opts.on('-f', '--format FORMAT', "The file format to read or write (#{formats.join(', ')}). Additional formatters can be placed in the formats/ directory.") do |format|
-          lformat = format.downcase
-          if !formats.include?(lformat)
+          unless formats.include?(format.downcase)
             raise Twine::Error.new "Invalid format: #{format}"
           end
-          options[:format] = lformat
+          options[:format] = format.downcase
         end
         opts.on('-a', '--consume-all', 'Normally, when consuming a string file, Twine will ignore any string keys that do not exist in your master file.') do |a|
           options[:consume_all] = true
@@ -56,11 +60,10 @@ module Twine
                                         "  all: All strings both translated and untranslated for the specified language are included. This is the default value.",
                                         "  translated: Only translated strings are included.",
                                         "  untranslated: Only untranslated strings are included.") do |set|
-          set = set.downcase
-          unless ['all', 'translated', 'untranslated'].include?(set)
+          unless ['all', 'translated', 'untranslated'].include?(set.downcase)
             raise Twine::Error.new "Invalid include flag: #{set}"
           end
-          options[:include] = set
+          options[:include] = set.downcase
         end
         unless options[:include]
           options[:include] = 'all' 
@@ -81,7 +84,7 @@ module Twine
           options[:consume_comments] = true
         end
         opts.on('-e', '--encoding ENCODING', 'Twine defaults to encoding all output files in UTF-8. This flag will tell Twine to use an alternate encoding for these files. For example, you could use this to write Apple .strings files in UTF-16. This flag is currently only supported in Ruby 1.9.3 or greater.') do |e|
-          if !"".respond_to?(:encode)
+          unless "".respond_to? :encode
             raise Twine::Error.new "The --encoding flag is only supported on Ruby 1.9.3 or greater."
           end
           options[:output_encoding] = e
@@ -112,80 +115,46 @@ module Twine
         exit
       end
 
+      number_of_needed_arguments = NEEDED_COMMAND_ARGUMENTS[args[0]]
+      unless number_of_needed_arguments
+        raise Twine::Error.new "Invalid command: #{args[0]}"
+      end
       options[:command] = args[0]
 
-      if !VALID_COMMANDS.include? options[:command]
-        raise Twine::Error.new "Invalid command: #{options[:command]}"
-      end
-
-      if args.length == 1
+      if args.length < 2
         raise Twine::Error.new 'You must specify your strings file.'
       end
-
       options[:strings_file] = args[1]
+
+      if args.length < number_of_needed_arguments
+        raise Twine::Error.new 'Not enough arguments.'
+      elsif args.length > number_of_needed_arguments
+        raise Twine::Error.new "Unknown argument: #{args[number_of_needed_arguments]}"
+      end
 
       case options[:command]
       when 'generate-string-file'
-        if args.length == 3
-          options[:output_path] = args[2]
-        elsif args.length > 3
-          raise Twine::Error.new "Unknown argument: #{args[3]}"
-        else
-          raise Twine::Error.new 'Not enough arguments.'
-        end
+        options[:output_path] = args[2]
         if options[:languages] and options[:languages].length > 1
           raise Twine::Error.new 'Please only specify a single language for the generate-string-file command.'
         end
       when 'generate-all-string-files'
-        if args.length == 3
-          options[:output_path] = args[2]
-        elsif args.length > 3
-          raise Twine::Error.new "Unknown argument: #{args[3]}"
-        else
-          raise Twine::Error.new 'Not enough arguments.'
-        end
+        options[:output_path] = args[2]
       when 'consume-string-file'
-        if args.length == 3
-          options[:input_path] = args[2]
-        elsif args.length > 3
-          raise Twine::Error.new "Unknown argument: #{args[3]}"
-        else
-          raise Twine::Error.new 'Not enough arguments.'
-        end
+        options[:input_path] = args[2]
         if options[:languages] and options[:languages].length > 1
           raise Twine::Error.new 'Please only specify a single language for the consume-string-file command.'
         end
       when 'consume-all-string-files'
-        if args.length == 3
-          options[:input_path] = args[2]
-        elsif args.length > 3
-          raise Twine::Error.new "Unknown argument: #{args[3]}"
-        else
-          raise Twine::Error.new 'Not enough arguments.'
-        end
+        options[:input_path] = args[2]
       when 'generate-loc-drop'
-        if args.length == 3
-          options[:output_path] = args[2]
-        elsif args.length > 3
-          raise Twine::Error.new "Unknown argument: #{args[3]}"
-        else
-          raise Twine::Error.new 'Not enough arguments.'
-        end
+        options[:output_path] = args[2]
         if !options[:format]
           raise Twine::Error.new 'You must specify a format.'
         end
       when 'consume-loc-drop'
-        if args.length == 3
-          options[:input_path] = args[2]
-        elsif args.length > 3
-          raise Twine::Error.new "Unknown argument: #{args[3]}"
-        else
-          raise Twine::Error.new 'Not enough arguments.'
-        end
+        options[:input_path] = args[2]
       when 'validate-strings-file'
-        if args.length > 2
-          raise Twine::Error.new "Unknown argument: #{args[2]}"
-        end
       end
 
       return options
