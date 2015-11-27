@@ -7,9 +7,10 @@ module Twine
   VALID_COMMANDS = ['generate-string-file', 'generate-all-string-files', 'consume-string-file', 'consume-all-string-files', 'generate-loc-drop', 'consume-loc-drop', 'validate-strings-file']
 
   class Runner
-    def initialize(args)
-      @options = {}
+    def initialize(args, options = nil)
+      @options = options || {}
       @args = args
+      @strings = StringsFile.new
     end
 
     def self.run(args)
