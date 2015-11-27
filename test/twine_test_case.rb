@@ -7,6 +7,8 @@ require 'twine_file_dsl'
 
 class TwineTestCase < Minitest::Test
   include TwineFileDSL
+
+  KNOWN_LANGUAGES = %w(en fr de es)
   
   def setup
     super
