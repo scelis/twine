@@ -1,10 +1,13 @@
 require 'erb'
-require 'rubygems'
-require 'test/unit'
+require 'minitest/autorun'
+require "mocha/mini_test"
 require 'securerandom'
 require 'twine'
+require 'twine_file_dsl'
 
-class TwineTestCase < Test::Unit::TestCase
+class TwineTestCase < Minitest::Test
+  include TwineFileDSL
+  
   def setup
     super
     @output_dir = Dir.mktmpdir
@@ -14,10 +17,6 @@ class TwineTestCase < Test::Unit::TestCase
   def teardown
     FileUtils.remove_entry_secure @output_dir
     super
-  end
-
-  def fixture_path
-    'fixtures'
   end
 
   def output_content
@@ -30,11 +29,11 @@ class TwineTestCase < Test::Unit::TestCase
   end
 
   def fixture(filename)
-    File.join __dir__, fixture_path, filename
+    File.join __dir__, 'fixtures', filename
   end
   alias :f :fixture
 
   def content(filename)
-    File.read fixture(filename)
+    ERB.new(File.read fixture(filename)).result
   end
 end
