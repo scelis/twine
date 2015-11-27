@@ -8,7 +8,10 @@ class TestConsumeStringFile < CommandTestCase
     FileUtils.touch options[:input_path]
     options[:languages] = language if language
 
-    Twine::Runner.new(nil, options)
+    @strings = Twine::StringsFile.new
+    @strings.language_codes.concat KNOWN_LANGUAGES
+
+    Twine::Runner.new(nil, options, @strings)
   end
 
   def prepare_mock_read_file_formatter(formatter_class)
@@ -41,7 +44,7 @@ class TestConsumeStringFile < CommandTestCase
   end
 
   def test_deducts_language_from_input_path
-    random_language = @known_languages.sample
+    random_language = KNOWN_LANGUAGES.sample
     formatter = prepare_mock_formatter Twine::Formatters::Android
     formatter.expects(:read_file).with(anything, random_language)
 

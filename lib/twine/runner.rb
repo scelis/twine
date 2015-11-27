@@ -7,10 +7,10 @@ module Twine
   VALID_COMMANDS = ['generate-string-file', 'generate-all-string-files', 'consume-string-file', 'consume-all-string-files', 'generate-loc-drop', 'consume-loc-drop', 'validate-strings-file']
 
   class Runner
-    def initialize(args, options = nil)
-      @options = options || {}
+    def initialize(args, options = {}, strings = StringsFile.new)
       @args = args
-      @strings = StringsFile.new
+      @options = options
+      @strings = strings
     end
 
     def self.run(args)
@@ -20,13 +20,8 @@ module Twine
     def run
       # Parse all CLI arguments.
       CLI::parse_args(@args, @options)
-      read_strings_data
-      execute_command
-    end
-
-    def read_strings_data
-      @strings = StringsFile.new
       @strings.read @options[:strings_file]
+      execute_command
     end
 
     def write_strings_data(path)
