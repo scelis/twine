@@ -3,8 +3,8 @@ require 'fileutils'
 module Twine
   module Formatters
     class Abstract
-      attr_accessor :strings
-      attr_accessor :options
+      attr_reader :strings
+      attr_reader :options
 
       def self.can_handle_directory?(path)
         return false
@@ -90,7 +90,7 @@ module Twine
           current_section.rows << current_row
           
           if @options[:tags] && @options[:tags].length > 0
-              current_row.tags = @options[:tags]            
+            current_row.tags = @options[:tags]            
           end
           
           @strings.strings_map[key] = current_row

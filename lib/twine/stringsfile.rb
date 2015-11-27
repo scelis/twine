@@ -42,11 +42,7 @@ module Twine
       elsif @tags.empty?
         return include_untagged
       else
-        tags.each do |tag|
-          if @tags.include? tag
-            return true
-          end
-        end
+        return !(tags & @tags).empty?
       end
 
       return false
@@ -106,9 +102,7 @@ module Twine
     end
 
     def set_developer_language_code(code)
-      if @language_codes.include?(code)
-        @language_codes.delete(code)
-      end
+      @language_codes.delete(code)
       @language_codes.insert(0, code)
     end
 
@@ -154,9 +148,8 @@ module Twine
             if match
               key = match[1].strip
               value = match[2].strip
-              if value[0,1] == '`' && value[-1,1] == '`'
-                value = value[1..-2]
-              end
+              
+              value = value[1..-2] if value[0] == '`' && value[-1] == '`'
 
               case key
               when 'comment'
