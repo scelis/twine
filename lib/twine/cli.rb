@@ -1,17 +1,11 @@
 require 'optparse'
 
 module Twine
-  class CLI
-    def initialize(args, options)
-      @options = options
-      @args = args
-    end
+  module CLI
+    VALID_COMMANDS = ['generate-string-file', 'generate-all-string-files', 'consume-string-file', 'consume-all-string-files', 'generate-loc-drop', 'consume-loc-drop', 'validate-strings-file']
 
-    def self.parse_args(args, options)
-      new(args, options).parse_args
-    end
-
-    def parse_args
+    def self.parse(args)
+      options = {}
       parser = OptionParser.new do |opts|
         opts.banner = 'Usage: twine COMMAND STRINGS_FILE [INPUT_OR_OUTPUT_PATH] [--lang LANG1,LANG2...] [--tags TAG1,TAG2,TAG3...] [--format FORMAT]'
         opts.separator ''
@@ -36,13 +30,13 @@ module Twine
         opts.separator 'General Options:'
         opts.separator ''
         opts.on('-l', '--lang LANGUAGES', Array, 'The language code(s) to use for the specified action.') do |langs|
-          @options[:languages] = langs
+          options[:languages] = langs
         end
         opts.on('-t', '--tags TAGS', Array, 'The tag(s) to use for the specified action. Only strings with that tag will be processed. Do not specify any tags to match all strings in the strings data file.') do |tags|
-          @options[:tags] = tags
+          options[:tags] = tags
         end
         opts.on('-u', '--untagged', 'If you have specified tags using the --tags flag, then only those tags will be selected. If you also want to select all strings that are untagged, then you can specify this option to do so.') do |u|
-          @options[:untagged] = true
+          options[:untagged] = true
         end
         formats = []
         Formatters.formatters.each do |formatter|
@@ -53,10 +47,10 @@ module Twine
           if !formats.include?(lformat)
             raise Twine::Error.new "Invalid format: #{format}"
           end
-          @options[:format] = lformat
+          options[:format] = lformat
         end
         opts.on('-a', '--consume-all', 'Normally, when consuming a string file, Twine will ignore any string keys that do not exist in your master file.') do |a|
-          @options[:consume_all] = true
+          options[:consume_all] = true
         end
         opts.on('-i', '--include SET', "This flag will determine which strings are included when generating strings files. It's possible values:",
                                         "  all: All strings both translated and untranslated for the specified language are included. This is the default value.",
@@ -66,31 +60,31 @@ module Twine
           unless ['all', 'translated', 'untranslated'].include?(set)
             raise Twine::Error.new "Invalid include flag: #{set}"
           end
-          @options[:include] = set
+          options[:include] = set
         end
-        unless @options[:include]
-          @options[:include] = 'all' 
+        unless options[:include]
+          options[:include] = 'all' 
         end
         opts.on('-o', '--output-file OUTPUT_FILE', 'Write the new strings database to this file instead of replacing the original file. This flag is only useful when running the consume-string-file or consume-loc-drop commands.') do |o|
-          @options[:output_path] = o
+          options[:output_path] = o
         end
         opts.on('-n', '--file-name FILE_NAME', 'When running the generate-all-string-files command, this flag may be used to overwrite the default file name of the format.') do |n|
-          @options[:file_name] = n
+          options[:file_name] = n
         end
         opts.on('-r', '--create-folders', "When running the generate-all-string-files command, this flag may be used to create output folders for all languages, if they don't exist yet. As a result all languages will be exported, not only the ones where an output folder already exists.") do |r|
-          @options[:create_folders] = true
+          options[:create_folders] = true
         end
         opts.on('-d', '--developer-language LANG', 'When writing the strings data file, set the specified language as the "developer language". In practice, this just means that this language will appear first in the strings data file. When generating files this language will be used as default language and its translations will be used if a key is not localized for the output language.') do |d|
-          @options[:developer_language] = d
+          options[:developer_language] = d
         end
         opts.on('-c', '--consume-comments', 'Normally, when consuming a string file, Twine will ignore all comments in the file. With this flag set, any comments encountered will be read and parsed into the strings data file. This is especially useful when creating your first strings data file from an existing project.') do |c|
-          @options[:consume_comments] = true
+          options[:consume_comments] = true
         end
         opts.on('-e', '--encoding ENCODING', 'Twine defaults to encoding all output files in UTF-8. This flag will tell Twine to use an alternate encoding for these files. For example, you could use this to write Apple .strings files in UTF-16. This flag is currently only supported in Ruby 1.9.3 or greater.') do |e|
           if !"".respond_to?(:encode)
             raise Twine::Error.new "The --encoding flag is only supported on Ruby 1.9.3 or greater."
           end
-          @options[:output_encoding] = e
+          options[:output_encoding] = e
         end
         opts.on('-h', '--help', 'Show this message.') do |h|
           puts opts.help
@@ -111,88 +105,90 @@ module Twine
         opts.separator '> twine consume-loc-drop strings.txt LocDrop5.zip'
         opts.separator '> twine validate-strings-file strings.txt'
       end
-      parser.parse! @args
+      parser.parse! args
 
-      if @args.length == 0
+      if args.length == 0
         puts parser.help
         exit
       end
 
-      @options[:command] = @args[0]
+      options[:command] = args[0]
 
-      if !VALID_COMMANDS.include? @options[:command]
-        raise Twine::Error.new "Invalid command: #{@options[:command]}"
+      if !VALID_COMMANDS.include? options[:command]
+        raise Twine::Error.new "Invalid command: #{options[:command]}"
       end
 
-      if @args.length == 1
+      if args.length == 1
         raise Twine::Error.new 'You must specify your strings file.'
       end
 
-      @options[:strings_file] = @args[1]
+      options[:strings_file] = args[1]
 
-      case @options[:command]
+      case options[:command]
       when 'generate-string-file'
-        if @args.length == 3
-          @options[:output_path] = @args[2]
-        elsif @args.length > 3
-          raise Twine::Error.new "Unknown argument: #{@args[3]}"
+        if args.length == 3
+          options[:output_path] = args[2]
+        elsif args.length > 3
+          raise Twine::Error.new "Unknown argument: #{args[3]}"
         else
           raise Twine::Error.new 'Not enough arguments.'
         end
-        if @options[:languages] and @options[:languages].length > 1
+        if options[:languages] and options[:languages].length > 1
           raise Twine::Error.new 'Please only specify a single language for the generate-string-file command.'
         end
       when 'generate-all-string-files'
-        if @args.length == 3
-          @options[:output_path] = @args[2]
-        elsif @args.length > 3
-          raise Twine::Error.new "Unknown argument: #{@args[3]}"
+        if args.length == 3
+          options[:output_path] = args[2]
+        elsif args.length > 3
+          raise Twine::Error.new "Unknown argument: #{args[3]}"
         else
           raise Twine::Error.new 'Not enough arguments.'
         end
       when 'consume-string-file'
-        if @args.length == 3
-          @options[:input_path] = @args[2]
-        elsif @args.length > 3
-          raise Twine::Error.new "Unknown argument: #{@args[3]}"
+        if args.length == 3
+          options[:input_path] = args[2]
+        elsif args.length > 3
+          raise Twine::Error.new "Unknown argument: #{args[3]}"
         else
           raise Twine::Error.new 'Not enough arguments.'
         end
-        if @options[:languages] and @options[:languages].length > 1
+        if options[:languages] and options[:languages].length > 1
           raise Twine::Error.new 'Please only specify a single language for the consume-string-file command.'
         end
       when 'consume-all-string-files'
-        if @args.length == 3
-          @options[:input_path] = @args[2]
-        elsif @args.length > 3
-          raise Twine::Error.new "Unknown argument: #{@args[3]}"
+        if args.length == 3
+          options[:input_path] = args[2]
+        elsif args.length > 3
+          raise Twine::Error.new "Unknown argument: #{args[3]}"
         else
           raise Twine::Error.new 'Not enough arguments.'
         end
       when 'generate-loc-drop'
-        if @args.length == 3
-          @options[:output_path] = @args[2]
-        elsif @args.length > 3
-          raise Twine::Error.new "Unknown argument: #{@args[3]}"
+        if args.length == 3
+          options[:output_path] = args[2]
+        elsif args.length > 3
+          raise Twine::Error.new "Unknown argument: #{args[3]}"
         else
           raise Twine::Error.new 'Not enough arguments.'
         end
-        if !@options[:format]
+        if !options[:format]
           raise Twine::Error.new 'You must specify a format.'
         end
       when 'consume-loc-drop'
-        if @args.length == 3
-          @options[:input_path] = @args[2]
-        elsif @args.length > 3
-          raise Twine::Error.new "Unknown argument: #{@args[3]}"
+        if args.length == 3
+          options[:input_path] = args[2]
+        elsif args.length > 3
+          raise Twine::Error.new "Unknown argument: #{args[3]}"
         else
           raise Twine::Error.new 'Not enough arguments.'
         end
       when 'validate-strings-file'
-        if @args.length > 2
-          raise Twine::Error.new "Unknown argument: #{@args[2]}"
+        if args.length > 2
+          raise Twine::Error.new "Unknown argument: #{args[2]}"
         end
       end
+
+      return options
     end
   end
 end

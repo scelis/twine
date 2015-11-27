@@ -11,7 +11,7 @@ class TestConsumeStringFile < CommandTestCase
     @strings = Twine::StringsFile.new
     @strings.language_codes.concat KNOWN_LANGUAGES
 
-    Twine::Runner.new(nil, options, @strings)
+    Twine::Runner.new(options, @strings)
   end
 
   def prepare_mock_read_file_formatter(formatter_class)

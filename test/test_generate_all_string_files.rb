@@ -14,7 +14,7 @@ class TestGenerateAllStringFiles < CommandTestCase
         end
       end
 
-      Twine::Runner.new(nil, options, @twine_file)
+      Twine::Runner.new(options, @twine_file)
     end
 
     def test_fails_if_output_folder_does_not_exist
