@@ -42,11 +42,7 @@ module Twine
       elsif @tags.empty?
         return include_untagged
       else
-        tags.each do |tag|
-          if @tags.include? tag
-            return true
-          end
-        end
+        return !(tags & @tags).empty?
       end
 
       return false
