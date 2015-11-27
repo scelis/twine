@@ -148,18 +148,14 @@ module Twine
     end
 
     def generate_loc_drop
-      begin
-        require 'zip/zip'
-      rescue LoadError
-        raise Twine::Error.new "You must run 'gem install rubyzip' in order to create or consume localization drops."
-      end
+      require_rubyzip
 
       if File.file?(@options[:output_path])
         File.delete(@options[:output_path])
       end
 
       Dir.mktmpdir do |dir|
-        Zip::ZipFile.open(@options[:output_path], Zip::ZipFile::CREATE) do |zipfile|
+        Zip::File.open(@options[:output_path], Zip::File::CREATE) do |zipfile|
           zipfile.mkdir('Locales')
 
           formatter = formatter_for_format(@options[:format])
@@ -177,18 +173,14 @@ module Twine
     end
 
     def consume_loc_drop
+      require_rubyzip
+
       if !File.file?(@options[:input_path])
         raise Twine::Error.new("File does not exist: #{@options[:input_path]}")
       end
 
-      begin
-        require 'zip/zip'
-      rescue LoadError
-        raise Twine::Error.new "You must run 'gem install rubyzip' in order to create or consume localization drops."
-      end
-
       Dir.mktmpdir do |dir|
-        Zip::ZipFile.open(@options[:input_path]) do |zipfile|
+        Zip::File.open(@options[:input_path]) do |zipfile|
           zipfile.each do |entry|
             if !entry.name.end_with?'/' and !File.basename(entry.name).start_with?'.'
               real_path = File.join(dir, entry.name)
@@ -288,6 +280,16 @@ module Twine
       end
 
       return
+    end
+
+    private
+
+    def require_rubyzip
+      begin
+        require 'zip'
+      rescue LoadError
+        raise Twine::Error.new "You must run 'gem install rubyzip' in order to create or consume localization drops."
+      end
     end
   end
 end
