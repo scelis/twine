@@ -51,7 +51,7 @@ module Twine
             match = /((?:[^"\\]|\\.)+)\s*=\s*((?:[^"\\]|\\.)*)/.match(line)
             if match
               key = match[1]
-              value = match[2]
+              value = match[2].strip
               value.gsub!(/\{[0-9]\}/, '%@')
               set_translation_for_key(key, lang, value)
               if last_comment
