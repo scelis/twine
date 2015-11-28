@@ -45,46 +45,53 @@ module Twine
         end
       end
 
+      def format_file(strings, lang)
+        "{\n#{super}\n}"
+      end
+
+      def format_header(lang)
+        ""
+      end
+
+      def format_sections(strings, lang)
+        sections = strings.sections.map { |section| format_section(section, lang) }
+        sections.join(",\n\n")
+      end
+
+      def format_section_header(section)
+      end
+
+      def format_section(section, lang)
+        rows = section.rows.dup
+
+        rows.map! { |row| format_row(row, lang) }
+        rows.compact! # remove nil entries
+        rows.join(",\n")
+      end
+
+      def key_value_pattern
+        "\"%{key}\":\"%{value}\""
+      end
+
+      def format_key(key)
+        escape_quotes(key)  # TODO: solve this better
+      end
+
+      def format_value(value)
+        escape_quotes(value)
+      end
+
+      def escape_quotes(text)
+        text.gsub('"', '\\\\"')
+      end
+
       def write_file(path, lang)
         begin
           require "json"
         rescue LoadError
           raise Twine::Error.new "You must run 'gem install json' in order to read or write jquery-localize files."
         end
-
-        printed_string = false
-        default_lang = @strings.language_codes[0]
-        encoding = @options[:output_encoding] || 'UTF-8'
-        File.open(path, "w:#{encoding}") do |f|
-          f.print "{"
-
-          @strings.sections.each_with_index do |section, si|
-            printed_section = false
-            section.rows.each_with_index do |row, ri|
-              if row.matches_tags?(@options[:tags], @options[:untagged])
-                if printed_string
-                  f.print ",\n"
-                end
-
-                if !printed_section
-                  f.print "\n"
-                  printed_section = true
-                end
-
-                key = row.key
-                key = key.gsub('"', '\\\\"')
-
-                value = row.translated_string_for_lang(lang, default_lang)
-                value = value.gsub('"', '\\\\"')
-
-                f.print "\"#{key}\":\"#{value}\""
-                printed_string = true
-              end
-            end
-          end
-          f.puts "\n}"
-
-        end
+        super
       end
     end
   end
