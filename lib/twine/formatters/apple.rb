@@ -109,11 +109,6 @@ module Twine
       def format_value(value)
         escape_quotes(value)
       end
-
-      def escape_quotes(text)
-        text.gsub('"', '\\\\"')
-      end
-
     end
   end
 end

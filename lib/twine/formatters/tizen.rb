@@ -140,11 +140,10 @@ module Twine
       end
 
       def format_value(value)
-        value = value.dup
+        value = escape_quotes(value)
         # Tizen enforces the following rules on the values
         #  1) apostrophes and quotes must be escaped with a backslash
         value.gsub!("'", "\\\\'")
-        value.gsub!('"', '\\\\"')
         #  2) HTML escape the string
         value = CGI.escapeHTML(value)
         #  3) fix substitutions (e.g. %s/%@)

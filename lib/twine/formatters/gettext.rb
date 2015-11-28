@@ -94,10 +94,6 @@ module Twine
       def format_comment(comment)
         "#. \"#{escape_quotes(comment)}\""
       end
-
-      def escape_quotes(text)
-        text.gsub('"', '\\\\"')
-      end
     end
   end
 end

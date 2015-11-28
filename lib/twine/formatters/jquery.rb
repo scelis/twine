@@ -70,15 +70,11 @@ module Twine
       end
 
       def format_key(key)
-        escape_quotes(key)  # TODO: solve this better
+        escape_quotes(key)
       end
 
       def format_value(value)
         escape_quotes(value)
-      end
-
-      def escape_quotes(text)
-        text.gsub('"', '\\\\"')
       end
 
       def write_file(path, lang)

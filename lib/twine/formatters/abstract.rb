@@ -195,6 +195,10 @@ module Twine
         value
       end
 
+      def escape_quotes(text)
+        text.gsub('"', '\\\\"')
+      end
+
       def write_file(path, lang)
         encoding = @options[:output_encoding] || 'UTF-8'
 
