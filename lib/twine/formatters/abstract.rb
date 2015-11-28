@@ -132,12 +132,13 @@ module Twine
       end
 
       def format_file(strings, lang)
-        result = format_header(lang) + "\n"
+        header = format_header(lang)
+        result = ""
+        result += header + "\n" if header
         result += format_sections(strings, lang)
       end
 
       def format_header(lang)
-        raise NotImplementedError.new("You must implement format_header in your formatter class.")
       end
 
       def format_sections(strings, lang)

@@ -49,10 +49,6 @@ module Twine
         "{\n#{super}\n}"
       end
 
-      def format_header(lang)
-        ""
-      end
-
       def format_sections(strings, lang)
         sections = strings.sections.map { |section| format_section(section, lang) }
         sections.join(",\n\n")
