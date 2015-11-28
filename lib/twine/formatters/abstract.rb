@@ -166,21 +166,24 @@ module Twine
         result += rows.join
       end
 
-      def format_row(row, lang)
-        value = row.translated_string_for_lang(lang)
-
-        return nil unless value
-
-        result = ""
-        if row.comment
-          comment = format_comment(row.comment)
-          result += comment + "\n" if comment
-        end
-
-        result += key_value_pattern % { key: format_key(row.key.dup), value: format_value(value.dup) }
+      def row_pattern
+        "%{comment}%{key_value}"
       end
 
-      def format_comment(comment)
+      def format_row(row, lang)
+        return nil unless row.translated_string_for_lang(lang)
+
+        result = row_pattern.scan(/%\{([a-z_]+)\}/).flatten
+        result.map! { |element| send("format_#{element}".to_sym, row, lang) }
+        result.flatten.join
+      end
+
+      def format_comment(row, lang)
+      end
+
+      def format_key_value(row, lang)
+        value = row.translated_string_for_lang(lang)
+        key_value_pattern % { key: format_key(row.key.dup), value: format_value(value.dup) }
       end
 
       def key_value_pattern

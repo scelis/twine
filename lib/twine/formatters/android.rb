@@ -105,8 +105,8 @@ module Twine
         "\t<!-- SECTION: #{section.name} -->"
       end
 
-      def format_comment(comment)
-        "\t<!-- #{comment.gsub('--', '—')} -->"
+      def format_comment(row, lang)
+        "\t<!-- #{row.comment.gsub('--', '—')} -->\n" if row.comment
       end
 
       def key_value_pattern

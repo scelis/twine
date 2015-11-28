@@ -103,19 +103,13 @@ module Twine
         "#--------- #{section.name} ---------#\n"
       end
 
-      def format_row(row, lang)
-        value = row.translated_string_for_lang(lang)
+      def row_pattern
+        "%{comment}%{base_translation}%{key_value}"
+      end
 
-        return nil unless value
-
-        result = ""
-        if row.comment
-          comment = format_comment(row.comment)
-          result += comment + "\n" if comment
-        end
-
-        result += "# base translation: \"#{row.translations[@default_lang]}\"\n"
-        result += key_value_pattern % { key: format_key(row.key.dup), value: format_value(value.dup) }
+      def format_base_translation(row, lang)
+        base_translation = row.translations[@default_lang]
+        "# base translation: \"#{base_translation}\"\n" if base_translation
       end
 
       def key_value_pattern
@@ -123,8 +117,8 @@ module Twine
         "msgstr \"%{value}\"\n"
       end
 
-      def format_comment(comment)
-        "#. #{escape_quotes(comment)}"
+      def format_comment(row, lang)
+        "#. #{escape_quotes(row.comment)}\n" if row.comment
       end
 
       def format_key(key)

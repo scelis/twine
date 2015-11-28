@@ -73,26 +73,30 @@ module Twine
         "# SECTION: #{section.name}"
       end
 
+      def row_pattern
+        "%{comment}%{key}%{base_translation}%{value}"
+      end
+
       def format_row(row, lang)
         return nil unless row.translated_string_for_lang(@default_lang)
 
-        value = row.translated_string_for_lang(lang)
-
-        return nil unless value
-
-        result = ""
-        if row.comment
-          comment = format_comment(row.comment)
-          result += comment + "\n" if comment
-        end
-
-        result += "msgctxt \"#{format_key(row.key.dup)}\"\n"
-        result += "msgid \"#{format_value(row.translations[@default_lang])}\"\n"
-        result += "msgstr \"#{format_value(value)}\"\n"
+        super
       end
 
-      def format_comment(comment)
-        "#. \"#{escape_quotes(comment)}\""
+      def format_comment(row, lang)
+        "#. \"#{escape_quotes(row.comment)}\"\n" if row.comment
+      end
+
+      def format_key(row, lang)
+        "msgctxt \"#{row.key.dup}\"\n"
+      end
+
+      def format_base_translation(row, lang)
+        "msgid \"#{row.translations[@default_lang]}\"\n"
+      end
+
+      def format_value(row, lang)
+        "msgstr \"#{row.translated_string_for_lang(lang)}\"\n"
       end
     end
   end

@@ -78,8 +78,8 @@ module Twine
         "## #{section.name} ##\n"
       end
 
-      def format_comment(comment)
-        "# #{comment}"
+      def format_comment(row, lang)
+        "# #{row.comment}\n" if row.comment
       end
 
       def key_value_pattern
