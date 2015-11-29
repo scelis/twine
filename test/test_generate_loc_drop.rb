@@ -14,7 +14,7 @@ class TestGenerateLocDrop < CommandTestCase
       end
     end
 
-    @runner = Twine::Runner.new(nil, options, @twine_file)
+    @runner = Twine::Runner.new(options, @twine_file)
   end
 
   def test_generates_zip_file

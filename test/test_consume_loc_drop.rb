@@ -15,7 +15,7 @@ class TestConsumeLocDrop < CommandTestCase
       end
     end
 
-    @runner = Twine::Runner.new(nil, options, @twine_file)
+    @runner = Twine::Runner.new(options, @twine_file)
   end
 
   def test_consumes_zip_file
