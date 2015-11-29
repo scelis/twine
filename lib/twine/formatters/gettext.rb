@@ -60,50 +60,43 @@ module Twine
         end
       end
 
-      def write_file(path, lang)
-        default_lang = @strings.language_codes[0]
-        encoding = @options[:output_encoding] || 'UTF-8'
-        File.open(path, "w:#{encoding}") do |f|
-          f.puts "msgid \"\"\nmsgstr \"\"\n\"Language: #{lang}\\n\"\n\"X-Generator: Twine #{Twine::VERSION}\\n\"\n\n"
-          @strings.sections.each do |section|
-            printed_section = false
-            section.rows.each do |row|
-              if row.matches_tags?(@options[:tags], @options[:untagged])
-                if !printed_section
-                  f.puts ''
-                    if section.name && section.name.length > 0
-                      section_name = section.name.gsub('--', '—')
-                      f.puts "# SECTION: #{section_name}"
-                    end
-                  printed_section = true
-                end
+      def format_file(strings, lang)
+        @default_lang = strings.language_codes[0]
+        super
+      end
 
-                basetrans = row.translated_string_for_lang(default_lang)
+      def format_header(lang)
+        "msgid \"\"\nmsgstr \"\"\n\"Language: #{lang}\\n\"\n\"X-Generator: Twine #{Twine::VERSION}\\n\"\n"
+      end
 
-                if basetrans
-                  key = row.key
-                  key = key.gsub('"', '\\\\"')
+      def format_section_header(section)
+        "# SECTION: #{section.name}"
+      end
 
-                  comment = row.comment
-                  if comment
-                    comment = comment.gsub('"', '\\\\"')
-                  end
+      def row_pattern
+        "%{comment}%{key}%{base_translation}%{value}"
+      end
 
-                  if comment && comment.length > 0
-                    f.print "#. \"#{comment}\"\n"
-                  end
+      def format_row(row, lang)
+        return nil unless row.translated_string_for_lang(@default_lang)
 
-                  f.print "msgctxt \"#{key}\"\nmsgid \"#{basetrans}\"\n"
-                  value = row.translated_string_for_lang(lang)
-                  if value
-                    value = value.gsub('"', '\\\\"')
-                  end
-                  f.print "msgstr \"#{value}\"\n\n"
-                end
-              end
-            end
-          end
-        end
+        super
+      end
+
+      def format_comment(row, lang)
+        "#. \"#{escape_quotes(row.comment)}\"\n" if row.comment
+      end
+
+      def format_key(row, lang)
+        "msgctxt \"#{row.key.dup}\"\n"
+      end
+
+      def format_base_translation(row, lang)
+        "msgid \"#{row.translations[@default_lang]}\"\n"
+      end
+
+      def format_value(row, lang)
+        "msgstr \"#{row.translated_string_for_lang(lang)}\"\n"
       end
     end
   end

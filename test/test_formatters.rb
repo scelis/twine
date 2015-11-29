@@ -200,3 +200,43 @@ class TestTizenFormatter < FormatterTest
   end
 
 end
+
+class TestDjangoFormatter < FormatterTest
+  def setup
+    super Twine::Formatters::Django
+  end
+
+  def test_read_file_format
+    @formatter.read_file fixture('formatter_django.po'), 'en'
+
+    1.upto(4) do |i|
+      assert_equal "value#{i}-english", @strings.strings_map["key#{i}"].translations['en']
+    end
+  end
+
+  def test_write_file_output_format
+    formatter = Twine::Formatters::Django.new @twine_file, {}
+    formatter.write_file @output_path, 'en'
+    assert_equal content('formatter_django.po'), output_content
+  end
+end
+
+class TestFlashFormatter < FormatterTest
+  def setup
+    super Twine::Formatters::Flash
+  end
+
+  def test_read_file_format
+    @formatter.read_file fixture('formatter_flash.properties'), 'en'
+
+    1.upto(4) do |i|
+      assert_equal "value#{i}-english", @strings.strings_map["key#{i}"].translations['en']
+    end
+  end
+
+  def test_write_file_output_format
+    formatter = Twine::Formatters::Flash.new @twine_file, {}
+    formatter.write_file @output_path, 'en'
+    assert_equal content('formatter_flash.properties'), output_content
+  end
+end

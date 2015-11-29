@@ -98,8 +98,8 @@ module Twine
         "\"%{key}\" = \"%{value}\";\n"
       end
 
-      def format_comment(comment)
-        "/* #{comment.gsub('*/', '* /')} */"
+      def format_comment(row, lang)
+        "/* #{row.comment.gsub('*/', '* /')} */\n" if row.comment
       end
 
       def format_key(key)
@@ -109,11 +109,6 @@ module Twine
       def format_value(value)
         escape_quotes(value)
       end
-
-      def escape_quotes(text)
-        text.gsub('"', '\\\\"')
-      end
-
     end
   end
 end
