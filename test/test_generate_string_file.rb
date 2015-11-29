@@ -6,7 +6,10 @@ class TestGenerateStringFile < CommandTestCase
     options[:output_path] = File.join(@output_dir, file) if file
     options[:languages] = language if language
 
-    Twine::Runner.new(nil, options)
+    @strings = Twine::StringsFile.new
+    @strings.language_codes.concat KNOWN_LANGUAGES
+
+    Twine::Runner.new(nil, options, @strings)
   end
 
   def prepare_mock_write_file_formatter(formatter_class)
@@ -39,7 +42,7 @@ class TestGenerateStringFile < CommandTestCase
   end
 
   def test_deducts_language_from_output_path
-    random_language = @known_languages.sample
+    random_language = KNOWN_LANGUAGES.sample
     formatter = prepare_mock_formatter Twine::Formatters::Android
     formatter.expects(:write_file).with(anything, random_language)
 

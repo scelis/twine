@@ -1,4 +1,0 @@
-[[My Strings]]
-  [key1]
-    en = key1-english
-    es = key1-spanish

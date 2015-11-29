@@ -15,7 +15,7 @@ class TwineTestCase < Minitest::Test
   end
 
   def teardown
-    FileUtils.remove_entry_secure @output_dir
+    FileUtils.remove_entry_secure @output_dir if File.exists? @output_dir
     super
   end
 
