@@ -18,11 +18,11 @@ Gem::Specification.new do |s|
   s.test_files   = Dir.glob("test/test_*")
 
   s.required_ruby_version = ">= 1.8.7"
-  s.add_runtime_dependency('rubyzip', "~> 1.1.7")
-  s.add_runtime_dependency('safe_yaml', "~> 1.0.3")
-  s.add_development_dependency('rake', "~> 0.9.2")
-  s.add_development_dependency('minitest', "> 5.5")
-  s.add_development_dependency('mocha', ">= 1.1")
+  s.add_runtime_dependency('rubyzip', "~> 1.1")
+  s.add_runtime_dependency('safe_yaml', "~> 1.0")
+  s.add_development_dependency('rake', "~> 10.4")
+  s.add_development_dependency('minitest', "~> 5.5")
+  s.add_development_dependency('mocha', "~> 1.1")
 
   s.executables  = %w( twine )
   s.description  = <<desc
