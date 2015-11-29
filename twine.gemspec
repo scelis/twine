@@ -18,7 +18,7 @@ Gem::Specification.new do |s|
   s.test_files   = Dir.glob("test/test_*")
 
   s.required_ruby_version = ">= 1.8.7"
-  s.add_runtime_dependency('rubyzip', "~> 0.9.5")
+  s.add_runtime_dependency('rubyzip', "~> 1.1.7")
   s.add_runtime_dependency('safe_yaml', "~> 1.0.3")
   s.add_development_dependency('rake', "~> 0.9.2")
   s.add_development_dependency('minitest', "> 5.5")
