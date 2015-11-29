@@ -80,9 +80,8 @@ module Twine
           end
         elsif @options[:consume_all]
           STDERR.puts "Adding new string '#{key}' to strings data file."
-          arr = @strings.sections.select { |s| s.name == 'Uncategorized' }
-          current_section = arr ? arr[0] : nil
-          if !current_section
+          current_section = @strings.sections.find { |s| s.name == 'Uncategorized' }
+          unless current_section
             current_section = StringsSection.new('Uncategorized')
             @strings.sections.insert(0, current_section)
           end

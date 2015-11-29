@@ -44,9 +44,7 @@ module Twine
 
     def generate_string_file
       lang = nil
-      if @options[:languages]
-        lang = @options[:languages][0]
-      end
+      lang = @options[:languages][0] if @options[:languages]
 
       read_write_string_file(@options[:output_path], false, lang)
     end
@@ -60,11 +58,8 @@ module Twine
         end
       end
 
-      format = @options[:format]
-      if !format
-        format = determine_format_given_directory(@options[:output_path])
-      end
-      if !format
+      format = @options[:format] || determine_format_given_directory(@options[:output_path])
+      unless format
         raise Twine::Error.new "Could not determine format given the contents of #{@options[:output_path]}"
       end
 
@@ -108,23 +103,15 @@ module Twine
         raise Twine::Error.new("File does not exist: #{path}")
       end
 
-      format = @options[:format]
-      if !format
-        format = determine_format_given_path(path)
-      end
-      if !format
+      format = @options[:format] || determine_format_given_path(path)
+      unless format
         raise Twine::Error.new "Unable to determine format of #{path}"
       end
 
       formatter = formatter_for_format(format)
 
-      if !lang
-        lang = determine_language_given_path(path)
-      end
-      if !lang
-        lang = formatter.determine_language_given_path(path)
-      end
-      if !lang
+      lang = lang || determine_language_given_path(path) || formatter.determine_language_given_path(path)
+      unless lang
         raise Twine::Error.new "Unable to determine language for #{path}"
       end
 
@@ -236,42 +223,22 @@ module Twine
 
     def determine_language_given_path(path)
       code = File.basename(path, File.extname(path))
-      if !@strings.language_codes.include? code
-        code = nil
-      end
-
-      code
+      return code if @strings.language_codes.include? code
     end
 
     def determine_format_given_path(path)
-      ext = File.extname(path)
-      Formatters.formatters.each do |formatter|
-        if formatter::EXTENSION == ext
-          return formatter::FORMAT_NAME
-        end
-      end
-
-      return
+      formatter = Formatters.formatters.find { |f| f::EXTENSION == File.extname(path) }
+      return formatter::FORMAT_NAME if formatter
     end
 
     def determine_format_given_directory(directory)
-      Formatters.formatters.each do |formatter|
-        if formatter.can_handle_directory?(directory)
-          return formatter::FORMAT_NAME
-        end
-      end
-
-      return
+      formatter = Formatters.formatters.find { |f| f.can_handle_directory?(directory) }
+      return formatter::FORMAT_NAME if formatter
     end
 
     def formatter_for_format(format)
-      Formatters.formatters.each do |formatter|
-        if formatter::FORMAT_NAME == format
-          return formatter.new(@strings, @options)
-        end
-      end
-
-      return
+      formatter = Formatters.formatters.find { |f| f::FORMAT_NAME == format }
+      return formatter.new(@strings, @options) if formatter
     end
 
     private
