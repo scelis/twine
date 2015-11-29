@@ -1,8 +1,6 @@
 require 'twine_test_case'
 
 class CommandTestCase < TwineTestCase
-  KNOWN_LANGUAGES = %w(en fr de es)
-
   def prepare_mock_formatter(formatter_class)
     strings = Twine::StringsFile.new
     strings.language_codes.concat KNOWN_LANGUAGES

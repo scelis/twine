@@ -4,24 +4,35 @@ require 'fileutils'
 Twine::Plugin.new # Initialize plugins first in Runner.
 
 module Twine
-  VALID_COMMANDS = ['generate-string-file', 'generate-all-string-files', 'consume-string-file', 'consume-all-string-files', 'generate-loc-drop', 'consume-loc-drop', 'validate-strings-file']
-
   class Runner
-    def initialize(args, options = {}, strings = StringsFile.new)
-      @args = args
+    def self.run(args)
+      options = CLI.parse(args)
+      
+      strings = StringsFile.new
+      strings.read options[:strings_file]
+      runner = new(options, strings)
+
+      case options[:command]
+      when 'generate-string-file'
+        runner.generate_string_file
+      when 'generate-all-string-files'
+        runner.generate_all_string_files
+      when 'consume-string-file'
+        runner.consume_string_file
+      when 'consume-all-string-files'
+        runner.consume_all_string_files
+      when 'generate-loc-drop'
+        runner.generate_loc_drop
+      when 'consume-loc-drop'
+        runner.consume_loc_drop
+      when 'validate-strings-file'
+        runner.validate_strings_file
+      end
+    end
+
+    def initialize(options = {}, strings = StringsFile.new)
       @options = options
       @strings = strings
-    end
-
-    def self.run(args)
-      new(args).run
-    end
-
-    def run
-      # Parse all CLI arguments.
-      CLI::parse_args(@args, @options)
-      @strings.read @options[:strings_file]
-      execute_command
     end
 
     def write_strings_data(path)
@@ -29,25 +40,6 @@ module Twine
         @strings.set_developer_language_code(@options[:developer_language])
       end
       @strings.write(path)
-    end
-
-    def execute_command
-      case @options[:command]
-      when 'generate-string-file'
-        generate_string_file
-      when 'generate-all-string-files'
-        generate_all_string_files
-      when 'consume-string-file'
-        consume_string_file
-      when 'consume-all-string-files'
-        consume_all_string_files
-      when 'generate-loc-drop'
-        generate_loc_drop
-      when 'consume-loc-drop'
-        consume_loc_drop
-      when 'validate-strings-file'
-        validate_strings_file
-      end
     end
 
     def generate_string_file
