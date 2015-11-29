@@ -31,7 +31,7 @@ class TwineTestCase < Minitest::Test
   end
 
   def fixture(filename)
-    File.join __dir__, 'fixtures', filename
+    File.join File.dirname(__FILE__), 'fixtures', filename
   end
   alias :f :fixture
 
