@@ -191,42 +191,33 @@ module Twine
         section.rows.each do |row|
           total_strings += 1
 
-          if all_keys.include? row.key
-            duplicate_keys.add(row.key)
-          else
-            all_keys.add(row.key)
-          end
+          duplicate_keys.add(row.key) if all_keys.include? row.key
+          all_keys.add(row.key)
 
-          if row.tags == nil || row.tags.length == 0
-            keys_without_tags.add(row.key)
-          end
+          keys_without_tags.add(row.key) if row.tags == nil or row.tags.length == 0
 
           invalid_keys << row.key unless row.key =~ valid_key_regex
         end
       end
 
       errors = []
-      if duplicate_keys.length > 0
-        error_body = duplicate_keys.to_a.join("\n  ")
-        errors << "Found duplicate string key(s):\n  #{error_body}"
+      join_keys = lambda { |set| set.map { |k| "  " + k }.join("\n") }
+
+      unless duplicate_keys.empty?
+        errors << "Found duplicate string key(s):\n#{join_keys.call(duplicate_keys)}"
       end
 
       if keys_without_tags.length == total_strings
         errors << "None of your strings have tags."
       elsif keys_without_tags.length > 0
-        error_body = keys_without_tags.to_a.join("\n  ")
-        errors << "Found strings without tags:\n  #{error_body}"
+        errors << "Found strings without tags:\n#{join_keys.call(keys_without_tags)}"
       end
-
-      join_keys = lambda { |set| set.map { |k| "  " + k }.join("\n") }
 
       unless invalid_keys.empty?
         errors << "Found key(s) with invalid characters:\n#{join_keys.call(invalid_keys)}"
       end
 
-      if errors.length > 0
-        raise Twine::Error.new errors.join("\n\n")
-      end
+      raise Twine::Error.new errors.join("\n\n") unless errors.empty?
 
       Twine::stdout.puts "#{@options[:strings_file]} is valid."
     end
