@@ -211,7 +211,7 @@ module Twine
         errors << "None of your strings have tags."
       elsif keys_without_tags.length > 0
         error_body = keys_without_tags.to_a.join("\n  ")
-        errors << "Found strings(s) without tags:\n  #{error_body}"
+        errors << "Found strings without tags:\n  #{error_body}"
       end
 
       if errors.length > 0
