@@ -42,4 +42,12 @@ class TestValidateStringsFile < CommandTestCase
       Twine::Runner.new(@options, @twine_file).validate_strings_file
     end
   end
+
+  def test_reports_invalid_characters_in_keys
+    random_row.key[0] = "!?;:,^`´'\"\\|/(){}[]~-+*=#$%".chars.sample
+
+    assert_raises Twine::Error do
+      Twine::Runner.new(@options, @twine_file).validate_strings_file
+    end
+  end
 end

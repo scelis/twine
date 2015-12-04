@@ -184,7 +184,8 @@ module Twine
       all_keys = Set.new
       duplicate_keys = Set.new
       keys_without_tags = Set.new
-      errors = []
+      invalid_keys = Set.new
+      valid_key_regex = /^[A-Za-z0-9_.]+$/
 
       @strings.sections.each do |section|
         section.rows.each do |row|
@@ -199,9 +200,12 @@ module Twine
           if row.tags == nil || row.tags.length == 0
             keys_without_tags.add(row.key)
           end
+
+          invalid_keys << row.key unless row.key =~ valid_key_regex
         end
       end
 
+      errors = []
       if duplicate_keys.length > 0
         error_body = duplicate_keys.to_a.join("\n  ")
         errors << "Found duplicate string key(s):\n  #{error_body}"
@@ -212,6 +216,12 @@ module Twine
       elsif keys_without_tags.length > 0
         error_body = keys_without_tags.to_a.join("\n  ")
         errors << "Found strings without tags:\n  #{error_body}"
+      end
+
+      join_keys = lambda { |set| set.map { |k| "  " + k }.join("\n") }
+
+      unless invalid_keys.empty?
+        errors << "Found key(s) with invalid characters:\n#{join_keys.call(invalid_keys)}"
       end
 
       if errors.length > 0
