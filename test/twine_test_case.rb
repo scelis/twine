@@ -2,6 +2,7 @@ require 'erb'
 require 'minitest/autorun'
 require "mocha/mini_test"
 require 'securerandom'
+require 'stringio'
 require 'twine'
 require 'twine_file_dsl'
 
@@ -12,6 +13,8 @@ class TwineTestCase < Minitest::Test
   
   def setup
     super
+    Twine::stdout = StringIO.new
+    Twine::stderr = StringIO.new
     @output_dir = Dir.mktmpdir
     @output_path = File.join @output_dir, SecureRandom.uuid
   end

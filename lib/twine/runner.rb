@@ -89,7 +89,7 @@ module Twine
           begin
             read_write_string_file(item, true, nil)
           rescue Twine::Error => e
-            STDERR.puts "#{e.message}"
+            Twine::stderr.puts "#{e.message}"
           end
         end
       end
@@ -168,7 +168,7 @@ module Twine
               begin
                 read_write_string_file(real_path, true, nil)
               rescue Twine::Error => e
-                STDERR.puts "#{e.message}"
+                Twine::stderr.puts "#{e.message}"
               end
             end
           end
@@ -218,7 +218,7 @@ module Twine
         raise Twine::Error.new errors.join("\n\n")
       end
 
-      puts "#{@options[:strings_file]} is valid."
+      Twine::stdout.puts "#{@options[:strings_file]} is valid."
     end
 
     def determine_language_given_path(path)
