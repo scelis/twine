@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 require 'command_test_case'
 
 class TestValidateStringsFile < CommandTestCase
@@ -44,7 +46,7 @@ class TestValidateStringsFile < CommandTestCase
   end
 
   def test_reports_invalid_characters_in_keys
-    random_row.key[0] = "!?;:,^`´'\"\\|/(){}[]~-+*=#$%".chars.sample
+    random_row.key[0] = "!?;:,^`´'\"\\|/(){}[]~-+*=#$%".chars.to_a.sample
 
     assert_raises Twine::Error do
       Twine::Runner.new(@options, @twine_file).validate_strings_file
