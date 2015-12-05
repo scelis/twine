@@ -26,7 +26,7 @@ module Twine
       end
 
       def read_file(path, lang)
-        comment_regex = /#.? *"(.*)"$/
+        comment_regex = /#\. *"?(.*)"?$/
         key_regex = /msgid *"(.*)"$/
         value_regex = /msgstr *"(.*)"$/m
 
@@ -83,6 +83,8 @@ module Twine
                 if comment and comment.length > 0 and !comment.start_with?("--------- ")
                     set_comment_for_key(key, comment)
                 end
+                key = nil
+                value = nil
                 comment = nil
             end
 

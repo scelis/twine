@@ -59,7 +59,7 @@ module Twine
               end
             end
             if @options[:consume_comments]
-              match = /#(.*)/.match(line)
+              match = /# *(.*)/.match(line)
               if match
                 last_comment = match[1]
               else
