@@ -103,6 +103,8 @@ module Twine
       end
 
       def set_comment_for_key(key, comment)
+        return unless @options[:consume_comments]
+        
         if @strings.strings_map.include?(key)
           row = @strings.strings_map[key]
           

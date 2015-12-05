@@ -74,14 +74,14 @@ module Twine
                 set_comment_for_key(key, last_comment)
               end
             end
-            if @options[:consume_comments]
-              match = /\/\* (.*) \*\//.match(line)
-              if match
-                last_comment = match[1]
-              else
-                last_comment = nil
-              end
+
+            match = /\/\* (.*) \*\//.match(line)
+            if match
+              last_comment = match[1]
+            else
+              last_comment = nil
             end
+
           end
         end
       end
