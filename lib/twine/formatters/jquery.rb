@@ -25,11 +25,6 @@ module Twine
         return
       end
 
-      def set_translation_for_key(key, lang, value)
-        value = value.gsub("\n","\\n")
-        super(key, lang, value)
-      end
-
       def read_file(path, lang)
         begin
           require "json"

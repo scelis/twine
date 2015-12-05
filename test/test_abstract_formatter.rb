@@ -27,6 +27,12 @@ class TestAbstractFormatter < TwineTestCase
       assert_equal 'value2-french', @strings.strings_map['key2'].translations['fr']
     end
 
+    def test_set_translation_escapes_newlines
+      @formatter.set_translation_for_key 'key1', 'en', "new\nline"
+
+      assert_equal 'new\nline', @strings.strings_map['key1'].translations['en']
+    end
+
     def test_set_translation_adds_translation_to_existing_key
       @formatter.set_translation_for_key 'key1', 'fr', 'value1-french'
 
