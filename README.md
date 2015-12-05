@@ -27,6 +27,10 @@ Twine stores all of its strings in a single file. The format of this file is a s
 
 Each grouping section contains N string definitions. These string definitions start with the string key placed within a single pair of square brackets. This string definition then contains a number of key-value pairs, including a comment, a comma-separated list of tags (which are used by Twine to select a subset of strings), and all of the translations.
 
+### Placeholders
+
+Twine supports [`printf` style placeholders](https://en.wikipedia.org/wiki/Printf_format_string) with one peculiarity: `@` is used for strings instead of `s`.
+
 ### Tags
 
 Tags are used by Twine as a way to only work with a subset of your strings at any given point in time. Each string can be assigned zero or more tags which are separated by commas. Tags are optional, though highly recommended. You can get a list of all strings currently missing tags by executing the `validate-strings-file` command.
