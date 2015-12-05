@@ -7,6 +7,7 @@ module Twine
   require 'twine/encoding'
   require 'twine/output_processor'
   require 'twine/formatters'
+  require 'twine/placeholders'
   require 'twine/runner'
   require 'twine/stringsfile'
   require 'twine/version'

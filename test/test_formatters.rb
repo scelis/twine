@@ -34,14 +34,19 @@ class TestAndroidFormatter < FormatterTest
     end
   end
 
-  def test_set_translation_transforms_leading_spaces
+  def test_set_translation_converts_leading_spaces
     @formatter.set_translation_for_key 'key1', 'en', "\u0020value"
     assert_equal ' value', @strings.strings_map['key1'].translations['en']
   end
 
-  def test_set_translation_transforms_trailing_spaces
+  def test_set_translation_coverts_trailing_spaces
     @formatter.set_translation_for_key 'key1', 'en', "value\u0020\u0020"
     assert_equal 'value  ', @strings.strings_map['key1'].translations['en']
+  end
+
+  def test_set_translation_converts_string_placeholders
+    @formatter.set_translation_for_key 'key1', 'en', "value %s"
+    assert_equal 'value %@', @strings.strings_map['key1'].translations['en']
   end
 
   def test_write_file_output_format
@@ -67,23 +72,6 @@ class TestAndroidFormatter < FormatterTest
     # http://stackoverflow.com/questions/18735608/cgiescapehtml-is-escaping-single-quote
     assert_equal "not \\'so\\' easy", @formatter.format_value("not 'so' easy")
   end
-
-  def test_format_value_transforms_string_placeholder
-    assert_equal '%s', @formatter.format_value('%@')
-  end
-
-  def test_format_value_transforms_ordered_string_placeholder
-    assert_equal '%1s', @formatter.format_value('%1@')
-  end
-
-  def test_format_value_transforming_ordered_placeholders_maintains_order
-    assert_equal '%2s %1d', @formatter.format_value('%2@ %1d')
-  end
-
-  def test_format_value_does_not_alter_double_percent
-    assert_equal '%%d%%', @formatter.format_value('%%d%%')
-  end
-
 end
 
 class TestAppleFormatter < FormatterTest
