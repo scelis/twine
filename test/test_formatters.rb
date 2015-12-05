@@ -49,6 +49,11 @@ class TestAndroidFormatter < FormatterTest
     assert_equal 'value %@', @strings.strings_map['key1'].translations['en']
   end
 
+  def test_set_translation_unescapes_at_signs
+    @formatter.set_translation_for_key 'key1', 'en', '\@value'
+    assert_equal '@value', @strings.strings_map['key1'].translations['en']
+  end
+
   def test_write_file_output_format
     formatter = Twine::Formatters::Android.new @twine_file, {}
     formatter.write_file @output_path, 'en'
@@ -71,6 +76,15 @@ class TestAndroidFormatter < FormatterTest
     skip 'not working with ruby 2.0'
     # http://stackoverflow.com/questions/18735608/cgiescapehtml-is-escaping-single-quote
     assert_equal "not \\'so\\' easy", @formatter.format_value("not 'so' easy")
+  end
+
+  def test_format_value_escapes_non_resource_identifier_at_signs
+    assert_equal '\@whatever  \@\@', @formatter.format_value('@whatever  @@')
+  end
+
+  def test_format_value_does_not_modify_resource_identifiers
+    identifier = '@android:string/cancel'
+    assert_equal identifier, @formatter.format_value(identifier)
   end
 end
 

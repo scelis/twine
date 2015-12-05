@@ -50,6 +50,7 @@ module Twine
         value.gsub!('\\\'', '\'')
         value.gsub!('\\"', '"')
         value = Placeholders.from_android_to_twine(value)
+        value.gsub!('\@', '@')
         value.gsub!(/(\\u0020)*|(\\u0020)*\z/) { |spaces| ' ' * (spaces.length / 6) }
         super(key, lang, value)
       end
@@ -120,9 +121,12 @@ module Twine
         value.gsub!("'", "\\\\'")
         #  2) HTML escape the string
         value = CGI.escapeHTML(value)
-        #  3) fix substitutions (e.g. %s/%@)
+        #  3) convert placeholders (e.g. %@ -> %s)
         value = Placeholders.from_twine_to_android(value)
-        #  4) replace beginning and end spaces with \0020. Otherwise Android strips them.
+        #  4) escape non resource identifier @ signs (http://developer.android.com/guide/topics/resources/accessing-resources.html#ResourcesFromXml)
+        resource_identifier_regex = /@(?!([a-z\.]+:)?[a-z+]+\/[a-zA-Z_]+)/   # @[<package_name>:]<resource_type>/<resource_name>
+        value.gsub!(resource_identifier_regex, '\@')
+        #  5) replace beginning and end spaces with \0020. Otherwise Android strips them.
         value.gsub(/\A *| *\z/) { |spaces| '\u0020' * spaces.length }
       end
 
