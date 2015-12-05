@@ -16,12 +16,6 @@ module Twine
         @output_processor = Processors::OutputProcessor.new @strings, @options
       end
 
-      def iosify_substitutions(str)
-        # use "@" instead of "s" for substituting strings
-        str.gsub!(/%([0-9\$]*)s/, '%\1@')
-        return str
-      end
-      
       def set_translation_for_key(key, lang, value)
         if @strings.strings_map.include?(key)
           row = @strings.strings_map[key]
