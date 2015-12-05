@@ -22,7 +22,7 @@ module Twine
       def process(language)
         result = StringsFile.new
 
-        @strings.language_codes.each { |lang| result.language_codes << lang }
+        result.language_codes.concat @strings.language_codes
         @strings.sections.each do |section|
           new_section = StringsSection.new section.name
 
