@@ -21,54 +21,6 @@ module Twine
         str.gsub!(/%([0-9\$]*)s/, '%\1@')
         return str
       end
-
-      def androidify_substitutions(str)
-        # 1) use "s" instead of "@" for substituting strings
-        str.gsub!(/%([0-9\$]*)@/, '%\1s')
-
-        # 1a) escape strings that begin with a lone "@"
-        str.sub!(/^@ /, '\\@ ')
-
-        # 2) if there is more than one substitution in a string, make sure they are numbered
-        substituteCount = 0
-        startFound = false
-        str.each_char do |c|
-          if startFound
-            if c == "%"
-              # ignore as this is a literal %
-            elsif c.match(/\d/)
-              # leave the string alone if it already has numbered substitutions
-              return str
-            else
-              substituteCount += 1
-            end
-            startFound = false
-          elsif c == "%"
-            startFound = true
-          end
-        end
-
-        if substituteCount > 1
-          currentSub = 1
-          startFound = false
-          newstr = ""
-          str.each_char do |c|
-            if startFound
-              if !(c == "%")
-                newstr = newstr + "#{currentSub}$"
-                currentSub += 1
-              end
-              startFound = false
-            elsif c == "%"
-              startFound = true
-            end
-            newstr = newstr + c
-          end
-          return newstr
-        else
-          return str
-        end
-      end
       
       def set_translation_for_key(key, lang, value)
         if @strings.strings_map.include?(key)
