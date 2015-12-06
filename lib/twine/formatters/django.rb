@@ -1,16 +1,20 @@
 module Twine
   module Formatters
     class Django < Abstract
-      FORMAT_NAME = 'django'
-      EXTENSION = '.po'
-      DEFAULT_FILE_NAME = 'strings.po'
+      def format_name
+        'django'
+      end
 
-      def self.can_handle_directory?(path)
-      Dir.entries(path).any? { |item| /^.+\.po$/.match(item) }
+      def extension
+        '.po'
+      end
+
+      def can_handle_directory?(path)
+        Dir.entries(path).any? { |item| /^.+\.po$/.match(item) }
       end
 
       def default_file_name
-        return DEFAULT_FILE_NAME
+        return 'strings.po'
       end
 
       def determine_language_given_path(path)

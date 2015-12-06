@@ -1,16 +1,20 @@
 module Twine
   module Formatters
     class Apple < Abstract
-      FORMAT_NAME = 'apple'
-      EXTENSION = '.strings'
-      DEFAULT_FILE_NAME = 'Localizable.strings'
+      def format_name
+        'apple'
+      end
 
-      def self.can_handle_directory?(path)
+      def extension
+        '.strings'
+      end
+
+      def can_handle_directory?(path)
         Dir.entries(path).any? { |item| /^.+\.lproj$/.match(item) }
       end
 
       def default_file_name
-        return DEFAULT_FILE_NAME
+        return 'Localizable.strings'
       end
 
       def determine_language_given_path(path)

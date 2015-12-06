@@ -6,13 +6,25 @@ module Twine
       attr_accessor :strings
       attr_accessor :options
 
-      def self.can_handle_directory?(path)
-        return false
-      end
-
       def initialize(strings = StringsFile.new, options = {})
         @strings = strings
         @options = options
+      end
+
+      def format_name
+        raise NotImplementedError.new("You must implement format_name in your formatter class.")
+      end
+
+      def extension
+        raise NotImplementedError.new("You must implement extension in your formatter class.")
+      end
+
+      def can_handle_directory?(path)
+        raise NotImplementedError.new("You must implement can_handle_directory? in your formatter class.")
+      end
+
+      def default_file_name
+        raise NotImplementedError.new("You must implement default_file_name in your formatter class.")
       end
 
       def set_translation_for_key(key, lang, value)
@@ -61,10 +73,6 @@ module Twine
             row.comment = comment
           end
         end
-      end
-
-      def default_file_name
-        raise NotImplementedError.new("You must implement default_file_name in your formatter class.")
       end
 
       def determine_language_given_path(path)

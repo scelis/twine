@@ -140,7 +140,7 @@ module Twine
           formatter = formatter_for_format(@options[:format])
           @strings.language_codes.each do |lang|
             if @options[:languages] == nil || @options[:languages].length == 0 || @options[:languages].include?(lang)
-              file_name = lang + formatter.class::EXTENSION
+              file_name = lang + formatter.extension
               real_path = File.join(dir, file_name)
               zip_path = File.join('Locales', file_name)
               formatter.write_file(real_path, lang)
@@ -228,17 +228,17 @@ module Twine
     end
 
     def determine_format_given_path(path)
-      formatter = Formatters.formatters.find { |f| f.class::EXTENSION == File.extname(path) }
-      return formatter.class::FORMAT_NAME if formatter
+      formatter = Formatters.formatters.find { |f| f.extension == File.extname(path) }
+      return formatter.format_name if formatter
     end
 
     def determine_format_given_directory(directory)
-      formatter = Formatters.formatters.find { |f| f.class.can_handle_directory?(directory) }
-      return formatter.class::FORMAT_NAME if formatter
+      formatter = Formatters.formatters.find { |f| f.can_handle_directory?(directory) }
+      return formatter.format_name if formatter
     end
 
     def formatter_for_format(format)
-      formatter = Formatters.formatters.find { |f| f.class::FORMAT_NAME == format }
+      formatter = Formatters.formatters.find { |f| f.format_name == format }
       return nil unless formatter
       formatter.strings = @strings
       formatter.options = @options

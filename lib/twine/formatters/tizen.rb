@@ -7,9 +7,6 @@ module Twine
     class Tizen < Abstract
       include Twine::Placeholders
 
-      FORMAT_NAME = 'tizen'
-      EXTENSION = '.xml'
-      DEFAULT_FILE_NAME = 'strings.xml'
       LANG_CODES = Hash[
         'eng-GB' => 'en',
         'rus-RU' => 'ru',
@@ -22,15 +19,21 @@ module Twine
         'por-PT' => 'pt',
         'ukr-UA' => 'uk'
       ]
-      DEFAULT_LANG_CODES = Hash[
-      ]
 
-      def self.can_handle_directory?(path)
+      def format_name
+        'tizen'
+      end
+
+      def extension
+        '.xml'
+      end
+
+      def can_handle_directory?(path)
         Dir.entries(path).any? { |item| /^values.*$/.match(item) }
       end
 
       def default_file_name
-        return DEFAULT_FILE_NAME
+        return 'strings.xml'
       end
 
       def determine_language_given_path(path)

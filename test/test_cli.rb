@@ -246,13 +246,13 @@ class CLITestCase < TwineTestCase
     end
 
     def test_format
-      random_format = Twine::Formatters.formatters.sample.class::FORMAT_NAME
+      random_format = Twine::Formatters.formatters.sample.format_name
       parse_with "--format #{random_format}"
       assert_equal random_format, @options[:format]
     end
 
     def test_format_ignores_case
-      random_format = Twine::Formatters.formatters.sample.class::FORMAT_NAME
+      random_format = Twine::Formatters.formatters.sample.format_name
       parse_with "--format #{random_format.upcase}"
       assert_equal random_format, @options[:format]
     end
