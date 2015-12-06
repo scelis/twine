@@ -16,8 +16,7 @@ class TwineTestCase < Minitest::Test
     Twine::stdout = StringIO.new
     Twine::stderr = StringIO.new
 
-    Twine::Formatters.formatters.clear
-    Twine::Formatters.formatters.concat [Twine::Formatters::Apple.new, Twine::Formatters::Android.new, Twine::Formatters::Gettext.new, Twine::Formatters::JQuery.new, Twine::Formatters::Flash.new, Twine::Formatters::Django.new, Twine::Formatters::Tizen.new]
+    @formatters = Twine::Formatters.formatters.dup
 
     @output_dir = Dir.mktmpdir
     @output_path = File.join @output_dir, SecureRandom.uuid
@@ -25,6 +24,8 @@ class TwineTestCase < Minitest::Test
 
   def teardown
     FileUtils.remove_entry_secure @output_dir if File.exists? @output_dir
+    Twine::Formatters.formatters.clear
+    Twine::Formatters.formatters.concat @formatters
     super
   end
 
