@@ -92,21 +92,25 @@ module Twine
 
       def format_sections(strings, lang)
         sections = strings.sections.map { |section| format_section(section, lang) }
-        sections.join("\n")
+        sections.compact.join("\n")
       end
 
       def format_section_header(section)
       end
 
+      def should_include_row(row, lang)
+        row.translated_string_for_lang(lang)
+      end
+
       def format_section(section, lang)
-        rows = section.rows.dup
+        rows = section.rows.select { |row| should_include_row(row, lang) }
+        return if rows.empty?
 
         result = ""
-        unless rows.empty?
-          if section.name && section.name.length > 0
-            section_header = format_section_header(section)
-            result += "\n#{section_header}" if section_header
-          end
+
+        if section.name && section.name.length > 0
+          section_header = format_section_header(section)
+          result += "\n#{section_header}" if section_header
         end
 
         rows.map! { |row| format_row(row, lang) }
@@ -115,16 +119,8 @@ module Twine
         result += rows.join
       end
 
-      def row_pattern
-        "%{comment}%{key_value}"
-      end
-
       def format_row(row, lang)
-        return nil unless row.translated_string_for_lang(lang)
-
-        result = row_pattern.scan(/%\{([a-z_]+)\}/).flatten
-        result.map! { |element| send("format_#{element}".to_sym, row, lang) }
-        result.flatten.join
+        [format_comment(row, lang), format_key_value(row, lang)].compact.join
       end
 
       def format_comment(row, lang)

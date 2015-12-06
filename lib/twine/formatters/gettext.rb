@@ -62,7 +62,9 @@ module Twine
 
       def format_file(strings, lang)
         @default_lang = strings.language_codes[0]
-        super
+        result = super
+        @default_lang = nil
+        result
       end
 
       def format_header(lang)
@@ -73,30 +75,29 @@ module Twine
         "# SECTION: #{section.name}"
       end
 
-      def row_pattern
-        "%{comment}%{key}%{base_translation}%{value}"
-      end
-
-      def format_row(row, lang)
-        return nil unless row.translated_string_for_lang(@default_lang)
-
-        super
+      def should_include_row(row, lang)
+        super and row.translated_string_for_lang(@default_lang)
       end
 
       def format_comment(row, lang)
         "#. \"#{escape_quotes(row.comment)}\"\n" if row.comment
       end
 
-      def format_key(row, lang)
-        "msgctxt \"#{row.key.dup}\"\n"
+      def format_key_value(row, lang)
+        value = row.translated_string_for_lang(lang)
+        [format_key(row.key.dup), format_base_translation(row), format_value(value.dup)].compact.join
       end
 
-      def format_base_translation(row, lang)
+      def format_key(key)
+        "msgctxt \"#{key}\"\n"
+      end
+
+      def format_base_translation(row)
         "msgid \"#{row.translations[@default_lang]}\"\n"
       end
 
-      def format_value(row, lang)
-        "msgstr \"#{row.translated_string_for_lang(lang)}\"\n"
+      def format_value(value)
+        "msgstr \"#{value}\"\n"
       end
     end
   end

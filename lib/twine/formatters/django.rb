@@ -92,7 +92,9 @@ module Twine
 
       def format_file(strings, lang)
         @default_lang = strings.language_codes[0]
-        super
+        result = super
+        @default_lang = nil
+        result
       end
 
       def format_header(lang)
@@ -103,11 +105,11 @@ module Twine
         "#--------- #{section.name} ---------#\n"
       end
 
-      def row_pattern
-        "%{comment}%{base_translation}%{key_value}"
+      def format_row(row, lang)
+        [format_comment(row, lang), format_base_translation(row), format_key_value(row, lang)].compact.join
       end
 
-      def format_base_translation(row, lang)
+      def format_base_translation(row)
         base_translation = row.translations[@default_lang]
         "# base translation: \"#{base_translation}\"\n" if base_translation
       end
