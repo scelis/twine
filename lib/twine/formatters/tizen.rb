@@ -33,30 +33,6 @@ module Twine
         return DEFAULT_FILE_NAME
       end
 
-      def write_all_files(path)
-        if !File.directory?(path)
-          raise Twine::Error.new("Directory does not exist: #{path}")
-        end
-
-        langs_written = []
-        Dir.foreach(path) do |item|
-          if item == "." or item == ".."
-            next
-          end
-          item = File.join(path, item)
-          if !File.directory?(item)
-            lang = determine_language_given_path(item)
-            if lang
-              write_file(item, lang)
-              langs_written << lang
-            end
-          end
-        end
-        if langs_written.empty?
-          raise Twine::Error.new("Failed to genertate any files: No languages found at #{path}")
-        end
-      end
-
       def determine_language_given_path(path)
         path_arr = path.split(File::SEPARATOR)
         path_arr.each do |segment|

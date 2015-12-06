@@ -71,15 +71,6 @@ module Twine
       def format_value(value)
         escape_quotes(value)
       end
-
-      def write_file(path, lang)
-        begin
-          require "json"
-        rescue LoadError
-          raise Twine::Error.new "You must run 'gem install json' in order to read or write jquery-localize files."
-        end
-        super
-      end
     end
   end
 end
