@@ -133,3 +133,5 @@ module Twine
     end
   end
 end
+
+Twine::Formatters.formatters << Twine::Formatters::Django.new
