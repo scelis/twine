@@ -3,17 +3,16 @@ require 'fileutils'
 module Twine
   module Formatters
     class Abstract
-      attr_reader :strings
-      attr_reader :options
+      attr_accessor :strings
+      attr_accessor :options
 
       def self.can_handle_directory?(path)
         return false
       end
 
-      def initialize(strings, options)
+      def initialize(strings = StringsFile.new, options = {})
         @strings = strings
         @options = options
-        @output_processor = Processors::OutputProcessor.new @strings, @options
       end
 
       def set_translation_for_key(key, lang, value)
@@ -148,10 +147,10 @@ module Twine
       end
 
       def write_file(path, lang)
+        output_processor = Processors::OutputProcessor.new(@strings, @options)
+        processed_strings = output_processor.process(lang)
+
         encoding = @options[:output_encoding] || 'UTF-8'
-
-        processed_strings = @output_processor.process(lang)
-
         File.open(path, "w:#{encoding}") do |f|
           f.puts format_file(processed_strings, lang)
         end
@@ -165,7 +164,8 @@ module Twine
 
             FileUtils.mkdir_p(output_path)
 
-            write_file(File.join(output_path, file_name), lang)
+            file_path = File.join(output_path, file_name)
+            write_file(file_path, lang)
           end
         else
           language_written = false
@@ -178,7 +178,8 @@ module Twine
             lang = determine_language_given_path(item)
             next unless lang
 
-            write_file(File.join(item, file_name), lang)
+            file_path = File.join(item, file_name)
+            write_file(file_path, lang)
             language_written = true
           end
 

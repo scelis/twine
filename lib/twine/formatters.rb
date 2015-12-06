@@ -1,15 +1,10 @@
-require 'twine/formatters/abstract'
-require 'twine/formatters/android'
-require 'twine/formatters/apple'
-require 'twine/formatters/flash'
-require 'twine/formatters/gettext'
-require 'twine/formatters/jquery'
-require 'twine/formatters/django'
-require 'twine/formatters/tizen'
+Dir[File.join(File.dirname(__FILE__), 'formatters', '*.rb')].each do |file|
+  require file
+end
 
 module Twine
   module Formatters
-    @formatters = [Formatters::Apple, Formatters::Android, Formatters::Gettext, Formatters::JQuery, Formatters::Flash, Formatters::Django, Formatters::Tizen]
+    @formatters = [Formatters::Apple.new, Formatters::Android.new, Formatters::Gettext.new, Formatters::JQuery.new, Formatters::Flash.new, Formatters::Django.new, Formatters::Tizen.new]
 
     class << self
       attr_reader :formatters

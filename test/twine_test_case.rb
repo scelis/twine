@@ -15,6 +15,10 @@ class TwineTestCase < Minitest::Test
     super
     Twine::stdout = StringIO.new
     Twine::stderr = StringIO.new
+
+    Twine::Formatters.formatters.clear
+    Twine::Formatters.formatters.concat [Twine::Formatters::Apple.new, Twine::Formatters::Android.new, Twine::Formatters::Gettext.new, Twine::Formatters::JQuery.new, Twine::Formatters::Flash.new, Twine::Formatters::Django.new, Twine::Formatters::Tizen.new]
+
     @output_dir = Dir.mktmpdir
     @output_path = File.join @output_dir, SecureRandom.uuid
   end

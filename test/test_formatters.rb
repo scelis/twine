@@ -66,7 +66,7 @@ class TestAndroidFormatter < FormatterTest
   end
 
   def test_write_file_output_format
-    formatter = Twine::Formatters::Android.new @twine_file, {}
+    formatter = Twine::Formatters::Android.new @twine_file
     formatter.write_file @output_path, 'en'
     assert_equal content('formatter_android.xml'), output_content
   end
@@ -111,7 +111,7 @@ class TestAppleFormatter < FormatterTest
   end
 
   def test_write_file_output_format
-    formatter = Twine::Formatters::Apple.new @twine_file, {}
+    formatter = Twine::Formatters::Apple.new @twine_file
     formatter.write_file @output_path, 'en'
     assert_equal content('formatter_apple.strings'), output_content
   end
@@ -142,7 +142,7 @@ class TestJQueryFormatter < FormatterTest
   end
 
   def test_write_file_output_format
-    formatter = Twine::Formatters::JQuery.new @twine_file, {}
+    formatter = Twine::Formatters::JQuery.new @twine_file
     formatter.write_file @output_path, 'en'
     assert_equal content('formatter_jquery.json'), output_content
   end
@@ -171,7 +171,7 @@ class TestGettextFormatter < FormatterTest
   end
 
   def test_write_file_output_format
-    formatter = Twine::Formatters::Gettext.new @twine_file, {}
+    formatter = Twine::Formatters::Gettext.new @twine_file
     formatter.write_file @output_path, 'en'
     assert_equal content('formatter_gettext.po'), output_content
   end
@@ -192,7 +192,7 @@ class TestTizenFormatter < FormatterTest
   end
 
   def test_write_file_output_format
-    formatter = Twine::Formatters::Tizen.new @twine_file, {}
+    formatter = Twine::Formatters::Tizen.new @twine_file
     formatter.write_file @output_path, 'en'
     assert_equal content('formatter_tizen.xml'), output_content
   end
@@ -211,7 +211,7 @@ class TestDjangoFormatter < FormatterTest
   end
 
   def test_write_file_output_format
-    formatter = Twine::Formatters::Django.new @twine_file, {}
+    formatter = Twine::Formatters::Django.new @twine_file
     formatter.write_file @output_path, 'en'
     assert_equal content('formatter_django.po'), output_content
   end
@@ -229,7 +229,7 @@ class TestFlashFormatter < FormatterTest
   end
 
   def test_write_file_output_format
-    formatter = Twine::Formatters::Flash.new @twine_file, {}
+    formatter = Twine::Formatters::Flash.new @twine_file
     formatter.write_file @output_path, 'en'
     assert_equal content('formatter_flash.properties'), output_content
   end

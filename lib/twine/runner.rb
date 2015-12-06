@@ -228,18 +228,21 @@ module Twine
     end
 
     def determine_format_given_path(path)
-      formatter = Formatters.formatters.find { |f| f::EXTENSION == File.extname(path) }
-      return formatter::FORMAT_NAME if formatter
+      formatter = Formatters.formatters.find { |f| f.class::EXTENSION == File.extname(path) }
+      return formatter.class::FORMAT_NAME if formatter
     end
 
     def determine_format_given_directory(directory)
-      formatter = Formatters.formatters.find { |f| f.can_handle_directory?(directory) }
-      return formatter::FORMAT_NAME if formatter
+      formatter = Formatters.formatters.find { |f| f.class.can_handle_directory?(directory) }
+      return formatter.class::FORMAT_NAME if formatter
     end
 
     def formatter_for_format(format)
-      formatter = Formatters.formatters.find { |f| f::FORMAT_NAME == format }
-      return formatter.new(@strings, @options) if formatter
+      formatter = Formatters.formatters.find { |f| f.class::FORMAT_NAME == format }
+      return nil unless formatter
+      formatter.strings = @strings
+      formatter.options = @options
+      formatter
     end
 
     private
