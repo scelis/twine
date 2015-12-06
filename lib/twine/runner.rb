@@ -46,7 +46,7 @@ module Twine
       lang = nil
       lang = @options[:languages][0] if @options[:languages]
 
-      read_write_string_file(@options[:output_path], false, lang)
+      write_string_file(@options[:output_path], lang)
     end
 
     def generate_all_string_files
@@ -74,7 +74,7 @@ module Twine
         lang = @options[:languages][0]
       end
 
-      read_write_string_file(@options[:input_path], true, lang)
+      read_string_file(@options[:input_path], lang)
       output_path = @options[:output_path] || @options[:strings_file]
       write_strings_data(output_path)
     end
@@ -87,7 +87,7 @@ module Twine
       Dir.glob(File.join(@options[:input_path], "**/*")) do |item|
         if File.file?(item)
           begin
-            read_write_string_file(item, true, nil)
+            read_string_file(item)
           rescue Twine::Error => e
             Twine::stderr.puts "#{e.message}"
           end
@@ -96,34 +96,6 @@ module Twine
 
       output_path = @options[:output_path] || @options[:strings_file]
       write_strings_data(output_path)
-    end
-
-    def read_write_string_file(path, is_read, lang)
-      if is_read && !File.file?(path)
-        raise Twine::Error.new("File does not exist: #{path}")
-      end
-
-      formatter_for_path = find_formatter { |f| f.extension == File.extname(path) }
-      formatter = formatter_for_format(@options[:format]) || formatter_for_path
-      
-      unless formatter
-        raise Twine::Error.new "Unable to determine format of #{path}"
-      end      
-
-      lang = lang || determine_language_given_path(path) || formatter.determine_language_given_path(path)
-      unless lang
-        raise Twine::Error.new "Unable to determine language for #{path}"
-      end
-
-      if !@strings.language_codes.include? lang
-        @strings.language_codes << lang
-      end
-
-      if is_read
-        formatter.read_file(path, lang)
-      else
-        formatter.write_file(path, lang)
-      end
     end
 
     def generate_loc_drop
@@ -166,7 +138,7 @@ module Twine
               FileUtils.mkdir_p(File.dirname(real_path))
               zipfile.extract(entry.name, real_path)
               begin
-                read_write_string_file(real_path, true, nil)
+                read_string_file(real_path)
               rescue Twine::Error => e
                 Twine::stderr.puts "#{e.message}"
               end
@@ -247,6 +219,39 @@ module Twine
       formatter.strings = @strings
       formatter.options = @options
       formatter
+    end
+
+    def read_string_file(path, lang = nil)
+      unless File.file?(path)
+        raise Twine::Error.new("File does not exist: #{path}")
+      end
+
+      formatter, lang = prepare_read_write(path, lang)
+
+      formatter.read_file(path, lang)
+    end
+
+    def write_string_file(path, lang)
+      formatter, lang = prepare_read_write(path, lang)
+      formatter.write_file(path, lang)
+    end
+
+    def prepare_read_write(path, lang)
+      formatter_for_path = find_formatter { |f| f.extension == File.extname(path) }
+      formatter = formatter_for_format(@options[:format]) || formatter_for_path
+      
+      unless formatter
+        raise Twine::Error.new "Unable to determine format of #{path}"
+      end      
+
+      lang = lang || determine_language_given_path(path) || formatter.determine_language_given_path(path)
+      unless lang
+        raise Twine::Error.new "Unable to determine language for #{path}"
+      end
+
+      @strings.language_codes << lang unless @strings.language_codes.include? lang
+
+      return formatter, lang
     end
   end
 end
