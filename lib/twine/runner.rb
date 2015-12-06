@@ -58,12 +58,12 @@ module Twine
         end
       end
 
-      format = @options[:format] || determine_format_given_directory(@options[:output_path])
-      unless format
+      formatter_for_directory = find_formatter { |f| f.can_handle_directory?(@options[:output_path]) }
+      formatter = formatter_for_format(@options[:format]) || formatter_for_directory
+      
+      unless formatter
         raise Twine::Error.new "Could not determine format given the contents of #{@options[:output_path]}"
       end
-
-      formatter = formatter_for_format(format)
 
       formatter.write_all_files(@options[:output_path])
     end
@@ -103,12 +103,12 @@ module Twine
         raise Twine::Error.new("File does not exist: #{path}")
       end
 
-      format = @options[:format] || determine_format_given_path(path)
-      unless format
+      formatter_for_path = find_formatter { |f| f.extension == File.extname(path) }
+      formatter = formatter_for_format(@options[:format]) || formatter_for_path
+      
+      unless formatter
         raise Twine::Error.new "Unable to determine format of #{path}"
-      end
-
-      formatter = formatter_for_format(format)
+      end      
 
       lang = lang || determine_language_given_path(path) || formatter.determine_language_given_path(path)
       unless lang
@@ -222,29 +222,6 @@ module Twine
       Twine::stdout.puts "#{@options[:strings_file]} is valid."
     end
 
-    def determine_language_given_path(path)
-      code = File.basename(path, File.extname(path))
-      return code if @strings.language_codes.include? code
-    end
-
-    def determine_format_given_path(path)
-      formatter = Formatters.formatters.find { |f| f.extension == File.extname(path) }
-      return formatter.format_name if formatter
-    end
-
-    def determine_format_given_directory(directory)
-      formatter = Formatters.formatters.find { |f| f.can_handle_directory?(directory) }
-      return formatter.format_name if formatter
-    end
-
-    def formatter_for_format(format)
-      formatter = Formatters.formatters.find { |f| f.format_name == format }
-      return nil unless formatter
-      formatter.strings = @strings
-      formatter.options = @options
-      formatter
-    end
-
     private
 
     def require_rubyzip
@@ -253,6 +230,23 @@ module Twine
       rescue LoadError
         raise Twine::Error.new "You must run 'gem install rubyzip' in order to create or consume localization drops."
       end
+    end
+
+    def determine_language_given_path(path)
+      code = File.basename(path, File.extname(path))
+      return code if @strings.language_codes.include? code
+    end
+
+    def formatter_for_format(format)
+      find_formatter { |f| f.format_name == format }
+    end
+
+    def find_formatter(&block)
+      formatter = Formatters.formatters.find &block
+      return nil unless formatter
+      formatter.strings = @strings
+      formatter.options = @options
+      formatter
     end
   end
 end
