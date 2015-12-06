@@ -22,7 +22,7 @@ end
 class PlaceholderTest < TwineTestCase
   class ToAndroid < PlaceholderTestCase
     def to_android(value)
-      Twine::Placeholders.from_twine_to_android(value)
+      Twine::Placeholders.convert_placeholders_from_twine_to_android(value)
     end
 
     def test_replaces_string_placeholder
@@ -76,7 +76,7 @@ class PlaceholderTest < TwineTestCase
 
   class FromAndroid < PlaceholderTestCase
     def from_android(value)
-      Twine::Placeholders.from_android_to_twine(value)
+      Twine::Placeholders.convert_placeholders_from_android_to_twine(value)
     end
 
     def test_replaces_string_placeholder

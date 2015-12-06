@@ -5,6 +5,8 @@ require 'rexml/document'
 module Twine
   module Formatters
     class Android < Abstract
+      include Twine::Placeholders
+
       FORMAT_NAME = 'android'
       EXTENSION = '.xml'
       DEFAULT_FILE_NAME = 'strings.xml'
@@ -49,7 +51,7 @@ module Twine
         value = CGI.unescapeHTML(value)
         value.gsub!('\\\'', '\'')
         value.gsub!('\\"', '"')
-        value = Placeholders.from_android_to_twine(value)
+        value = convert_placeholders_from_android_to_twine(value)
         value.gsub!('\@', '@')
         value.gsub!(/(\\u0020)*|(\\u0020)*\z/) { |spaces| ' ' * (spaces.length / 6) }
         super(key, lang, value)
@@ -122,7 +124,7 @@ module Twine
         #  2) HTML escape the string
         value = CGI.escapeHTML(value)
         #  3) convert placeholders (e.g. %@ -> %s)
-        value = Placeholders.from_twine_to_android(value)
+        value = convert_placeholders_from_twine_to_android(value)
         #  4) escape non resource identifier @ signs (http://developer.android.com/guide/topics/resources/accessing-resources.html#ResourcesFromXml)
         resource_identifier_regex = /@(?!([a-z\.]+:)?[a-z+]+\/[a-zA-Z_]+)/   # @[<package_name>:]<resource_type>/<resource_name>
         value.gsub!(resource_identifier_regex, '\@')

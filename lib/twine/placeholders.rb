@@ -1,12 +1,14 @@
 module Twine
   module Placeholders
+    extend self
+
     PLACEHOLDER_FLAGS_WIDTH_PRECISION_LENGTH = '([-+ 0#])?(\d+|\*)?(\.(\d+|\*))?(hh?|ll?|L|z|j|t)?'
     PLACEHOLDER_PARAMETER_FLAGS_WIDTH_PRECISION_LENGTH = '(\d+\$)?' + PLACEHOLDER_FLAGS_WIDTH_PRECISION_LENGTH
 
     # http://developer.android.com/guide/topics/resources/string-resource.html#FormattingAndStyling
     # http://stackoverflow.com/questions/4414389/android-xml-percent-symbol
     # https://github.com/mobiata/twine/pull/106
-    def self.from_twine_to_android(input)
+    def convert_placeholders_from_twine_to_android(input)
       placeholder_types = '[diufFeEgGxXoscpaA]'
 
       # %@ -> %s
@@ -42,7 +44,7 @@ module Twine
       value
     end
 
-    def self.from_android_to_twine(input)
+    def convert_placeholders_from_android_to_twine(input)
       placeholder_regex = /(%#{PLACEHOLDER_PARAMETER_FLAGS_WIDTH_PRECISION_LENGTH})s/
 
       # %s -> %@
