@@ -79,7 +79,7 @@ module Twine
             row.translations[lang] = value
           end
         elsif @options[:consume_all]
-          STDERR.puts "Adding new string '#{key}' to strings data file."
+          Twine::stderr.puts "Adding new string '#{key}' to strings data file."
           current_section = @strings.sections.find { |s| s.name == 'Uncategorized' }
           unless current_section
             current_section = StringsSection.new('Uncategorized')
@@ -95,7 +95,7 @@ module Twine
           @strings.strings_map[key] = current_row
           @strings.strings_map[key].translations[lang] = value
         else
-          STDERR.puts "Warning: '#{key}' not found in strings data file."
+          Twine::stderr.puts "Warning: '#{key}' not found in strings data file."
         end
         if !@strings.language_codes.include?(lang)
           @strings.add_language_code(lang)
