@@ -71,6 +71,8 @@ module Twine
       end
       
       def set_translation_for_key(key, lang, value)
+        value = value.gsub("\n", "\\n")
+
         if @strings.strings_map.include?(key)
           row = @strings.strings_map[key]
           reference = @strings.strings_map[row.reference_key] if row.reference_key
