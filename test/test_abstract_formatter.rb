@@ -97,12 +97,28 @@ class TestAbstractFormatter < TwineTestCase
   end
 
   class SetComment < TwineTestCase
+    def setup
+      super
+
+      @strings = build_twine_file 'en' do
+        add_section 'Section' do
+          add_row key: 'value'
+        end
+      end
+    end
+
     def test_set_comment_for_key_does_not_update_comment
-      skip 'not supported by current implementation - see #97'
+      formatter = Twine::Formatters::Abstract.new(@strings, {})
+      formatter.set_comment_for_key('key', 'comment')
+
+      assert_nil formatter.strings.strings_map['key'].comment
     end
 
     def test_set_comment_for_key_updates_comment_with_update_comments
-      skip 'not supported by current implementation - see #97'
+      formatter = Twine::Formatters::Abstract.new(@strings, { consume_comments: true })
+      formatter.set_comment_for_key('key', 'comment')
+
+      assert_equal 'comment', formatter.strings.strings_map['key'].comment
     end
   end
 
@@ -110,14 +126,14 @@ class TestAbstractFormatter < TwineTestCase
     def setup
       super
 
-      @strings = build_twine_file 'en', 'fr' do
+      @strings = build_twine_file 'en' do
         add_section 'Section' do
           add_row refkey: 'ref-value', comment: 'reference comment'
           add_row key: 'value', ref: :refkey
         end
       end
 
-      @formatter = Twine::Formatters::Abstract.new(@strings, {})
+      @formatter = Twine::Formatters::Abstract.new(@strings, { consume_comments: true })
     end
 
     def test_set_comment_does_not_add_unchanged_comment

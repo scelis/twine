@@ -26,7 +26,7 @@ module Twine
       end
 
       def read_file(path, lang)
-        comment_regex = /#.? *"(.*)"$/
+        comment_regex = /#\. *"?(.*)"?$/
         key_regex = /msgid *"(.*)"$/
         value_regex = /msgstr *"(.*)"$/m
 
@@ -60,14 +60,12 @@ module Twine
                 line = Iconv.iconv('UTF-8', encoding, line).join
               end
             end
-            if @options[:consume_comments]
-               comment_match = comment_regex.match(line)
-               if comment_match
-                   comment = comment_match[1]
-               end
-            else
-                comment = nil
+            
+            comment_match = comment_regex.match(line)
+            if comment_match
+              comment = comment_match[1]
             end
+
             key_match = key_regex.match(line)
             if key_match
                 key = key_match[1].gsub('\\"', '"')
@@ -83,6 +81,8 @@ module Twine
                 if comment and comment.length > 0 and !comment.start_with?("--------- ")
                     set_comment_for_key(key, comment)
                 end
+                key = nil
+                value = nil
                 comment = nil
             end
 

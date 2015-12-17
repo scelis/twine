@@ -17,7 +17,20 @@ class FormatterTest < TwineTestCase
     end
 
     @strings = Twine::StringsFile.new
-    @formatter = formatter_class.new @strings, { consume_all: true }
+    @formatter = formatter_class.new @strings, { consume_all: true, consume_comments: true }
+  end
+
+  def assert_translations_read_correctly
+    1.upto(4) do |i|
+      assert_equal "value#{i}-english", @strings.strings_map["key#{i}"].translations['en']
+    end
+  end
+
+  def assert_file_contents_read_correctly
+    assert_translations_read_correctly
+
+    assert_equal "comment key1", @strings.strings_map["key1"].comment
+    assert_equal "comment key4", @strings.strings_map["key4"].comment
   end
 end
 
@@ -29,9 +42,7 @@ class TestAndroidFormatter < FormatterTest
   def test_read_file_format
     @formatter.read_file fixture('formatter_android.xml'), 'en'
 
-    1.upto(4) do |i|
-      assert_equal "value#{i}-english", @strings.strings_map["key#{i}"].translations['en']
-    end
+    assert_file_contents_read_correctly
   end
 
   def test_set_translation_transforms_leading_spaces
@@ -94,9 +105,7 @@ class TestAppleFormatter < FormatterTest
   def test_read_file_format
     @formatter.read_file fixture('formatter_apple.strings'), 'en'
 
-    1.upto(4) do |i|
-      assert_equal "value#{i}-english", @strings.strings_map["key#{i}"].translations['en']
-    end
+    assert_file_contents_read_correctly
   end
 
   def test_write_file_output_format
@@ -127,9 +136,7 @@ class TestJQueryFormatter < FormatterTest
   def test_read_file_format
     @formatter.read_file fixture('formatter_jquery.json'), 'en'
 
-    1.upto(4) do |i|
-      assert_equal "value#{i}-english", @strings.strings_map["key#{i}"].translations['en']
-    end
+    assert_translations_read_correctly
   end
 
   def test_write_file_output_format
@@ -153,9 +160,7 @@ class TestGettextFormatter < FormatterTest
   def test_read_file_format
     @formatter.read_file fixture('formatter_gettext.po'), 'en'
 
-    1.upto(4) do |i|
-      assert_equal "value#{i}-english", @strings.strings_map["key#{i}"].translations['en']
-    end
+    assert_file_contents_read_correctly
   end
 
   def test_read_file_with_multiple_line_value
@@ -182,9 +187,7 @@ class TestTizenFormatter < FormatterTest
     skip 'the current implementation of Tizen formatter does not support read_file'
     @formatter.read_file fixture('formatter_tizen.xml'), 'en'
 
-    1.upto(4) do |i|
-      assert_equal "value#{i}-english", @strings.strings_map["key#{i}"].translations['en']
-    end
+    assert_file_contents_read_correctly
   end
 
   def test_write_file_output_format
@@ -203,9 +206,7 @@ class TestDjangoFormatter < FormatterTest
   def test_read_file_format
     @formatter.read_file fixture('formatter_django.po'), 'en'
 
-    1.upto(4) do |i|
-      assert_equal "value#{i}-english", @strings.strings_map["key#{i}"].translations['en']
-    end
+    assert_file_contents_read_correctly
   end
 
   def test_write_file_output_format
@@ -223,9 +224,7 @@ class TestFlashFormatter < FormatterTest
   def test_read_file_format
     @formatter.read_file fixture('formatter_flash.properties'), 'en'
 
-    1.upto(4) do |i|
-      assert_equal "value#{i}-english", @strings.strings_map["key#{i}"].translations['en']
-    end
+    assert_file_contents_read_correctly
   end
 
   def test_write_file_output_format
