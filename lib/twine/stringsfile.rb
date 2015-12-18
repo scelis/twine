@@ -53,7 +53,7 @@ module Twine
 
       translation = reference.translated_string_for_lang(lang) if translation.nil? && reference
 
-      return translation if translation
+      return translation
     end
   end
 
