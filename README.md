@@ -29,7 +29,7 @@ Each grouping section contains N string definitions. These string definitions st
 
 ### Placeholders
 
-Twine supports [`printf` style placeholders](https://en.wikipedia.org/wiki/Printf_format_string) with one peculiarity: `@` is used for strings instead of `s`.
+Twine supports [`printf` style placeholders](https://en.wikipedia.org/wiki/Printf_format_string) with one peculiarity: `@` is used for strings instead of `s`. This is because Twine started out as a tool for iOS and OS X projects.
 
 ### Tags
 
