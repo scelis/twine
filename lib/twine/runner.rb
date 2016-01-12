@@ -185,7 +185,7 @@ module Twine
       duplicate_keys = Set.new
       keys_without_tags = Set.new
       invalid_keys = Set.new
-      valid_key_regex = /^[A-Za-z0-9_.]+$/
+      valid_key_regex = /^[A-Za-z0-9_]+$/
 
       @strings.sections.each do |section|
         section.rows.each do |row|
