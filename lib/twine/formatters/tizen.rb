@@ -5,6 +5,8 @@ require 'rexml/document'
 module Twine
   module Formatters
     class Tizen < Abstract
+      include Twine::Placeholders
+
       FORMAT_NAME = 'tizen'
       EXTENSION = '.xml'
       DEFAULT_FILE_NAME = 'strings.xml'
@@ -90,7 +92,7 @@ module Twine
                   value = CGI.unescapeHTML(value)
                   value.gsub!('\\\'', '\'')
                   value.gsub!('\\"', '"')
-                  value = iosify_substitutions(value)
+                  value = convert_placeholders_from_android_to_twine(value)
                   value.gsub!(/(\\u0020)*|(\\u0020)*\z/) { |spaces| ' ' * (spaces.length / 6) }
                 else
                   value = ""
@@ -147,7 +149,7 @@ module Twine
         #  2) HTML escape the string
         value = CGI.escapeHTML(value)
         #  3) fix substitutions (e.g. %s/%@)
-        value = androidify_substitutions(value)
+        value = convert_placeholders_from_twine_to_android(value)
         #  4) replace beginning and end spaces with \0020. Otherwise Tizen strips them.
         value.gsub(/\A *| *\z/) { |spaces| '\u0020' * spaces.length }
       end
