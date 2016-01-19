@@ -6,9 +6,9 @@ module Twine
       attr_accessor :strings
       attr_accessor :options
 
-      def initialize(strings = StringsFile.new, options = {})
-        @strings = strings
-        @options = options
+      def initialize
+        @strings = StringsFile.new
+        @options = {}
       end
 
       def format_name

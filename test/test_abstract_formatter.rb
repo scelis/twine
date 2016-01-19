@@ -12,7 +12,8 @@ class TestAbstractFormatter < TwineTestCase
         end
       end
 
-      @formatter = Twine::Formatters::Abstract.new(@strings, {})
+      @formatter = Twine::Formatters::Abstract.new
+      @formatter.strings = @strings
     end
 
     def test_set_translation_updates_existing_value
@@ -46,7 +47,9 @@ class TestAbstractFormatter < TwineTestCase
     end
 
     def test_set_translation_consume_all_adds_new_key
-      formatter = Twine::Formatters::Abstract.new(@strings, { consume_all: true })
+      formatter = Twine::Formatters::Abstract.new
+      formatter.strings = @strings
+      formatter.options = { consume_all: true }
       formatter.set_translation_for_key 'new-key', 'en', 'new-key-english'
 
       assert_equal 'new-key-english', @strings.strings_map['new-key'].translations['en']
@@ -54,14 +57,18 @@ class TestAbstractFormatter < TwineTestCase
 
     def test_set_translation_consume_all_adds_tags
       random_tag = SecureRandom.uuid
-      formatter = Twine::Formatters::Abstract.new(@strings, { consume_all: true, tags: [random_tag] })
+      formatter = Twine::Formatters::Abstract.new
+      formatter.strings = @strings
+      formatter.options = { consume_all: true, tags: [random_tag] }
       formatter.set_translation_for_key 'new-key', 'en', 'new-key-english'
 
       assert_equal [random_tag], @strings.strings_map['new-key'].tags
     end
 
     def test_set_translation_adds_new_keys_to_category_uncategoriezed
-      formatter = Twine::Formatters::Abstract.new(@strings, { consume_all: true })
+      formatter = Twine::Formatters::Abstract.new
+      formatter.strings = @strings
+      formatter.options = { consume_all: true }
       formatter.set_translation_for_key 'new-key', 'en', 'new-key-english'
 
       assert_equal 'Uncategorized', @strings.sections[0].name 
@@ -80,7 +87,8 @@ class TestAbstractFormatter < TwineTestCase
         end
       end
 
-      @formatter = Twine::Formatters::Abstract.new(@strings, {})
+      @formatter = Twine::Formatters::Abstract.new
+      @formatter.strings = @strings
     end
 
     def test_set_translation_does_not_add_unchanged_translation
@@ -108,14 +116,17 @@ class TestAbstractFormatter < TwineTestCase
     end
 
     def test_set_comment_for_key_does_not_update_comment
-      formatter = Twine::Formatters::Abstract.new(@strings, {})
+      formatter = Twine::Formatters::Abstract.new
+      formatter.strings = @strings
       formatter.set_comment_for_key('key', 'comment')
 
       assert_nil formatter.strings.strings_map['key'].comment
     end
 
     def test_set_comment_for_key_updates_comment_with_update_comments
-      formatter = Twine::Formatters::Abstract.new(@strings, { consume_comments: true })
+      formatter = Twine::Formatters::Abstract.new
+      formatter.strings = @strings
+      formatter.options = { consume_comments: true }
       formatter.set_comment_for_key('key', 'comment')
 
       assert_equal 'comment', formatter.strings.strings_map['key'].comment
@@ -133,7 +144,9 @@ class TestAbstractFormatter < TwineTestCase
         end
       end
 
-      @formatter = Twine::Formatters::Abstract.new(@strings, { consume_comments: true })
+      @formatter = Twine::Formatters::Abstract.new
+      @formatter.strings = @strings
+      @formatter.options = { consume_comments: true }
     end
 
     def test_set_comment_does_not_add_unchanged_comment

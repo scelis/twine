@@ -5,7 +5,8 @@ class CommandTestCase < TwineTestCase
     strings = Twine::StringsFile.new
     strings.language_codes.concat KNOWN_LANGUAGES
 
-    formatter = formatter_class.new(strings)
+    formatter = formatter_class.new
+    formatter.strings = strings
     Twine::Formatters.formatters.clear
     Twine::Formatters.formatters << formatter
     formatter
