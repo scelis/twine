@@ -7,9 +7,6 @@ module Twine
     class Tizen < Abstract
       include Twine::Placeholders
 
-      FORMAT_NAME = 'tizen'
-      EXTENSION = '.xml'
-      DEFAULT_FILE_NAME = 'strings.xml'
       LANG_CODES = Hash[
         'eng-GB' => 'en',
         'rus-RU' => 'ru',
@@ -22,39 +19,21 @@ module Twine
         'por-PT' => 'pt',
         'ukr-UA' => 'uk'
       ]
-      DEFAULT_LANG_CODES = Hash[
-      ]
 
-      def self.can_handle_directory?(path)
+      def format_name
+        'tizen'
+      end
+
+      def extension
+        '.xml'
+      end
+
+      def can_handle_directory?(path)
         Dir.entries(path).any? { |item| /^values.*$/.match(item) }
       end
 
       def default_file_name
-        return DEFAULT_FILE_NAME
-      end
-
-      def write_all_files(path)
-        if !File.directory?(path)
-          raise Twine::Error.new("Directory does not exist: #{path}")
-        end
-
-        langs_written = []
-        Dir.foreach(path) do |item|
-          if item == "." or item == ".."
-            next
-          end
-          item = File.join(path, item)
-          if !File.directory?(item)
-            lang = determine_language_given_path(item)
-            if lang
-              write_file(item, lang)
-              langs_written << lang
-            end
-          end
-        end
-        if langs_written.empty?
-          raise Twine::Error.new("Failed to genertate any files: No languages found at #{path}")
-        end
+        return 'strings.xml'
       end
 
       def determine_language_given_path(path)
@@ -156,3 +135,5 @@ module Twine
     end
   end
 end
+
+Twine::Formatters.formatters << Twine::Formatters::Tizen.new

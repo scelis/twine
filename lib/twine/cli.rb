@@ -46,7 +46,7 @@ module Twine
         opts.on('-u', '--untagged', 'If you have specified tags using the --tags flag, then only those tags will be selected. If you also want to select all strings that are untagged, then you can specify this option to do so.') do |u|
           options[:untagged] = true
         end
-        formats = Formatters.formatters.map { |f| f::FORMAT_NAME }
+        formats = Formatters.formatters.map(&:format_name)
         opts.on('-f', '--format FORMAT', "The file format to read or write (#{formats.join(', ')}). Additional formatters can be placed in the formats/ directory.") do |format|
           unless formats.include?(format.downcase)
             raise Twine::Error.new "Invalid format: #{format}"

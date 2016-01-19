@@ -1,16 +1,20 @@
 module Twine
   module Formatters
     class Django < Abstract
-      FORMAT_NAME = 'django'
-      EXTENSION = '.po'
-      DEFAULT_FILE_NAME = 'strings.po'
+      def format_name
+        'django'
+      end
 
-      def self.can_handle_directory?(path)
-      Dir.entries(path).any? { |item| /^.+\.po$/.match(item) }
+      def extension
+        '.po'
+      end
+
+      def can_handle_directory?(path)
+        Dir.entries(path).any? { |item| /^.+\.po$/.match(item) }
       end
 
       def default_file_name
-        return DEFAULT_FILE_NAME
+        return 'strings.po'
       end
 
       def determine_language_given_path(path)
@@ -92,7 +96,9 @@ module Twine
 
       def format_file(strings, lang)
         @default_lang = strings.language_codes[0]
-        super
+        result = super
+        @default_lang = nil
+        result
       end
 
       def format_header(lang)
@@ -103,11 +109,11 @@ module Twine
         "#--------- #{section.name} ---------#\n"
       end
 
-      def row_pattern
-        "%{comment}%{base_translation}%{key_value}"
+      def format_row(row, lang)
+        [format_comment(row, lang), format_base_translation(row), format_key_value(row, lang)].compact.join
       end
 
-      def format_base_translation(row, lang)
+      def format_base_translation(row)
         base_translation = row.translations[@default_lang]
         "# base translation: \"#{base_translation}\"\n" if base_translation
       end
@@ -131,3 +137,5 @@ module Twine
     end
   end
 end
+
+Twine::Formatters.formatters << Twine::Formatters::Django.new

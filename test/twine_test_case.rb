@@ -15,12 +15,17 @@ class TwineTestCase < Minitest::Test
     super
     Twine::stdout = StringIO.new
     Twine::stderr = StringIO.new
+
+    @formatters = Twine::Formatters.formatters.dup
+
     @output_dir = Dir.mktmpdir
     @output_path = File.join @output_dir, SecureRandom.uuid
   end
 
   def teardown
     FileUtils.remove_entry_secure @output_dir if File.exists? @output_dir
+    Twine::Formatters.formatters.clear
+    Twine::Formatters.formatters.concat @formatters
     super
   end
 

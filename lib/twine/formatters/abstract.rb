@@ -3,17 +3,28 @@ require 'fileutils'
 module Twine
   module Formatters
     class Abstract
-      attr_reader :strings
-      attr_reader :options
+      attr_accessor :strings
+      attr_accessor :options
 
-      def self.can_handle_directory?(path)
-        return false
+      def initialize
+        @strings = StringsFile.new
+        @options = {}
       end
 
-      def initialize(strings, options)
-        @strings = strings
-        @options = options
-        @output_processor = Processors::OutputProcessor.new @strings, @options
+      def format_name
+        raise NotImplementedError.new("You must implement format_name in your formatter class.")
+      end
+
+      def extension
+        raise NotImplementedError.new("You must implement extension in your formatter class.")
+      end
+
+      def can_handle_directory?(path)
+        raise NotImplementedError.new("You must implement can_handle_directory? in your formatter class.")
+      end
+
+      def default_file_name
+        raise NotImplementedError.new("You must implement default_file_name in your formatter class.")
       end
 
       def set_translation_for_key(key, lang, value)
@@ -64,10 +75,6 @@ module Twine
         end
       end
 
-      def default_file_name
-        raise NotImplementedError.new("You must implement default_file_name in your formatter class.")
-      end
-
       def determine_language_given_path(path)
         raise NotImplementedError.new("You must implement determine_language_given_path in your formatter class.")
       end
@@ -92,21 +99,25 @@ module Twine
 
       def format_sections(strings, lang)
         sections = strings.sections.map { |section| format_section(section, lang) }
-        sections.join("\n")
+        sections.compact.join("\n")
       end
 
       def format_section_header(section)
       end
 
+      def should_include_row(row, lang)
+        row.translated_string_for_lang(lang)
+      end
+
       def format_section(section, lang)
-        rows = section.rows.dup
+        rows = section.rows.select { |row| should_include_row(row, lang) }
+        return if rows.empty?
 
         result = ""
-        unless rows.empty?
-          if section.name && section.name.length > 0
-            section_header = format_section_header(section)
-            result += "\n#{section_header}" if section_header
-          end
+
+        if section.name && section.name.length > 0
+          section_header = format_section_header(section)
+          result += "\n#{section_header}" if section_header
         end
 
         rows.map! { |row| format_row(row, lang) }
@@ -115,16 +126,8 @@ module Twine
         result += rows.join
       end
 
-      def row_pattern
-        "%{comment}%{key_value}"
-      end
-
       def format_row(row, lang)
-        return nil unless row.translated_string_for_lang(lang)
-
-        result = row_pattern.scan(/%\{([a-z_]+)\}/).flatten
-        result.map! { |element| send("format_#{element}".to_sym, row, lang) }
-        result.flatten.join
+        [format_comment(row, lang), format_key_value(row, lang)].compact.join
       end
 
       def format_comment(row, lang)
@@ -152,10 +155,10 @@ module Twine
       end
 
       def write_file(path, lang)
+        output_processor = Processors::OutputProcessor.new(@strings, @options)
+        processed_strings = output_processor.process(lang)
+
         encoding = @options[:output_encoding] || 'UTF-8'
-
-        processed_strings = @output_processor.process(lang)
-
         File.open(path, "w:#{encoding}") do |f|
           f.puts format_file(processed_strings, lang)
         end
@@ -169,7 +172,8 @@ module Twine
 
             FileUtils.mkdir_p(output_path)
 
-            write_file(File.join(output_path, file_name), lang)
+            file_path = File.join(output_path, file_name)
+            write_file(file_path, lang)
           end
         else
           language_written = false
@@ -182,7 +186,8 @@ module Twine
             lang = determine_language_given_path(item)
             next unless lang
 
-            write_file(File.join(item, file_name), lang)
+            file_path = File.join(item, file_name)
+            write_file(file_path, lang)
             language_written = true
           end
 

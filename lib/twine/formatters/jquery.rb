@@ -1,16 +1,20 @@
 module Twine
   module Formatters
     class JQuery < Abstract
-      FORMAT_NAME = 'jquery'
-      EXTENSION = '.json'
-      DEFAULT_FILE_NAME = 'localize.json'
+      def format_name
+        'jquery'
+      end
 
-      def self.can_handle_directory?(path)
+      def extension
+        '.json'
+      end
+
+      def can_handle_directory?(path)
         Dir.entries(path).any? { |item| /^.+\.json$/.match(item) }
       end
 
       def default_file_name
-        return DEFAULT_FILE_NAME
+        return 'localize.json'
       end
 
       def determine_language_given_path(path)
@@ -71,15 +75,8 @@ module Twine
       def format_value(value)
         escape_quotes(value)
       end
-
-      def write_file(path, lang)
-        begin
-          require "json"
-        rescue LoadError
-          raise Twine::Error.new "You must run 'gem install json' in order to read or write jquery-localize files."
-        end
-        super
-      end
     end
   end
 end
+
+Twine::Formatters.formatters << Twine::Formatters::JQuery.new

@@ -7,9 +7,6 @@ module Twine
     class Android < Abstract
       include Twine::Placeholders
 
-      FORMAT_NAME = 'android'
-      EXTENSION = '.xml'
-      DEFAULT_FILE_NAME = 'strings.xml'
       LANG_CODES = Hash[
         'zh' => 'zh-Hans',
         'zh-rCN' => 'zh-Hans',
@@ -20,12 +17,20 @@ module Twine
         # TODO: spanish
       ]
 
-      def self.can_handle_directory?(path)
+      def format_name
+        'android'
+      end
+
+      def extension
+        '.xml'
+      end
+
+      def can_handle_directory?(path)
         Dir.entries(path).any? { |item| /^values.*$/.match(item) }
       end
 
       def default_file_name
-        return DEFAULT_FILE_NAME
+        return 'strings.xml'
       end
 
       def determine_language_given_path(path)
@@ -135,3 +140,5 @@ module Twine
     end
   end
 end
+
+Twine::Formatters.formatters << Twine::Formatters::Android.new

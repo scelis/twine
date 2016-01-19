@@ -1,16 +1,20 @@
 module Twine
   module Formatters
     class Flash < Abstract
-      FORMAT_NAME = 'flash'
-      EXTENSION = '.properties'
-      DEFAULT_FILE_NAME = 'resources.properties'
+      def format_name
+        'flash'
+      end
 
-      def self.can_handle_directory?(path)
+      def extension
+        '.properties'
+      end
+
+      def can_handle_directory?(path)
         return false
       end
 
       def default_file_name
-        return DEFAULT_FILE_NAME
+        return 'resources.properties'
       end
 
       def determine_language_given_path(path)
@@ -93,3 +97,5 @@ module Twine
     end
   end
 end
+
+Twine::Formatters.formatters << Twine::Formatters::Flash.new
