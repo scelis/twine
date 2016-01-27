@@ -46,7 +46,7 @@ module Twine
       lang = nil
       lang = @options[:languages][0] if @options[:languages]
 
-      read_write_string_file(@options[:output_path], false, lang)
+      write_string_file(@options[:output_path], lang)
     end
 
     def generate_all_string_files
@@ -58,12 +58,12 @@ module Twine
         end
       end
 
-      format = @options[:format] || determine_format_given_directory(@options[:output_path])
-      unless format
+      formatter_for_directory = find_formatter { |f| f.can_handle_directory?(@options[:output_path]) }
+      formatter = formatter_for_format(@options[:format]) || formatter_for_directory
+      
+      unless formatter
         raise Twine::Error.new "Could not determine format given the contents of #{@options[:output_path]}"
       end
-
-      formatter = formatter_for_format(format)
 
       formatter.write_all_files(@options[:output_path])
     end
@@ -74,7 +74,7 @@ module Twine
         lang = @options[:languages][0]
       end
 
-      read_write_string_file(@options[:input_path], true, lang)
+      read_string_file(@options[:input_path], lang)
       output_path = @options[:output_path] || @options[:strings_file]
       write_strings_data(output_path)
     end
@@ -87,7 +87,7 @@ module Twine
       Dir.glob(File.join(@options[:input_path], "**/*")) do |item|
         if File.file?(item)
           begin
-            read_write_string_file(item, true, nil)
+            read_string_file(item)
           rescue Twine::Error => e
             Twine::stderr.puts "#{e.message}"
           end
@@ -96,34 +96,6 @@ module Twine
 
       output_path = @options[:output_path] || @options[:strings_file]
       write_strings_data(output_path)
-    end
-
-    def read_write_string_file(path, is_read, lang)
-      if is_read && !File.file?(path)
-        raise Twine::Error.new("File does not exist: #{path}")
-      end
-
-      format = @options[:format] || determine_format_given_path(path)
-      unless format
-        raise Twine::Error.new "Unable to determine format of #{path}"
-      end
-
-      formatter = formatter_for_format(format)
-
-      lang = lang || determine_language_given_path(path) || formatter.determine_language_given_path(path)
-      unless lang
-        raise Twine::Error.new "Unable to determine language for #{path}"
-      end
-
-      if !@strings.language_codes.include? lang
-        @strings.language_codes << lang
-      end
-
-      if is_read
-        formatter.read_file(path, lang)
-      else
-        formatter.write_file(path, lang)
-      end
     end
 
     def generate_loc_drop
@@ -166,7 +138,7 @@ module Twine
               FileUtils.mkdir_p(File.dirname(real_path))
               zipfile.extract(entry.name, real_path)
               begin
-                read_write_string_file(real_path, true, nil)
+                read_string_file(real_path)
               rescue Twine::Error => e
                 Twine::stderr.puts "#{e.message}"
               end
@@ -222,29 +194,6 @@ module Twine
       Twine::stdout.puts "#{@options[:strings_file]} is valid."
     end
 
-    def determine_language_given_path(path)
-      code = File.basename(path, File.extname(path))
-      return code if @strings.language_codes.include? code
-    end
-
-    def determine_format_given_path(path)
-      formatter = Formatters.formatters.find { |f| f.extension == File.extname(path) }
-      return formatter.format_name if formatter
-    end
-
-    def determine_format_given_directory(directory)
-      formatter = Formatters.formatters.find { |f| f.can_handle_directory?(directory) }
-      return formatter.format_name if formatter
-    end
-
-    def formatter_for_format(format)
-      formatter = Formatters.formatters.find { |f| f.format_name == format }
-      return nil unless formatter
-      formatter.strings = @strings
-      formatter.options = @options
-      formatter
-    end
-
     private
 
     def require_rubyzip
@@ -253,6 +202,56 @@ module Twine
       rescue LoadError
         raise Twine::Error.new "You must run 'gem install rubyzip' in order to create or consume localization drops."
       end
+    end
+
+    def determine_language_given_path(path)
+      code = File.basename(path, File.extname(path))
+      return code if @strings.language_codes.include? code
+    end
+
+    def formatter_for_format(format)
+      find_formatter { |f| f.format_name == format }
+    end
+
+    def find_formatter(&block)
+      formatter = Formatters.formatters.find &block
+      return nil unless formatter
+      formatter.strings = @strings
+      formatter.options = @options
+      formatter
+    end
+
+    def read_string_file(path, lang = nil)
+      unless File.file?(path)
+        raise Twine::Error.new("File does not exist: #{path}")
+      end
+
+      formatter, lang = prepare_read_write(path, lang)
+
+      formatter.read_file(path, lang)
+    end
+
+    def write_string_file(path, lang)
+      formatter, lang = prepare_read_write(path, lang)
+      formatter.write_file(path, lang)
+    end
+
+    def prepare_read_write(path, lang)
+      formatter_for_path = find_formatter { |f| f.extension == File.extname(path) }
+      formatter = formatter_for_format(@options[:format]) || formatter_for_path
+      
+      unless formatter
+        raise Twine::Error.new "Unable to determine format of #{path}"
+      end      
+
+      lang = lang || determine_language_given_path(path) || formatter.determine_language_given_path(path)
+      unless lang
+        raise Twine::Error.new "Unable to determine language for #{path}"
+      end
+
+      @strings.language_codes << lang unless @strings.language_codes.include? lang
+
+      return formatter, lang
     end
   end
 end
