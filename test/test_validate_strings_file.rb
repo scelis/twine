@@ -37,19 +37,25 @@ class TestValidateStringsFile < CommandTestCase
     end
   end
 
-  def test_reports_missing_tags
-    random_row.tags.clear
+  def test_reports_invalid_characters_in_keys
+    random_row.key[0] = "!?;:,^`´'\"\\|/(){}[]~-+*=#$%".chars.to_a.sample
 
     assert_raises Twine::Error do
       Twine::Runner.new(@options, @twine_file).validate_strings_file
     end
   end
 
-  def test_reports_invalid_characters_in_keys
-    random_row.key[0] = "!?;:,^`´'\"\\|/(){}[]~-+*=#$%".chars.to_a.sample
+  def test_does_not_reports_missing_tags_by_default
+    random_row.tags.clear
+
+    Twine::Runner.new(@options, @twine_file).validate_strings_file
+  end
+
+  def test_reports_missing_tags
+    random_row.tags.clear
 
     assert_raises Twine::Error do
-      Twine::Runner.new(@options, @twine_file).validate_strings_file
+      Twine::Runner.new(@options.merge(pedantic: true), @twine_file).validate_strings_file
     end
   end
 end

@@ -89,6 +89,9 @@ module Twine
           end
           options[:output_encoding] = e
         end
+        opts.on('-p', '--pedantic', 'When validating a strings file, perform additional checks that go beyond pure validity (like presence of tags)') do
+          options[:pedantic] = true
+        end
         opts.on('-h', '--help', 'Show this message.') do |h|
           puts opts.help
           exit

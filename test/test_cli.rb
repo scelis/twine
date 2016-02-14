@@ -21,6 +21,11 @@ class CLITestCase < TwineTestCase
       assert_equal @strings_file_path, @options[:strings_file]
     end
 
+    def test_pedantic
+      parse "validate-strings-file #{@strings_file_path} --pedantic"
+      assert @options[:pedantic]
+    end
+
     def test_missing_parameter
       assert_raises Twine::Error do
         parse 'validate-strings-file'
