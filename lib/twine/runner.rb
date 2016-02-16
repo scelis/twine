@@ -43,6 +43,8 @@ module Twine
     end
 
     def generate_string_file
+      validate_strings_file if @options[:validate]
+
       lang = nil
       lang = @options[:languages][0] if @options[:languages]
 
@@ -50,6 +52,8 @@ module Twine
     end
 
     def generate_all_string_files
+      validate_strings_file if @options[:validate]
+
       if !File.directory?(@options[:output_path])
         if @options[:create_folders]
           FileUtils.mkdir_p(@options[:output_path])
@@ -99,6 +103,8 @@ module Twine
     end
 
     def generate_loc_drop
+      validate_strings_file if @options[:validate]
+      
       require_rubyzip
 
       if File.file?(@options[:output_path])

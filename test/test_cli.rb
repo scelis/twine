@@ -54,6 +54,11 @@ class CLITestCase < TwineTestCase
       end
     end
 
+    def test_validate
+      parse "generate-string-file #{@strings_file_path} #{@output_path} --validate"
+      assert @options[:validate]
+    end
+
     def test_extra_parameter
       assert_raises Twine::Error do
         parse 'generate-string-file strings output extra'
@@ -80,6 +85,11 @@ class CLITestCase < TwineTestCase
       assert_raises Twine::Error do
         parse "generate-all-string-files strings"
       end
+    end
+
+    def test_validate
+      parse "generate-all-string-files #{@strings_file_path} #{@output_dir} --validate"
+      assert @options[:validate]
     end
 
     def test_extra_parameter
@@ -152,6 +162,11 @@ class CLITestCase < TwineTestCase
       assert_raises Twine::Error do
         parse "generate-loc-drop strings --format apple"
       end
+    end
+
+    def test_validate
+      parse "generate-loc-drop #{@strings_file_path} #{@output_path} --format apple --validate"
+      assert @options[:validate]
     end
 
     def test_extra_parameter

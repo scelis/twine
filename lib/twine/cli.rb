@@ -89,6 +89,9 @@ module Twine
           end
           options[:output_encoding] = e
         end
+        opts.on('--validate', 'Validate the strings file before formatting it') do
+          options[:validate] = true
+        end
         opts.on('-p', '--pedantic', 'When validating a strings file, perform additional checks that go beyond pure validity (like presence of tags)') do
           options[:pedantic] = true
         end
