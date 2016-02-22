@@ -6,10 +6,10 @@ class TestGenerateStringFile < CommandTestCase
     options[:output_path] = File.join(@output_dir, file) if file
     options[:languages] = language if language
 
-    @strings = Twine::StringsFile.new
-    @strings.language_codes.concat KNOWN_LANGUAGES
+    strings = Twine::StringsFile.new
+    strings.language_codes.concat KNOWN_LANGUAGES
 
-    Twine::Runner.new(options, @strings)
+    Twine::Runner.new(options, strings)
   end
 
   def prepare_mock_write_file_formatter(formatter_class)
@@ -47,5 +47,36 @@ class TestGenerateStringFile < CommandTestCase
     formatter.expects(:write_file).with(anything, random_language)
 
     new_runner(nil, "#{random_language}.xml").generate_string_file
+  end
+
+  class TestDeliberate < CommandTestCase
+    def new_runner(validate)
+      options = {}
+      options[:output_path] = @output_path
+      options[:languages] = ['en']
+      options[:format] = 'android'
+      options[:validate] = validate
+
+      twine_file = build_twine_file 'en' do
+        add_section 'Section' do
+          add_row key: 'value'
+          add_row key: 'value'
+        end
+      end
+
+      Twine::Runner.new(options, twine_file)
+    end
+
+    def test_does_not_validate_strings_file
+      prepare_mock_formatter Twine::Formatters::Android
+
+      new_runner(false).generate_string_file
+    end
+
+    def test_validates_strings_file_if_validate
+      assert_raises Twine::Error do
+        new_runner(true).generate_string_file
+      end
+    end
   end
 end

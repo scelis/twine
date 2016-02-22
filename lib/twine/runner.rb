@@ -43,6 +43,8 @@ module Twine
     end
 
     def generate_string_file
+      validate_strings_file if @options[:validate]
+
       lang = nil
       lang = @options[:languages][0] if @options[:languages]
 
@@ -50,6 +52,8 @@ module Twine
     end
 
     def generate_all_string_files
+      validate_strings_file if @options[:validate]
+
       if !File.directory?(@options[:output_path])
         if @options[:create_folders]
           FileUtils.mkdir_p(@options[:output_path])
@@ -99,6 +103,8 @@ module Twine
     end
 
     def generate_loc_drop
+      validate_strings_file if @options[:validate]
+      
       require_rubyzip
 
       if File.file?(@options[:output_path])
@@ -179,10 +185,12 @@ module Twine
         errors << "Found duplicate string key(s):\n#{join_keys.call(duplicate_keys)}"
       end
 
-      if keys_without_tags.length == total_strings
-        errors << "None of your strings have tags."
-      elsif keys_without_tags.length > 0
-        errors << "Found strings without tags:\n#{join_keys.call(keys_without_tags)}"
+      if @options[:pedantic]
+        if keys_without_tags.length == total_strings
+          errors << "None of your strings have tags."
+        elsif keys_without_tags.length > 0
+          errors << "Found strings without tags:\n#{join_keys.call(keys_without_tags)}"
+        end
       end
 
       unless invalid_keys.empty?
