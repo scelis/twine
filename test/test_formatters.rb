@@ -100,6 +100,15 @@ class TestAndroidFormatter < FormatterTest
     identifier = '@android:string/cancel'
     assert_equal identifier, @formatter.format_value(identifier)
   end
+
+  def test_deducts_language_from_resource_folder
+    language = %w(en de fr).sample
+    assert_equal language, @formatter.determine_language_given_path("res/values-#{language}")
+  end
+
+  def test_does_not_deduct_language_from_device_capability_resource_folder
+    assert_nil @formatter.determine_language_given_path('res/values-w820p')
+  end
 end
 
 class TestAppleFormatter < FormatterTest
