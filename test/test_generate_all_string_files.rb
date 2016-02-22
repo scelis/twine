@@ -8,13 +8,13 @@ class TestGenerateAllStringFiles < CommandTestCase
       options[:format] = 'apple'
       options[:create_folders] = create_folders
 
-      @twine_file = build_twine_file 'en', 'es' do
+      twine_file = build_twine_file 'en', 'es' do
         add_section 'Section' do
           add_row key: 'value'
         end
       end
 
-      Twine::Runner.new(options, @twine_file)
+      Twine::Runner.new(options, twine_file)
     end
 
     def test_fails_if_output_folder_does_not_exist

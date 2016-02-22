@@ -6,10 +6,10 @@ class TestGenerateStringFile < CommandTestCase
     options[:output_path] = File.join(@output_dir, file) if file
     options[:languages] = language if language
 
-    @strings = Twine::StringsFile.new
-    @strings.language_codes.concat KNOWN_LANGUAGES
+    strings = Twine::StringsFile.new
+    strings.language_codes.concat KNOWN_LANGUAGES
 
-    Twine::Runner.new(options, @strings)
+    Twine::Runner.new(options, strings)
   end
 
   def prepare_mock_write_file_formatter(formatter_class)
