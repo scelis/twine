@@ -39,7 +39,9 @@ module Twine
           if segment == 'values'
             return @strings.language_codes[0]
           else
-            match = /^values-(.*)$/.match(segment)
+            # The language is defined by a two-letter ISO 639-1 language code, optionally followed by a two letter ISO 3166-1-alpha-2 region code (preceded by lowercase "r").
+            # see http://developer.android.com/guide/topics/resources/providing-resources.html#AlternativeResources
+            match = /^values-([a-z]{2}(-r[a-z]{2})?)$/i.match(segment)
             if match
               lang = match[1]
               lang = LANG_CODES.fetch(lang, lang)
