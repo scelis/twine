@@ -25,6 +25,11 @@ module Twine
         '.xml'
       end
 
+
+      def output_path_for_language(lang)
+        "values-" + lang
+      end
+
       def can_handle_directory?(path)
         Dir.entries(path).any? { |item| /^values.*$/.match(item) }
       end
