@@ -42,7 +42,7 @@ class TestGenerateLocDrop < CommandTestCase
     @runner.generate_loc_drop
   end
 
-  class TestDeliberate < CommandTestCase
+  class TestValidate < CommandTestCase
     def new_runner(validate)
       options = {}
       options[:output_path] = @output_path
