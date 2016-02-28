@@ -83,7 +83,7 @@ module Twine
         opts.on('-c', '--consume-comments', 'Normally, when consuming a string file, Twine will ignore all comments in the file. With this flag set, any comments encountered will be read and parsed into the strings data file. This is especially useful when creating your first strings data file from an existing project.') do |c|
           options[:consume_comments] = true
         end
-        opts.on('-e', '--encoding ENCODING', 'Twine defaults to encoding all output files in UTF-8. This flag will tell Twine to use an alternate encoding for these files. For example, you could use this to write Apple .strings files in UTF-16. This flag is currently only supported in Ruby 1.9.3 or greater.') do |e|
+        opts.on('-e', '--encoding ENCODING', 'Twine defaults to encoding all output files in UTF-8. This flag will tell Twine to use an alternate encoding for these files. For example, you could use this to write Apple .strings files in UTF-16. When reading files, Twine does its best to determine the encoding automatically. However, if the files are UTF-16 without BOM, you need to specify if it\'s UTF-16LE or UTF16-BE.') do |e|
           options[:output_encoding] = e
         end
         opts.on('--validate', 'Validate the strings file before formatting it') do

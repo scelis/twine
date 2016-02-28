@@ -295,7 +295,13 @@ module Twine
       end
 
       formatter, lang = prepare_read_write(path, lang)
-      formatter.read_file(path, lang)
+
+      encoding = @options[:encoding] || Twine::Encoding.encoding_for_path(path)
+
+      IO.open(IO.sysopen(path, 'rb'), 'rb', external_encoding: encoding, internal_encoding: 'UTF-8') do |io|
+        io.read(2) if Twine::Encoding.has_bom?(path)
+        formatter.read(io, lang)
+      end
     end
 
     def prepare_read_write(path, lang)

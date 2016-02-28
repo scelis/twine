@@ -83,8 +83,8 @@ module Twine
         lang
       end
 
-      def read_file(path, lang)
-        raise NotImplementedError.new("You must implement read_file in your formatter class.")
+      def read(io, lang)
+        raise NotImplementedError.new("You must implement read in your formatter class.")
       end
 
       def format_file(lang)

@@ -68,7 +68,7 @@ module Twine
         super(key, lang, value)
       end
 
-      def read_file(path, lang)
+      def read(io, lang)
         resources_regex = /<resources(?:[^>]*)>(.*)<\/resources>/m
         key_regex = /<string name="(\w+)">/
         comment_regex = /<!-- (.*) -->/
@@ -77,27 +77,25 @@ module Twine
         value = nil
         comment = nil
 
-        File.open(path, 'r:UTF-8') do |f|
-          content_match = resources_regex.match(f.read)
-          if content_match
-            for line in content_match[1].split(/\r?\n/)
-              key_match = key_regex.match(line)
-              if key_match
-                key = key_match[1]
-                value_match = value_regex.match(line)
-                value = value_match ? value_match[1] : ""
-                
-                set_translation_for_key(key, lang, value)
-                if comment and comment.length > 0 and !comment.start_with?("SECTION:")
-                  set_comment_for_key(key, comment)
-                end
-                comment = nil
+        content_match = resources_regex.match(io.read)
+        if content_match
+          for line in content_match[1].split(/\r?\n/)
+            key_match = key_regex.match(line)
+            if key_match
+              key = key_match[1]
+              value_match = value_regex.match(line)
+              value = value_match ? value_match[1] : ""
+              
+              set_translation_for_key(key, lang, value)
+              if comment and comment.length > 0 and !comment.start_with?("SECTION:")
+                set_comment_for_key(key, comment)
               end
-
-              comment_match = comment_regex.match(line)
-              if comment_match
-                comment = comment_match[1]
-              end
+              comment = nil
+            end
+            
+            comment_match = comment_regex.match(line)
+            if comment_match
+              comment = comment_match[1]
             end
           end
         end
