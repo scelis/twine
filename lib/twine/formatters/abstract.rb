@@ -158,51 +158,6 @@ module Twine
       def escape_quotes(text)
         text.gsub('"', '\\\\"')
       end
-
-      def write_all_files(path)
-        file_name = @options[:file_name] || default_file_name
-        if @options[:create_folders]
-          @strings.language_codes.each do |lang|
-            output_path = File.join(path, output_path_for_language(lang))
-
-            FileUtils.mkdir_p(output_path)
-
-            file_path = File.join(output_path, file_name)
-
-            output = format_file(lang)
-
-            # TODO print warning unless output
-
-            encoding = @options[:output_encoding] || 'UTF-8'
-            File.open(file_path, "w:#{encoding}") { |f| f.puts output }
-          end
-        else
-          language_written = false
-          Dir.foreach(path) do |item|
-            next if item == "." or item == ".."
-
-            item = File.join(path, item)
-            next unless File.directory?(item)
-
-            lang = determine_language_given_path(item)
-            next unless lang
-
-            output = format_file(lang)
-
-            # TODO print warning unless output
-
-            encoding = @options[:output_encoding] || 'UTF-8'
-            File.open(File.join(item, file_name), "w:#{encoding}") { |f| f.puts output }
-
-            language_written = true
-          end
-
-          if !language_written
-            raise Twine::Error.new("Failed to generate any files: No languages found at #{path}")
-          end
-        end
-      end
-
     end
   end
 end

@@ -74,7 +74,43 @@ module Twine
         raise Twine::Error.new "Could not determine format given the contents of #{@options[:output_path]}"
       end
 
-      formatter.write_all_files(@options[:output_path])
+
+      file_name = @options[:file_name] || formatter.default_file_name
+      if @options[:create_folders]
+        @strings.language_codes.each do |lang|
+          output_path = File.join(@options[:output_path], formatter.output_path_for_language(lang))
+
+          FileUtils.mkdir_p(output_path)
+
+          file_path = File.join(output_path, file_name)
+
+          output = formatter.format_file(lang)
+
+          IO.write(file_path, output, encoding: encoding)
+        end
+      else
+        language_written = false
+        Dir.foreach(@options[:output_path]) do |item|
+          next if item == "." or item == ".."
+
+          item = File.join(@options[:output_path], item)
+          next unless File.directory?(item)
+
+          lang = formatter.determine_language_given_path(item)
+          next unless lang
+
+          output = formatter.format_file(lang)
+
+          IO.write(File.join(item, file_name), output, encoding: encoding)
+
+          language_written = true
+        end
+
+        unless language_written
+          raise Twine::Error.new("Failed to generate any files: No languages found at #{@options[:output_path]}")
+        end
+      end
+
     end
 
     def consume_string_file
