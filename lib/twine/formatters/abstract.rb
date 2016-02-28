@@ -87,11 +87,16 @@ module Twine
         raise NotImplementedError.new("You must implement read_file in your formatter class.")
       end
 
-      def format_file(strings, lang)
+      def format_file(lang)
+        output_processor = Processors::OutputProcessor.new(@strings, @options)
+        processed_strings = output_processor.process(lang)
+
+        return nil if processed_strings.strings_map.empty?
+
         header = format_header(lang)
         result = ""
         result += header + "\n" if header
-        result += format_sections(strings, lang)
+        result += format_sections(processed_strings, lang)
       end
 
       def format_header(lang)
@@ -154,16 +159,6 @@ module Twine
         text.gsub('"', '\\\\"')
       end
 
-      def write_file(path, lang)
-        output_processor = Processors::OutputProcessor.new(@strings, @options)
-        processed_strings = output_processor.process(lang)
-
-        encoding = @options[:output_encoding] || 'UTF-8'
-        File.open(path, "w:#{encoding}") do |f|
-          f.puts format_file(processed_strings, lang)
-        end
-      end
-
       def write_all_files(path)
         file_name = @options[:file_name] || default_file_name
         if @options[:create_folders]
@@ -173,7 +168,13 @@ module Twine
             FileUtils.mkdir_p(output_path)
 
             file_path = File.join(output_path, file_name)
-            write_file(file_path, lang)
+
+            output = format_file(lang)
+
+            # TODO print warning unless output
+
+            encoding = @options[:output_encoding] || 'UTF-8'
+            File.open(file_path, "w:#{encoding}") { |f| f.puts output }
           end
         else
           language_written = false
@@ -186,8 +187,13 @@ module Twine
             lang = determine_language_given_path(item)
             next unless lang
 
-            file_path = File.join(item, file_name)
-            write_file(file_path, lang)
+            output = format_file(lang)
+
+            # TODO print warning unless output
+
+            encoding = @options[:output_encoding] || 'UTF-8'
+            File.open(File.join(item, file_name), "w:#{encoding}") { |f| f.puts output }
+
             language_written = true
           end
 

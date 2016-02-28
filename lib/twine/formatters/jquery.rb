@@ -44,8 +44,10 @@ module Twine
         end
       end
 
-      def format_file(strings, lang)
-        "{\n#{super}\n}"
+      def format_file(lang)
+        result = super
+        return result unless result
+        "{\n#{super}\n}\n"
       end
 
       def format_sections(strings, lang)

@@ -67,11 +67,10 @@ class TestAndroidFormatter < FormatterTest
     assert_equal '@value', @strings.strings_map['key1'].translations['en']
   end
 
-  def test_write_file_output_format
+  def test_format_file
     formatter = Twine::Formatters::Android.new
     formatter.strings = @twine_file
-    formatter.write_file @output_path, 'en'
-    assert_equal content('formatter_android.xml'), output_content
+    assert_equal content('formatter_android.xml'), formatter.format_file('en')
   end
 
   def test_format_key_with_space
@@ -130,11 +129,10 @@ class TestAppleFormatter < FormatterTest
     assert_file_contents_read_correctly
   end
 
-  def test_write_file_output_format
+  def test_format_file
     formatter = Twine::Formatters::Apple.new
     formatter.strings = @twine_file
-    formatter.write_file @output_path, 'en'
-    assert_equal content('formatter_apple.strings'), output_content
+    assert_equal content('formatter_apple.strings'), formatter.format_file('en')
   end
 
   def test_format_key_with_space
@@ -162,11 +160,10 @@ class TestJQueryFormatter < FormatterTest
     assert_translations_read_correctly
   end
 
-  def test_write_file_output_format
+  def test_format_file
     formatter = Twine::Formatters::JQuery.new
     formatter.strings = @twine_file
-    formatter.write_file @output_path, 'en'
-    assert_equal content('formatter_jquery.json'), output_content
+    assert_equal content('formatter_jquery.json'), formatter.format_file('en')
   end
 
   def test_format_value_with_newline
@@ -192,11 +189,10 @@ class TestGettextFormatter < FormatterTest
     assert_equal 'multiline\nstring', @strings.strings_map['key1'].translations['en']
   end
 
-  def test_write_file_output_format
+  def test_format_file
     formatter = Twine::Formatters::Gettext.new
     formatter.strings = @twine_file
-    formatter.write_file @output_path, 'en'
-    assert_equal content('formatter_gettext.po'), output_content
+    assert_equal content('formatter_gettext.po'), formatter.format_file('en')
   end
 
 end
@@ -214,11 +210,10 @@ class TestTizenFormatter < FormatterTest
     assert_file_contents_read_correctly
   end
 
-  def test_write_file_output_format
+  def test_format_file
     formatter = Twine::Formatters::Tizen.new
     formatter.strings = @twine_file
-    formatter.write_file @output_path, 'en'
-    assert_equal content('formatter_tizen.xml'), output_content
+    assert_equal content('formatter_tizen.xml'), formatter.format_file('en')
   end
 
 end
@@ -234,11 +229,10 @@ class TestDjangoFormatter < FormatterTest
     assert_file_contents_read_correctly
   end
 
-  def test_write_file_output_format
+  def test_format_file
     formatter = Twine::Formatters::Django.new
     formatter.strings = @twine_file
-    formatter.write_file @output_path, 'en'
-    assert_equal content('formatter_django.po'), output_content
+    assert_equal content('formatter_django.po'), formatter.format_file('en')
   end
 end
 
@@ -253,10 +247,9 @@ class TestFlashFormatter < FormatterTest
     assert_file_contents_read_correctly
   end
 
-  def test_write_file_output_format
+  def test_format_file
     formatter = Twine::Formatters::Flash.new
     formatter.strings = @twine_file
-    formatter.write_file @output_path, 'en'
-    assert_equal content('formatter_flash.properties'), output_content
+    assert_equal content('formatter_flash.properties'), formatter.format_file('en')
   end
 end

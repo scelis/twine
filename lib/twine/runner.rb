@@ -48,7 +48,10 @@ module Twine
       lang = nil
       lang = @options[:languages][0] if @options[:languages]
 
-      write_string_file(@options[:output_path], lang)
+      formatter, lang = prepare_read_write(@options[:output_path], lang)
+      output = formatter.format_file(lang)
+
+      IO.write(@options[:output_path], output, encoding: encoding)
     end
 
     def generate_all_string_files
@@ -111,7 +114,7 @@ module Twine
         File.delete(@options[:output_path])
       end
 
-      Dir.mktmpdir do |dir|
+      Dir.mktmpdir do |temp_dir|
         Zip::File.open(@options[:output_path], Zip::File::CREATE) do |zipfile|
           zipfile.mkdir('Locales')
 
@@ -119,10 +122,13 @@ module Twine
           @strings.language_codes.each do |lang|
             if @options[:languages] == nil || @options[:languages].length == 0 || @options[:languages].include?(lang)
               file_name = lang + formatter.extension
-              real_path = File.join(dir, file_name)
+              temp_path = File.join(temp_dir, file_name)
               zip_path = File.join('Locales', file_name)
-              formatter.write_file(real_path, lang)
-              zipfile.add(zip_path, real_path)
+              output = formatter.format_file(lang)
+              next unless output
+              # TODO: report warning unless output
+              IO.write(temp_path, output, encoding: encoding)
+              zipfile.add(zip_path, temp_path)
             end
           end
         end
@@ -204,6 +210,10 @@ module Twine
 
     private
 
+    def encoding
+      @options[:output_encoding] || 'UTF-8'
+    end
+
     def require_rubyzip
       begin
         require 'zip'
@@ -235,13 +245,7 @@ module Twine
       end
 
       formatter, lang = prepare_read_write(path, lang)
-
       formatter.read_file(path, lang)
-    end
-
-    def write_string_file(path, lang)
-      formatter, lang = prepare_read_write(path, lang)
-      formatter.write_file(path, lang)
     end
 
     def prepare_read_write(path, lang)

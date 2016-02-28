@@ -20,7 +20,7 @@ class TestGenerateLocDrop < CommandTestCase
   def test_generates_zip_file
     @runner.generate_loc_drop
 
-    assert File.exists?(@output_path), "language folder should not be created"
+    assert File.exists?(@output_path), "zip file should exist"
   end
 
   def test_zip_file_structure
@@ -37,7 +37,7 @@ class TestGenerateLocDrop < CommandTestCase
 
   def test_uses_formatter
     formatter = prepare_mock_formatter Twine::Formatters::Apple
-    formatter.expects(:write_file).twice.with() { |path, lang| FileUtils.touch path }
+    formatter.expects(:format_file).twice
 
     @runner.generate_loc_drop
   end

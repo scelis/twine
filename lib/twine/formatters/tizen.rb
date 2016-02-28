@@ -101,7 +101,7 @@ module Twine
         
         result += super + "\n"
 
-        result += '</string_table>'
+        result += "</string_table>\n"
       end
 
       def format_section_header(section)
