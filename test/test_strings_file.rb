@@ -50,7 +50,7 @@ class TestStringsFile < TwineTestCase
 
       @strings.write @output_path
 
-      assert_equal content('twine_accent_values.txt'), output_content
+      assert_equal content('twine_accent_values.txt'), File.read(@output_path)
     end
 
   end
