@@ -128,7 +128,7 @@ This command reads in a folder containing many `.strings` or `.xml` files. These
 
 #### `generate-loc-drop`
 
-This command is a convenient way to generate a zip file containing files created by the `generate-string-file` command. It is often used for creating a single zip containing a large number of strings in all languages which you can then hand off to your translation team.
+This command is a convenient way to generate a zip file containing files created by the `generate-string-file` command. If a file would not contain any translated strings, it is skipped and a warning is logged to `stderr`. This command can be used to create a single zip containing a large number of strings in all languages which you can then hand off to your translation team.
 
 	$ twine generate-loc-drop /path/to/strings.txt LocDrop1.zip
 	$ twine generate-loc-drop /path/to/strings.txt LocDrop2.zip --lang en,fr,ja,ko --tags common,app1

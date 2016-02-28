@@ -170,9 +170,13 @@ module Twine
               file_name = lang + formatter.extension
               temp_path = File.join(temp_dir, file_name)
               zip_path = File.join('Locales', file_name)
+
               output = formatter.format_file(lang)
-              next unless output
-              # TODO: report warning unless output
+              unless output
+                Twine::stderr.puts "Skipping file #{file_name} since it would not contain any strings."
+                next
+              end
+              
               IO.write(temp_path, output, encoding: encoding)
               zipfile.add(zip_path, temp_path)
             end
