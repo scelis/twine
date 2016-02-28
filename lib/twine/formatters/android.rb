@@ -7,11 +7,11 @@ module Twine
     class Android < Abstract
       include Twine::Placeholders
 
-      LANG_CODES = Hash[
-        'zh' => 'zh-Hans',
+      LANG_MAPPINGS = Hash[
         'zh-rCN' => 'zh-Hans',
         'zh-rHK' => 'zh-Hant',
         'en-rGB' => 'en-UK',
+        'zh' => 'zh-Hans',
         'in' => 'id',
         'nb' => 'no'
         # TODO: spanish
@@ -44,7 +44,7 @@ module Twine
             match = /^values-([a-z]{2}(-r[a-z]{2})?)$/i.match(segment)
             if match
               lang = match[1]
-              lang = LANG_CODES.fetch(lang, lang)
+              lang = LANG_MAPPINGS.fetch(lang, lang)
               lang.sub!('-r', '-')
               return lang
             end
@@ -52,6 +52,10 @@ module Twine
         end
 
         return
+      end
+
+      def output_path_for_language(lang)
+        "values-" + (LANG_MAPPINGS.key(lang) || lang)
       end
 
       def set_translation_for_key(key, lang, value)

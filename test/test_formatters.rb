@@ -117,6 +117,14 @@ class TestAndroidFormatter < FormatterTest
   def test_does_not_deduct_language_from_device_capability_resource_folder
     assert_nil @formatter.determine_language_given_path('res/values-w820p')
   end
+
+  def test_output_path_is_prefixed
+    assert_equal 'values-en', @formatter.output_path_for_language('en')
+  end
+
+  def test_output_path_language_mappings
+    assert_equal 'values-zh-rCN', @formatter.output_path_for_language('zh-Hans')
+  end
 end
 
 class TestAppleFormatter < FormatterTest
