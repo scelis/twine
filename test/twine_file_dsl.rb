@@ -20,7 +20,7 @@ module TwineFileDSL
     return unless @currently_built_twine_file
     return unless @currently_built_twine_file_section
 
-    # this relies on Ruby 1.9 preserving the order of hash elements
+    # this relies on Ruby preserving the order of hash elements
     key, value = parameters.first
     row = Twine::StringsRow.new(key.to_s)
     if value.is_a? Hash

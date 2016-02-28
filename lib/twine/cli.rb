@@ -84,9 +84,6 @@ module Twine
           options[:consume_comments] = true
         end
         opts.on('-e', '--encoding ENCODING', 'Twine defaults to encoding all output files in UTF-8. This flag will tell Twine to use an alternate encoding for these files. For example, you could use this to write Apple .strings files in UTF-16. This flag is currently only supported in Ruby 1.9.3 or greater.') do |e|
-          unless "".respond_to? :encode
-            raise Twine::Error.new "The --encoding flag is only supported on Ruby 1.9.3 or greater."
-          end
           options[:output_encoding] = e
         end
         opts.on('--validate', 'Validate the strings file before formatting it') do
