@@ -115,7 +115,7 @@ class TestAndroidFormatter < FormatterTest
   end
 
   def test_does_not_deduct_language_from_device_capability_resource_folder
-    assert_nil @formatter.determine_language_given_path('res/values-w820p')
+    assert_nil @formatter.determine_language_given_path('res/values-w820dp')
   end
 end
 

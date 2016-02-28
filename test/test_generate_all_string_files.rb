@@ -42,7 +42,7 @@ class TestGenerateAllStringFiles < CommandTestCase
     end
   end
 
-  class TestDeliberate < CommandTestCase
+  class TestValidate < CommandTestCase
     def new_runner(validate)
       Dir.mkdir File.join @output_dir, 'values-en'
 

@@ -49,7 +49,7 @@ class TestGenerateStringFile < CommandTestCase
     new_runner(nil, "#{random_language}.xml").generate_string_file
   end
 
-  class TestDeliberate < CommandTestCase
+  class TestValidate < CommandTestCase
     def new_runner(validate)
       options = {}
       options[:output_path] = @output_path
