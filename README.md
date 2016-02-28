@@ -108,7 +108,7 @@ This command creates an Apple or Android strings file from the master strings da
 
 #### `generate-all-string-files`
 
-This command is a convenient way to call `generate-string-file` multiple times. It uses standard Mac OS X, iOS, and Android conventions to figure out exactly which files to create given a parent directory. For example, if you point it to a parent directory containing `en.lproj`, `fr.lproj`, and `ja.lproj` subdirectories, Twine will create a `Localizable.strings` file of the appropriate language in each of them. This is often the command you will want to execute during the build phase of your project.
+This command is a convenient way to call `generate-string-file` multiple times. It uses standard Mac OS X, iOS, and Android conventions to figure out exactly which files to create given a parent directory. For example, if you point it to a parent directory containing `en.lproj`, `fr.lproj`, and `ja.lproj` subdirectories, Twine will create a `Localizable.strings` file of the appropriate language in each of them. However, files that would not contain any translations will not be created; instead warnings will be logged to `stderr`. This is often the command you will want to execute during the build phase of your project.
 
 	$ twine generate-all-string-files /path/to/strings.txt /path/to/project/locales/directory --tags common,app1
 

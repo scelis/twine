@@ -74,7 +74,6 @@ module Twine
         raise Twine::Error.new "Could not determine format given the contents of #{@options[:output_path]}"
       end
 
-
       file_name = @options[:file_name] || formatter.default_file_name
       if @options[:create_folders]
         @strings.language_codes.each do |lang|
@@ -85,28 +84,37 @@ module Twine
           file_path = File.join(output_path, file_name)
 
           output = formatter.format_file(lang)
+          unless output
+            Twine::stderr.puts "Skipping file at path #{file_path} since it would not contain any strings."
+            next
+          end
 
           IO.write(file_path, output, encoding: encoding)
         end
       else
-        language_written = false
+        language_found = false
         Dir.foreach(@options[:output_path]) do |item|
           next if item == "." or item == ".."
 
-          item = File.join(@options[:output_path], item)
-          next unless File.directory?(item)
+          output_path = File.join(@options[:output_path], item)
+          next unless File.directory?(output_path)
 
-          lang = formatter.determine_language_given_path(item)
+          lang = formatter.determine_language_given_path(output_path)
           next unless lang
 
+          language_found = true
+
+          file_path = File.join(output_path, file_name)
           output = formatter.format_file(lang)
+          unless output
+            Twine::stderr.puts "Skipping file at path #{file_path} since it would not contain any strings."
+            next
+          end
 
-          IO.write(File.join(item, file_name), output, encoding: encoding)
-
-          language_written = true
+          IO.write(file_path, output, encoding: encoding)
         end
 
-        unless language_written
+        unless language_found
           raise Twine::Error.new("Failed to generate any files: No languages found at #{@options[:output_path]}")
         end
       end
