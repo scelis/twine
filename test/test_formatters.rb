@@ -137,6 +137,46 @@ class TestAppleFormatter < FormatterTest
     assert_file_contents_read_correctly
   end
 
+  def test_reads_quoted_keys
+    @formatter.read StringIO.new('"key" = "value"'), 'en'
+    assert_equal 'value', @strings.strings_map['key'].translations['en']
+  end
+
+  def test_reads_unquoted_keys
+    @formatter.read StringIO.new('key = "value"'), 'en'
+    assert_equal 'value', @strings.strings_map['key'].translations['en']
+  end
+
+  def test_ignores_leading_whitespace_before_quoted_keys
+    @formatter.read StringIO.new("\t  \"key\" = \"value\""), 'en'
+    assert_equal 'value', @strings.strings_map['key'].translations['en']
+  end
+
+  def test_ignores_leading_whitespace_before_unquoted_keys
+    @formatter.read StringIO.new("\t  key = \"value\""), 'en'
+    assert_equal 'value', @strings.strings_map['key'].translations['en']
+  end
+
+  def test_allows_quotes_in_quoted_keys
+    @formatter.read StringIO.new('"ke\"y" = "value"'), 'en'
+    assert_equal 'value', @strings.strings_map['ke"y'].translations['en']
+  end
+
+  def test_does_not_allow_quotes_in_quoted_keys
+    @formatter.read StringIO.new('ke"y = "value"'), 'en'
+    assert_nil @strings.strings_map['key']
+  end
+
+  def test_allows_equal_signs_in_quoted_keys
+    @formatter.read StringIO.new('"k=ey" = "value"'), 'en'
+    assert_equal 'value', @strings.strings_map['k=ey'].translations['en']
+  end
+
+  def test_does_not_allow_equal_signs_in_unquoted_keys
+    @formatter.read StringIO.new('k=ey = "value"'), 'en'
+    assert_nil @strings.strings_map['key']
+  end
+
   def test_format_file
     formatter = Twine::Formatters::Apple.new
     formatter.strings = @twine_file

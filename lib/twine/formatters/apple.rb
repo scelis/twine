@@ -38,9 +38,11 @@ module Twine
       def read(io, lang)
         last_comment = nil
         while line = io.gets
-          match = /"((?:[^"\\]|\\.)+)"\s*=\s*"((?:[^"\\]|\\.)*)"/.match(line)
+          # matches a `key = "value"` line, where key may be quoted or unquoted. The former may also contain escaped characters
+          match = /^\s*((?:"(?:[^"\\]|\\.)+")|(?:[^"\s=]+))\s*=\s*"((?:[^"\\]|\\.)*)"/.match(line)
           if match
             key = match[1]
+            key = key[1..-2] if key[0] == '"' and key[-1] == '"'
             key.gsub!('\\"', '"')
             value = match[2]
             value.gsub!('\\"', '"')
