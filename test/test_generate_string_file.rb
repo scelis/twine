@@ -49,6 +49,15 @@ class TestGenerateStringFile < CommandTestCase
     new_runner(nil, "#{random_language}.xml").generate_string_file
   end
 
+  def test_returns_error_if_nothing_written
+    formatter = prepare_mock_formatter Twine::Formatters::Android
+    formatter.expects(:format_file).returns(false)
+
+    assert_raises Twine::Error do
+      new_runner('fr', 'fr.xml').generate_string_file
+    end
+  end
+
   class TestValidate < CommandTestCase
     def new_runner(validate)
       options = {}

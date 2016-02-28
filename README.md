@@ -100,7 +100,7 @@ If you would like to enable twine to create language files in another format, cr
 
 #### `generate-string-file`
 
-This command creates an Apple or Android strings file from the master strings data file.
+This command creates an Apple or Android strings file from the master strings data file. If the output file would not contain any translations, twine will exit with an error.
 
 	$ twine generate-string-file /path/to/strings.txt values-ja.xml --tags common,app1
 	$ twine generate-string-file /path/to/strings.txt Localizable.strings --lang ja --tags mytag

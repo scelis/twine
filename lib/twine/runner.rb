@@ -51,6 +51,8 @@ module Twine
       formatter, lang = prepare_read_write(@options[:output_path], lang)
       output = formatter.format_file(lang)
 
+      raise Twine::Error.new "Nothing to generate! The resulting file would not contain any strings." unless output
+
       IO.write(@options[:output_path], output, encoding: encoding)
     end
 
