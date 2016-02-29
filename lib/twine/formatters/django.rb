@@ -94,8 +94,8 @@ module Twine
         end
       end
 
-      def format_file(strings, lang)
-        @default_lang = strings.language_codes[0]
+      def format_file(lang)
+        @default_lang = @strings.language_codes[0]
         result = super
         @default_lang = nil
         result

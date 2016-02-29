@@ -29,10 +29,6 @@ class TwineTestCase < Minitest::Test
     super
   end
 
-  def output_content
-    File.read @output_path
-  end
-
   def execute(command)
     command += "  -o #{@output_path}"
     Twine::Runner.run(command.split(" "))

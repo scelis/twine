@@ -100,7 +100,7 @@ If you would like to enable twine to create language files in another format, cr
 
 #### `generate-string-file`
 
-This command creates an Apple or Android strings file from the master strings data file.
+This command creates an Apple or Android strings file from the master strings data file. If the output file would not contain any translations, twine will exit with an error.
 
 	$ twine generate-string-file /path/to/strings.txt values-ja.xml --tags common,app1
 	$ twine generate-string-file /path/to/strings.txt Localizable.strings --lang ja --tags mytag
@@ -108,7 +108,7 @@ This command creates an Apple or Android strings file from the master strings da
 
 #### `generate-all-string-files`
 
-This command is a convenient way to call `generate-string-file` multiple times. It uses standard Mac OS X, iOS, and Android conventions to figure out exactly which files to create given a parent directory. For example, if you point it to a parent directory containing `en.lproj`, `fr.lproj`, and `ja.lproj` subdirectories, Twine will create a `Localizable.strings` file of the appropriate language in each of them. This is often the command you will want to execute during the build phase of your project.
+This command is a convenient way to call `generate-string-file` multiple times. It uses standard Mac OS X, iOS, and Android conventions to figure out exactly which files to create given a parent directory. For example, if you point it to a parent directory containing `en.lproj`, `fr.lproj`, and `ja.lproj` subdirectories, Twine will create a `Localizable.strings` file of the appropriate language in each of them. However, files that would not contain any translations will not be created; instead warnings will be logged to `stderr`. This is often the command you will want to execute during the build phase of your project.
 
 	$ twine generate-all-string-files /path/to/strings.txt /path/to/project/locales/directory --tags common,app1
 
@@ -128,7 +128,7 @@ This command reads in a folder containing many `.strings` or `.xml` files. These
 
 #### `generate-loc-drop`
 
-This command is a convenient way to generate a zip file containing files created by the `generate-string-file` command. It is often used for creating a single zip containing a large number of strings in all languages which you can then hand off to your translation team.
+This command is a convenient way to generate a zip file containing files created by the `generate-string-file` command. If a file would not contain any translated strings, it is skipped and a warning is logged to `stderr`. This command can be used to create a single zip containing a large number of strings in all languages which you can then hand off to your translation team.
 
 	$ twine generate-loc-drop /path/to/strings.txt LocDrop1.zip
 	$ twine generate-loc-drop /path/to/strings.txt LocDrop2.zip --lang en,fr,ja,ko --tags common,app1

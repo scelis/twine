@@ -12,31 +12,31 @@ class TestGenerateStringFile < CommandTestCase
     Twine::Runner.new(options, strings)
   end
 
-  def prepare_mock_write_file_formatter(formatter_class)
+  def prepare_mock_format_file_formatter(formatter_class)
     formatter = prepare_mock_formatter(formatter_class)
-    formatter.expects(:write_file)
+    formatter.expects(:format_file).returns(true)
   end
 
   def test_deducts_android_format_from_output_path
-    prepare_mock_write_file_formatter Twine::Formatters::Android
+    prepare_mock_format_file_formatter Twine::Formatters::Android
 
     new_runner('fr', 'fr.xml').generate_string_file
   end
 
   def test_deducts_apple_format_from_output_path
-    prepare_mock_write_file_formatter Twine::Formatters::Apple
+    prepare_mock_format_file_formatter Twine::Formatters::Apple
 
     new_runner('fr', 'fr.strings').generate_string_file
   end
 
   def test_deducts_jquery_format_from_output_path
-    prepare_mock_write_file_formatter Twine::Formatters::JQuery
+    prepare_mock_format_file_formatter Twine::Formatters::JQuery
 
     new_runner('fr', 'fr.json').generate_string_file
   end
 
   def test_deducts_gettext_format_from_output_path
-    prepare_mock_write_file_formatter Twine::Formatters::Gettext
+    prepare_mock_format_file_formatter Twine::Formatters::Gettext
 
     new_runner('fr', 'fr.po').generate_string_file
   end
@@ -44,12 +44,21 @@ class TestGenerateStringFile < CommandTestCase
   def test_deducts_language_from_output_path
     random_language = KNOWN_LANGUAGES.sample
     formatter = prepare_mock_formatter Twine::Formatters::Android
-    formatter.expects(:write_file).with(anything, random_language)
+    formatter.expects(:format_file).with(random_language).returns(true)
 
     new_runner(nil, "#{random_language}.xml").generate_string_file
   end
 
-  class TestDeliberate < CommandTestCase
+  def test_returns_error_if_nothing_written
+    formatter = prepare_mock_formatter Twine::Formatters::Android
+    formatter.expects(:format_file).returns(false)
+
+    assert_raises Twine::Error do
+      new_runner('fr', 'fr.xml').generate_string_file
+    end
+  end
+
+  class TestValidate < CommandTestCase
     def new_runner(validate)
       options = {}
       options[:output_path] = @output_path

@@ -108,7 +108,7 @@ module Twine
         
         result += super + "\n"
 
-        result += '</resources>'
+        result += "</resources>\n"
       end
 
       def format_section_header(section)

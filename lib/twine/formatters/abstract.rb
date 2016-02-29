@@ -87,11 +87,16 @@ module Twine
         raise NotImplementedError.new("You must implement read_file in your formatter class.")
       end
 
-      def format_file(strings, lang)
+      def format_file(lang)
+        output_processor = Processors::OutputProcessor.new(@strings, @options)
+        processed_strings = output_processor.process(lang)
+
+        return nil if processed_strings.strings_map.empty?
+
         header = format_header(lang)
         result = ""
         result += header + "\n" if header
-        result += format_sections(strings, lang)
+        result += format_sections(processed_strings, lang)
       end
 
       def format_header(lang)
@@ -153,50 +158,6 @@ module Twine
       def escape_quotes(text)
         text.gsub('"', '\\\\"')
       end
-
-      def write_file(path, lang)
-        output_processor = Processors::OutputProcessor.new(@strings, @options)
-        processed_strings = output_processor.process(lang)
-
-        encoding = @options[:output_encoding] || 'UTF-8'
-        File.open(path, "w:#{encoding}") do |f|
-          f.puts format_file(processed_strings, lang)
-        end
-      end
-
-      def write_all_files(path)
-        file_name = @options[:file_name] || default_file_name
-        if @options[:create_folders]
-          @strings.language_codes.each do |lang|
-            output_path = File.join(path, output_path_for_language(lang))
-
-            FileUtils.mkdir_p(output_path)
-
-            file_path = File.join(output_path, file_name)
-            write_file(file_path, lang)
-          end
-        else
-          language_written = false
-          Dir.foreach(path) do |item|
-            next if item == "." or item == ".."
-
-            item = File.join(path, item)
-            next unless File.directory?(item)
-
-            lang = determine_language_given_path(item)
-            next unless lang
-
-            file_path = File.join(item, file_name)
-            write_file(file_path, lang)
-            language_written = true
-          end
-
-          if !language_written
-            raise Twine::Error.new("Failed to generate any files: No languages found at #{path}")
-          end
-        end
-      end
-
     end
   end
 end

@@ -48,7 +48,12 @@ module Twine
       lang = nil
       lang = @options[:languages][0] if @options[:languages]
 
-      write_string_file(@options[:output_path], lang)
+      formatter, lang = prepare_read_write(@options[:output_path], lang)
+      output = formatter.format_file(lang)
+
+      raise Twine::Error.new "Nothing to generate! The resulting file would not contain any strings." unless output
+
+      IO.write(@options[:output_path], output, encoding: encoding)
     end
 
     def generate_all_string_files
@@ -69,7 +74,51 @@ module Twine
         raise Twine::Error.new "Could not determine format given the contents of #{@options[:output_path]}"
       end
 
-      formatter.write_all_files(@options[:output_path])
+      file_name = @options[:file_name] || formatter.default_file_name
+      if @options[:create_folders]
+        @strings.language_codes.each do |lang|
+          output_path = File.join(@options[:output_path], formatter.output_path_for_language(lang))
+
+          FileUtils.mkdir_p(output_path)
+
+          file_path = File.join(output_path, file_name)
+
+          output = formatter.format_file(lang)
+          unless output
+            Twine::stderr.puts "Skipping file at path #{file_path} since it would not contain any strings."
+            next
+          end
+
+          IO.write(file_path, output, encoding: encoding)
+        end
+      else
+        language_found = false
+        Dir.foreach(@options[:output_path]) do |item|
+          next if item == "." or item == ".."
+
+          output_path = File.join(@options[:output_path], item)
+          next unless File.directory?(output_path)
+
+          lang = formatter.determine_language_given_path(output_path)
+          next unless lang
+
+          language_found = true
+
+          file_path = File.join(output_path, file_name)
+          output = formatter.format_file(lang)
+          unless output
+            Twine::stderr.puts "Skipping file at path #{file_path} since it would not contain any strings."
+            next
+          end
+
+          IO.write(file_path, output, encoding: encoding)
+        end
+
+        unless language_found
+          raise Twine::Error.new("Failed to generate any files: No languages found at #{@options[:output_path]}")
+        end
+      end
+
     end
 
     def consume_string_file
@@ -111,7 +160,7 @@ module Twine
         File.delete(@options[:output_path])
       end
 
-      Dir.mktmpdir do |dir|
+      Dir.mktmpdir do |temp_dir|
         Zip::File.open(@options[:output_path], Zip::File::CREATE) do |zipfile|
           zipfile.mkdir('Locales')
 
@@ -119,10 +168,17 @@ module Twine
           @strings.language_codes.each do |lang|
             if @options[:languages] == nil || @options[:languages].length == 0 || @options[:languages].include?(lang)
               file_name = lang + formatter.extension
-              real_path = File.join(dir, file_name)
+              temp_path = File.join(temp_dir, file_name)
               zip_path = File.join('Locales', file_name)
-              formatter.write_file(real_path, lang)
-              zipfile.add(zip_path, real_path)
+
+              output = formatter.format_file(lang)
+              unless output
+                Twine::stderr.puts "Skipping file #{file_name} since it would not contain any strings."
+                next
+              end
+              
+              IO.write(temp_path, output, encoding: encoding)
+              zipfile.add(zip_path, temp_path)
             end
           end
         end
@@ -204,6 +260,10 @@ module Twine
 
     private
 
+    def encoding
+      @options[:output_encoding] || 'UTF-8'
+    end
+
     def require_rubyzip
       begin
         require 'zip'
@@ -235,13 +295,7 @@ module Twine
       end
 
       formatter, lang = prepare_read_write(path, lang)
-
       formatter.read_file(path, lang)
-    end
-
-    def write_string_file(path, lang)
-      formatter, lang = prepare_read_write(path, lang)
-      formatter.write_file(path, lang)
     end
 
     def prepare_read_write(path, lang)
