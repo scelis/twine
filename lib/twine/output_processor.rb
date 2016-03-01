@@ -31,9 +31,9 @@ module Twine
 
             value = row.translated_string_for_lang(language)
 
-            next if value && @options[:include] == 'untranslated'
+            next if value && @options[:include] == :untranslated
 
-            if value.nil? && @options[:include] != 'translated'
+            if value.nil? && @options[:include] != :translated
               value = row.translated_string_for_lang(fallback_languages(language))
             end
 
