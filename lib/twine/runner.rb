@@ -192,18 +192,18 @@ module Twine
         raise Twine::Error.new("File does not exist: #{@options[:input_path]}")
       end
 
-      Dir.mktmpdir do |dir|
+      Dir.mktmpdir do |temp_dir|
         Zip::File.open(@options[:input_path]) do |zipfile|
           zipfile.each do |entry|
-            if !entry.name.end_with?'/' and !File.basename(entry.name).start_with?'.'
-              real_path = File.join(dir, entry.name)
-              FileUtils.mkdir_p(File.dirname(real_path))
-              zipfile.extract(entry.name, real_path)
-              begin
-                read_string_file(real_path)
-              rescue Twine::Error => e
-                Twine::stderr.puts "#{e.message}"
-              end
+            next if entry.name.end_with? '/' or File.basename(entry.name).start_with? '.'
+
+            real_path = File.join(temp_dir, entry.name)
+            FileUtils.mkdir_p(File.dirname(real_path))
+            zipfile.extract(entry.name, real_path)
+            begin
+              read_string_file(real_path)
+            rescue Twine::Error => e
+              Twine::stderr.puts "#{e.message}"
             end
           end
         end
@@ -295,7 +295,13 @@ module Twine
       end
 
       formatter, lang = prepare_read_write(path, lang)
-      formatter.read_file(path, lang)
+
+      encoding = @options[:encoding] || Twine::Encoding.encoding_for_path(path)
+
+      IO.open(IO.sysopen(path, 'rb'), 'rb', external_encoding: encoding, internal_encoding: 'UTF-8') do |io|
+        io.read(2) if Twine::Encoding.has_bom?(path)
+        formatter.read(io, lang)
+      end
     end
 
     def prepare_read_write(path, lang)

@@ -41,8 +41,8 @@ class TestAndroidFormatter < FormatterTest
     super Twine::Formatters::Android
   end
 
-  def test_read_file_format
-    @formatter.read_file fixture('formatter_android.xml'), 'en'
+  def test_read_format
+    @formatter.read content_io('formatter_android.xml'), 'en'
 
     assert_file_contents_read_correctly
   end
@@ -131,10 +131,50 @@ class TestAppleFormatter < FormatterTest
     super Twine::Formatters::Apple
   end
 
-  def test_read_file_format
-    @formatter.read_file fixture('formatter_apple.strings'), 'en'
+  def test_read_format
+    @formatter.read content_io('formatter_apple.strings'), 'en'
 
     assert_file_contents_read_correctly
+  end
+
+  def test_reads_quoted_keys
+    @formatter.read StringIO.new('"key" = "value"'), 'en'
+    assert_equal 'value', @strings.strings_map['key'].translations['en']
+  end
+
+  def test_reads_unquoted_keys
+    @formatter.read StringIO.new('key = "value"'), 'en'
+    assert_equal 'value', @strings.strings_map['key'].translations['en']
+  end
+
+  def test_ignores_leading_whitespace_before_quoted_keys
+    @formatter.read StringIO.new("\t  \"key\" = \"value\""), 'en'
+    assert_equal 'value', @strings.strings_map['key'].translations['en']
+  end
+
+  def test_ignores_leading_whitespace_before_unquoted_keys
+    @formatter.read StringIO.new("\t  key = \"value\""), 'en'
+    assert_equal 'value', @strings.strings_map['key'].translations['en']
+  end
+
+  def test_allows_quotes_in_quoted_keys
+    @formatter.read StringIO.new('"ke\"y" = "value"'), 'en'
+    assert_equal 'value', @strings.strings_map['ke"y'].translations['en']
+  end
+
+  def test_does_not_allow_quotes_in_quoted_keys
+    @formatter.read StringIO.new('ke"y = "value"'), 'en'
+    assert_nil @strings.strings_map['key']
+  end
+
+  def test_allows_equal_signs_in_quoted_keys
+    @formatter.read StringIO.new('"k=ey" = "value"'), 'en'
+    assert_equal 'value', @strings.strings_map['k=ey'].translations['en']
+  end
+
+  def test_does_not_allow_equal_signs_in_unquoted_keys
+    @formatter.read StringIO.new('k=ey = "value"'), 'en'
+    assert_nil @strings.strings_map['key']
   end
 
   def test_format_file
@@ -162,8 +202,8 @@ class TestJQueryFormatter < FormatterTest
     super Twine::Formatters::JQuery
   end
 
-  def test_read_file_format
-    @formatter.read_file fixture('formatter_jquery.json'), 'en'
+  def test_read_format
+    @formatter.read content_io('formatter_jquery.json'), 'en'
 
     assert_translations_read_correctly
   end
@@ -185,14 +225,14 @@ class TestGettextFormatter < FormatterTest
     super Twine::Formatters::Gettext
   end
 
-  def test_read_file_format
-    @formatter.read_file fixture('formatter_gettext.po'), 'en'
+  def test_read_format
+    @formatter.read content_io('formatter_gettext.po'), 'en'
 
     assert_file_contents_read_correctly
   end
 
-  def test_read_file_with_multiple_line_value
-    @formatter.read_file fixture('gettext_multiline.po'), 'en'
+  def test_read_with_multiple_line_value
+    @formatter.read content_io('gettext_multiline.po'), 'en'
 
     assert_equal 'multiline\nstring', @strings.strings_map['key1'].translations['en']
   end
@@ -211,9 +251,9 @@ class TestTizenFormatter < FormatterTest
     super Twine::Formatters::Tizen
   end
 
-  def test_read_file_format
-    skip 'the current implementation of Tizen formatter does not support read_file'
-    @formatter.read_file fixture('formatter_tizen.xml'), 'en'
+  def test_read_format
+    skip 'the current implementation of Tizen formatter does not support reading'
+    @formatter.read content_io('formatter_tizen.xml'), 'en'
 
     assert_file_contents_read_correctly
   end
@@ -231,8 +271,8 @@ class TestDjangoFormatter < FormatterTest
     super Twine::Formatters::Django
   end
 
-  def test_read_file_format
-    @formatter.read_file fixture('formatter_django.po'), 'en'
+  def test_read_format
+    @formatter.read content_io('formatter_django.po'), 'en'
 
     assert_file_contents_read_correctly
   end
@@ -249,8 +289,8 @@ class TestFlashFormatter < FormatterTest
     super Twine::Formatters::Flash
   end
 
-  def test_read_file_format
-    @formatter.read_file fixture('formatter_flash.properties'), 'en'
+  def test_read_format
+    @formatter.read content_io('formatter_flash.properties'), 'en'
 
     assert_file_contents_read_correctly
   end

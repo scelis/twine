@@ -29,18 +29,16 @@ module Twine
         return
       end
 
-      def read_file(path, lang)
+      def read(io, lang)
         begin
           require "json"
         rescue LoadError
           raise Twine::Error.new "You must run 'gem install json' in order to read or write jquery-localize files."
         end
 
-        open(path) do |io|
-          json = JSON.load(io)
-          json.each do |key, value|
-            set_translation_for_key(key, lang, value)
-          end
+        json = JSON.load(io)
+        json.each do |key, value|
+          set_translation_for_key(key, lang, value)
         end
       end
 

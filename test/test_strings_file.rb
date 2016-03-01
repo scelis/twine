@@ -6,7 +6,7 @@ class TestStringsFile < TwineTestCase
       super
 
       @strings = Twine::StringsFile.new
-      @strings.read fixture('twine_accent_values.txt')
+      @strings.read fixture_path('twine_accent_values.txt')
     end
 
     def test_reading_keeps_leading_accent

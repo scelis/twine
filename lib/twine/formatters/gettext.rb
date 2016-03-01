@@ -31,35 +31,34 @@ module Twine
         return
       end
 
-      def read_file(path, lang)
+      def read(io, lang)
         comment_regex = /#.? *"(.*)"$/
         key_regex = /msgctxt *"(.*)"$/
         value_regex = /msgstr *"(.*)"$/m
-        File.open(path, 'r:UTF-8') do |f|
-          while item = f.gets("\n\n")
-            key = nil
-            value = nil
-            comment = nil
+        
+        while item = io.gets("\n\n")
+          key = nil
+          value = nil
+          comment = nil
 
-            comment_match = comment_regex.match(item)
-            if comment_match
-              comment = comment_match[1]
+          comment_match = comment_regex.match(item)
+          if comment_match
+            comment = comment_match[1]
+          end
+          key_match = key_regex.match(item)
+          if key_match
+            key = key_match[1].gsub('\\"', '"')
+          end
+          value_match = value_regex.match(item)
+          if value_match
+            value = value_match[1].gsub(/"\n"/, '').gsub('\\"', '"')
+          end
+          if key and key.length > 0 and value and value.length > 0
+            set_translation_for_key(key, lang, value)
+            if comment and comment.length > 0 and !comment.start_with?("SECTION:")
+              set_comment_for_key(key, comment)
             end
-            key_match = key_regex.match(item)
-            if key_match
-              key = key_match[1].gsub('\\"', '"')
-            end
-            value_match = value_regex.match(item)
-            if value_match
-              value = value_match[1].gsub(/"\n"/, '').gsub('\\"', '"')
-            end
-            if key and key.length > 0 and value and value.length > 0
-              set_translation_for_key(key, lang, value)
-              if comment and comment.length > 0 and !comment.start_with?("SECTION:")
-                set_comment_for_key(key, comment)
-              end
-              comment = nil
-            end
+            comment = nil
           end
         end
       end

@@ -34,12 +34,15 @@ class TwineTestCase < Minitest::Test
     Twine::Runner.run(command.split(" "))
   end
 
-  def fixture(filename)
+  def fixture_path(filename)
     File.join File.dirname(__FILE__), 'fixtures', filename
   end
-  alias :f :fixture
 
   def content(filename)
-    ERB.new(File.read fixture(filename)).result
+    ERB.new(File.read fixture_path(filename)).result
+  end
+
+  def content_io(filename)
+    StringIO.new ERB.new(File.read fixture_path(filename)).result
   end
 end

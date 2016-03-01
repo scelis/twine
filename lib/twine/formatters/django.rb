@@ -29,67 +29,35 @@ module Twine
         return
       end
 
-      def read_file(path, lang)
+      def read(io, lang)
         comment_regex = /#\. *"?(.*)"?$/
         key_regex = /msgid *"(.*)"$/
         value_regex = /msgstr *"(.*)"$/m
 
-        encoding = Twine::Encoding.encoding_for_path(path)
-        sep = nil
-        if !encoding.respond_to?(:encode)
-          # This code is not necessary in 1.9.3 and does not work as it did in 1.8.7.
-          if encoding.end_with? 'LE'
-            sep = "\x0a\x00"
-          elsif encoding.end_with? 'BE'
-            sep = "\x00\x0a"
-          else
-            sep = "\n"
+        last_comment = nil
+        while line = io.gets          
+          comment_match = comment_regex.match(line)
+          if comment_match
+            comment = comment_match[1]
           end
-        end
 
-        if encoding.index('UTF-16')
-          mode = "rb:#{encoding}"
-        else
-          mode = "r:#{encoding}"
-        end
+          key_match = key_regex.match(line)
+          if key_match
+            key = key_match[1].gsub('\\"', '"')
+          end
+          value_match = value_regex.match(line)
+          if value_match
+            value = value_match[1].gsub(/"\n"/, '').gsub('\\"', '"')
+          end
 
-        File.open(path, mode) do |f|
-          last_comment = nil
-          while line = (sep) ? f.gets(sep) : f.gets
-            if encoding.index('UTF-16')
-              if line.respond_to? :encode!
-                line.encode!('UTF-8')
-              else
-                require 'iconv'
-                line = Iconv.iconv('UTF-8', encoding, line).join
-              end
+          if key and key.length > 0 and value and value.length > 0
+            set_translation_for_key(key, lang, value)
+            if comment and comment.length > 0 and !comment.start_with?("--------- ")
+              set_comment_for_key(key, comment)
             end
-            
-            comment_match = comment_regex.match(line)
-            if comment_match
-              comment = comment_match[1]
-            end
-
-            key_match = key_regex.match(line)
-            if key_match
-                key = key_match[1].gsub('\\"', '"')
-            end
-            value_match = value_regex.match(line)
-            if value_match
-                value = value_match[1].gsub(/"\n"/, '').gsub('\\"', '"')
-            end
-
-
-            if key and key.length > 0 and value and value.length > 0
-                set_translation_for_key(key, lang, value)
-                if comment and comment.length > 0 and !comment.start_with?("--------- ")
-                    set_comment_for_key(key, comment)
-                end
-                key = nil
-                value = nil
-                comment = nil
-            end
-
+            key = nil
+            value = nil
+            comment = nil
           end
         end
       end

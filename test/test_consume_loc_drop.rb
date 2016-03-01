@@ -5,7 +5,7 @@ class TestConsumeLocDrop < CommandTestCase
     super
 
     options = {}
-    options[:input_path] = fixture 'consume_loc_drop.zip'
+    options[:input_path] = fixture_path 'consume_loc_drop.zip'
     options[:output_path] = @output_path
     options[:format] = 'apple'
 
