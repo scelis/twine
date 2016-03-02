@@ -211,7 +211,7 @@ class CLITestCase < TwineTestCase
 
     def test_default_options
       parse_with ''
-      expected = {command: 'validate-strings-file', strings_file: 'input.txt', include: "all"}
+      expected = {command: 'validate-strings-file', strings_file: 'input.txt', include: :all}
       assert_equal expected, @options
     end
 
@@ -266,26 +266,14 @@ class CLITestCase < TwineTestCase
     end
 
     def test_format
-      random_format = Twine::Formatters.formatters.sample.format_name
+      random_format = Twine::Formatters.formatters.sample.format_name.downcase
       parse_with "--format #{random_format}"
       assert_equal random_format, @options[:format]
     end
 
-    def test_format_ignores_case
-      random_format = Twine::Formatters.formatters.sample.format_name
-      parse_with "--format #{random_format.upcase}"
-      assert_equal random_format, @options[:format]
-    end
-
     def test_include
-      random_set = ['all', 'translated', 'untranslated'].sample
+      random_set = [:all, :translated, :untranslated].sample
       parse_with "--include #{random_set}"
-      assert_equal random_set, @options[:include]
-    end
-
-    def test_include_ignores_case
-      random_set = ['all', 'translated', 'untranslated'].sample
-      parse_with "--include #{random_set.upcase}"
       assert_equal random_set, @options[:include]
     end
 
