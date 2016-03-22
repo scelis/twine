@@ -45,6 +45,7 @@ If you want a key to inherit the values of another key, you can use a reference.
 
 ### Example
 
+```ini
 	[[General]]
 		[yes]
 			en = Yes
@@ -78,6 +79,7 @@ If you want a key to inherit the values of another key, you can use a reference.
 			en = ``%@``
 			tags = myothertag
 			comment = This string will evaluate to `%@`.
+```
 
 ## Supported Output Formats
 
