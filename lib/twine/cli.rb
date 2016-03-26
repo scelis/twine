@@ -9,7 +9,7 @@ module Twine
       'consume-all-string-files' => 3,
       'generate-loc-drop' => 3,
       'consume-loc-drop' => 3,
-      'validate-strings-file' => 2
+      'validate-twine-file' => 2
     }
 
     def self.parse(args)
@@ -18,7 +18,7 @@ module Twine
       parser = OptionParser.new do |opts|
         opts.banner = 'Usage: twine COMMAND STRINGS_FILE [INPUT_OR_OUTPUT_PATH] [--lang LANG1,LANG2...] [--tags TAG1,TAG2,TAG3...] [--format FORMAT]'
         opts.separator ''
-        opts.separator 'The purpose of this script is to convert back and forth between multiple data formats, allowing us to treat our strings (and translations) as data stored in a text file. We can then use the data file to create drops for the localization team, consume similar drops returned by the localization team, and create formatted string files to ship with your products.'
+        opts.separator 'The purpose of this script is to convert back and forth between multiple data formats, allowing us to treat our strings (and translations) as data stored in a text file. We can then use the data file to create drops for the localization team, consume similar drops returned by the localization team, and create formatted localization files to ship with your products.'
         opts.separator ''
         opts.separator 'Commands:'
         opts.separator ''
@@ -40,7 +40,7 @@ module Twine
         opts.separator '- consume-loc-drop'
         opts.separator '    Consumes an archive of translated files. This archive should be in the same format as the one created by the generate-loc-drop command.'
         opts.separator ''
-        opts.separator '- validate-strings-file'
+        opts.separator '- validate-twine-file'
         opts.separator '    Validates that the given strings file is parseable, contains no duplicates, and that every string has a tag. Exits with a non-zero exit code if those criteria are not met.'
         opts.separator ''
         opts.separator 'General Options:'
@@ -122,7 +122,7 @@ module Twine
         opts.separator '> twine consume-all-string-files strings.txt Resources/Locales/ --developer-language en --tags DefaultTag1,DefaultTag2'
         opts.separator '> twine generate-loc-drop strings.txt LocDrop5.zip --tags FT,FB --format android --lang de,en,en-GB,ja,ko'
         opts.separator '> twine consume-loc-drop strings.txt LocDrop5.zip'
-        opts.separator '> twine validate-strings-file strings.txt'
+        opts.separator '> twine validate-twine-file strings.txt'
       end
       begin
         parser.parse! args
@@ -143,9 +143,9 @@ module Twine
       options[:command] = args[0]
 
       if args.length < 2
-        raise Twine::Error.new 'You must specify your strings file.'
+        raise Twine::Error.new 'You must specify your twine file.'
       end
-      options[:strings_file] = args[1]
+      options[:twine_file] = args[1]
 
       if args.length < number_of_needed_arguments
         raise Twine::Error.new 'Not enough arguments.'
@@ -175,7 +175,7 @@ module Twine
         end
       when 'consume-loc-drop'
         options[:input_path] = args[2]
-      when 'validate-strings-file'
+      when 'validate-twine-file'
       end
 
       return options

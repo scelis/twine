@@ -73,8 +73,8 @@ module Twine
         "\"%{key}\" = \"%{value}\";\n"
       end
 
-      def format_comment(row, lang)
-        "/* #{row.comment.gsub('*/', '* /')} */\n" if row.comment
+      def format_comment(definition, lang)
+        "/* #{definition.comment.gsub('*/', '* /')} */\n" if definition.comment
       end
 
       def format_key(key)

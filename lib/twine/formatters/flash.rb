@@ -44,7 +44,7 @@ module Twine
         end
       end
 
-      def format_sections(strings, lang)
+      def format_sections(twine_file, lang)
         super + "\n"
       end
 
@@ -56,8 +56,8 @@ module Twine
         "## #{section.name} ##\n"
       end
 
-      def format_comment(row, lang)
-        "# #{row.comment}\n" if row.comment
+      def format_comment(definition, lang)
+        "# #{definition.comment}\n" if definition.comment
       end
 
       def key_value_pattern

@@ -23,7 +23,7 @@ module Twine
 
   require 'twine/plugin'
   require 'twine/cli'
-  require 'twine/stringsfile'
+  require 'twine/twine_file'
   require 'twine/encoding'
   require 'twine/output_processor'
   require 'twine/placeholders'

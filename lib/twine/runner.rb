@@ -8,9 +8,9 @@ module Twine
     def self.run(args)
       options = CLI.parse(args)
       
-      strings = StringsFile.new
-      strings.read options[:strings_file]
-      runner = new(options, strings)
+      twine_file = TwineFile.new
+      twine_file.read options[:twine_file]
+      runner = new(options, twine_file)
 
       case options[:command]
       when 'generate-string-file'
@@ -25,25 +25,25 @@ module Twine
         runner.generate_loc_drop
       when 'consume-loc-drop'
         runner.consume_loc_drop
-      when 'validate-strings-file'
-        runner.validate_strings_file
+      when 'validate-twine-file'
+        runner.validate_twine_file
       end
     end
 
-    def initialize(options = {}, strings = StringsFile.new)
+    def initialize(options = {}, twine_file = TwineFile.new)
       @options = options
-      @strings = strings
+      @twine_file = twine_file
     end
 
-    def write_strings_data(path)
+    def write_twine_data(path)
       if @options[:developer_language]
-        @strings.set_developer_language_code(@options[:developer_language])
+        @twine_file.set_developer_language_code(@options[:developer_language])
       end
-      @strings.write(path)
+      @twine_file.write(path)
     end
 
     def generate_string_file
-      validate_strings_file if @options[:validate]
+      validate_twine_file if @options[:validate]
 
       lang = nil
       lang = @options[:languages][0] if @options[:languages]
@@ -57,7 +57,7 @@ module Twine
     end
 
     def generate_all_string_files
-      validate_strings_file if @options[:validate]
+      validate_twine_file if @options[:validate]
 
       if !File.directory?(@options[:output_path])
         if @options[:create_folders]
@@ -76,7 +76,7 @@ module Twine
 
       file_name = @options[:file_name] || formatter.default_file_name
       if @options[:create_folders]
-        @strings.language_codes.each do |lang|
+        @twine_file.language_codes.each do |lang|
           output_path = File.join(@options[:output_path], formatter.output_path_for_language(lang))
 
           FileUtils.mkdir_p(output_path)
@@ -128,8 +128,8 @@ module Twine
       end
 
       read_string_file(@options[:input_path], lang)
-      output_path = @options[:output_path] || @options[:strings_file]
-      write_strings_data(output_path)
+      output_path = @options[:output_path] || @options[:twine_file]
+      write_twine_data(output_path)
     end
 
     def consume_all_string_files
@@ -147,12 +147,12 @@ module Twine
         end
       end
 
-      output_path = @options[:output_path] || @options[:strings_file]
-      write_strings_data(output_path)
+      output_path = @options[:output_path] || @options[:twine_file]
+      write_twine_data(output_path)
     end
 
     def generate_loc_drop
-      validate_strings_file if @options[:validate]
+      validate_twine_file if @options[:validate]
       
       require_rubyzip
 
@@ -165,7 +165,7 @@ module Twine
           zipfile.mkdir('Locales')
 
           formatter = formatter_for_format(@options[:format])
-          @strings.language_codes.each do |lang|
+          @twine_file.language_codes.each do |lang|
             if @options[:languages] == nil || @options[:languages].length == 0 || @options[:languages].include?(lang)
               file_name = lang + formatter.extension
               temp_path = File.join(temp_dir, file_name)
@@ -209,28 +209,28 @@ module Twine
         end
       end
 
-      output_path = @options[:output_path] || @options[:strings_file]
-      write_strings_data(output_path)
+      output_path = @options[:output_path] || @options[:twine_file]
+      write_twine_data(output_path)
     end
 
-    def validate_strings_file
-      total_strings = 0
+    def validate_twine_file
+      total_definitions = 0
       all_keys = Set.new
       duplicate_keys = Set.new
       keys_without_tags = Set.new
       invalid_keys = Set.new
       valid_key_regex = /^[A-Za-z0-9_]+$/
 
-      @strings.sections.each do |section|
-        section.rows.each do |row|
-          total_strings += 1
+      @twine_file.sections.each do |section|
+        section.definitions.each do |definition|
+          total_definitions += 1
 
-          duplicate_keys.add(row.key) if all_keys.include? row.key
-          all_keys.add(row.key)
+          duplicate_keys.add(definition.key) if all_keys.include? definition.key
+          all_keys.add(definition.key)
 
-          keys_without_tags.add(row.key) if row.tags == nil or row.tags.length == 0
+          keys_without_tags.add(definition.key) if definition.tags == nil or definition.tags.length == 0
 
-          invalid_keys << row.key unless row.key =~ valid_key_regex
+          invalid_keys << definition.key unless definition.key =~ valid_key_regex
         end
       end
 
@@ -238,14 +238,14 @@ module Twine
       join_keys = lambda { |set| set.map { |k| "  " + k }.join("\n") }
 
       unless duplicate_keys.empty?
-        errors << "Found duplicate string key(s):\n#{join_keys.call(duplicate_keys)}"
+        errors << "Found duplicate key(s):\n#{join_keys.call(duplicate_keys)}"
       end
 
       if @options[:pedantic]
-        if keys_without_tags.length == total_strings
-          errors << "None of your strings have tags."
+        if keys_without_tags.length == total_definitions
+          errors << "None of your definitions have tags."
         elsif keys_without_tags.length > 0
-          errors << "Found strings without tags:\n#{join_keys.call(keys_without_tags)}"
+          errors << "Found definitions without tags:\n#{join_keys.call(keys_without_tags)}"
         end
       end
 
@@ -255,7 +255,7 @@ module Twine
 
       raise Twine::Error.new errors.join("\n\n") unless errors.empty?
 
-      Twine::stdout.puts "#{@options[:strings_file]} is valid."
+      Twine::stdout.puts "#{@options[:twine_file]} is valid."
     end
 
     private
@@ -274,7 +274,7 @@ module Twine
 
     def determine_language_given_path(path)
       code = File.basename(path, File.extname(path))
-      return code if @strings.language_codes.include? code
+      return code if @twine_file.language_codes.include? code
     end
 
     def formatter_for_format(format)
@@ -284,7 +284,7 @@ module Twine
     def find_formatter(&block)
       formatter = Formatters.formatters.find &block
       return nil unless formatter
-      formatter.strings = @strings
+      formatter.twine_file = @twine_file
       formatter.options = @options
       formatter
     end
@@ -317,7 +317,7 @@ module Twine
         raise Twine::Error.new "Unable to determine language for #{path}"
       end
 
-      @strings.language_codes << lang unless @strings.language_codes.include? lang
+      @twine_file.language_codes << lang unless @twine_file.language_codes.include? lang
 
       return formatter, lang
     end

@@ -8,10 +8,10 @@ class TestConsumeStringFile < CommandTestCase
     FileUtils.touch options[:input_path]
     options[:languages] = language if language
 
-    @strings = Twine::StringsFile.new
-    @strings.language_codes.concat KNOWN_LANGUAGES
+    @twine_file = Twine::TwineFile.new
+    @twine_file.language_codes.concat KNOWN_LANGUAGES
 
-    Twine::Runner.new(options, @strings)
+    Twine::Runner.new(options, @twine_file)
   end
 
   def prepare_mock_read_formatter(formatter_class)
@@ -75,10 +75,10 @@ class TestConsumeStringFile < CommandTestCase
       options[:encoding] = encoding if encoding
       options[:languages] = 'en'
 
-      @strings = Twine::StringsFile.new
-      @strings.language_codes.concat KNOWN_LANGUAGES
+      @twine_file = Twine::TwineFile.new
+      @twine_file.language_codes.concat KNOWN_LANGUAGES
 
-      Twine::Runner.new(options, @strings)
+      Twine::Runner.new(options, @twine_file)
     end
 
     def setup

@@ -64,7 +64,7 @@ module Twine
       end
 
       def format_file(lang)
-        @default_lang = strings.language_codes[0]
+        @default_lang = twine_file.language_codes[0]
         result = super
         @default_lang = nil
         result
@@ -78,25 +78,25 @@ module Twine
         "# SECTION: #{section.name}"
       end
 
-      def should_include_row(row, lang)
-        super and row.translated_string_for_lang(@default_lang)
+      def should_include_definition(definition, lang)
+        super and definition.translated_string_for_lang(@default_lang)
       end
 
-      def format_comment(row, lang)
-        "#. \"#{escape_quotes(row.comment)}\"\n" if row.comment
+      def format_comment(definition, lang)
+        "#. \"#{escape_quotes(definition.comment)}\"\n" if definition.comment
       end
 
-      def format_key_value(row, lang)
-        value = row.translated_string_for_lang(lang)
-        [format_key(row.key.dup), format_base_translation(row), format_value(value.dup)].compact.join
+      def format_key_value(definition, lang)
+        value = definition.translated_string_for_lang(lang)
+        [format_key(definition.key.dup), format_base_translation(definition), format_value(value.dup)].compact.join
       end
 
       def format_key(key)
         "msgctxt \"#{key}\"\n"
       end
 
-      def format_base_translation(row)
-        "msgid \"#{row.translations[@default_lang]}\"\n"
+      def format_base_translation(definition)
+        "msgid \"#{definition.translations[@default_lang]}\"\n"
       end
 
       def format_value(value)

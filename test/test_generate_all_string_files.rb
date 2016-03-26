@@ -10,7 +10,7 @@ class TestGenerateAllStringFiles < CommandTestCase
     unless twine_file
       twine_file = build_twine_file 'en', 'es' do
         add_section 'Section' do
-          add_row key: 'value'
+          add_definition key: 'value'
         end
       end
     end
@@ -79,21 +79,21 @@ class TestGenerateAllStringFiles < CommandTestCase
 
       twine_file = build_twine_file 'en' do
         add_section 'Section' do
-          add_row key: 'value'
-          add_row key: 'value'
+          add_definition key: 'value'
+          add_definition key: 'value'
         end
       end
 
       Twine::Runner.new(options, twine_file)
     end
 
-    def test_does_not_validate_strings_file
+    def test_does_not_validate_twine_file
       prepare_mock_formatter Twine::Formatters::Android
 
       new_runner(false).generate_all_string_files
     end
 
-    def test_validates_strings_file_if_validate
+    def test_validates_twine_file_if_validate
       assert_raises Twine::Error do
         new_runner(true).generate_all_string_files
       end
