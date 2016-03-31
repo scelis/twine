@@ -9,7 +9,8 @@ module Twine
       'consume-all-string-files' => 3,
       'generate-loc-drop' => 3,
       'consume-loc-drop' => 3,
-      'validate-strings-file' => 2
+      'validate-strings-file' => 2,
+      'translate-strings-file' => 2
     }
 
     def self.parse(args)
@@ -95,7 +96,7 @@ module Twine
         end
         opts.on('-e', '--encoding ENCODING', 'Twine defaults to encoding all output files in UTF-8. This flag will tell Twine to use an alternate encoding for these',
                                              '  files. For example, you could use this to write Apple .strings files in UTF-16. When reading files, Twine does its best',
-                                             "  to determine the encoding automatically. However, if the files are UTF-16 without BOM, you need to specify if it's", 
+                                             "  to determine the encoding automatically. However, if the files are UTF-16 without BOM, you need to specify if it's",
                                              '  UTF-16LE or UTF16-BE.') do |e|
           options[:output_encoding] = e
         end
