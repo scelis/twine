@@ -2,7 +2,7 @@
 
 require 'command_test_case'
 
-class TestValidateStringsFile < CommandTestCase
+class TestValidateTwineFile < CommandTestCase
   def setup
     super
     @options = { twine_file: 'input.txt' }

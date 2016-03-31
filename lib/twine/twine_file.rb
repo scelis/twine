@@ -38,10 +38,10 @@ module Twine
       return false
     end
 
-    def translated_string_for_lang(lang)
+    def translation_for_lang(lang)
       translation = [lang].flatten.map { |l| @translations[l] }.first
 
-      translation = reference.translated_string_for_lang(lang) if translation.nil? && reference
+      translation = reference.translation_for_lang(lang) if translation.nil? && reference
 
       return translation
     end

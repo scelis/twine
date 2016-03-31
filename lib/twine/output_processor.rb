@@ -29,12 +29,12 @@ module Twine
           section.definitions.each do |definition|
             next unless definition.matches_tags?(@options[:tags], @options[:untagged])
 
-            value = definition.translated_string_for_lang(language)
+            value = definition.translation_for_lang(language)
 
             next if value && @options[:include] == :untranslated
 
             if value.nil? && @options[:include] != :translated
-              value = definition.translated_string_for_lang(fallback_languages(language))
+              value = definition.translation_for_lang(fallback_languages(language))
             end
 
             next unless value

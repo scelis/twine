@@ -38,7 +38,7 @@ module Twine
             definition.translations[lang] = value
           end
         elsif @options[:consume_all]
-          Twine::stderr.puts "Adding new string '#{key}' to twine file."
+          Twine::stderr.puts "Adding new definition '#{key}' to twine file."
           current_section = @twine_file.sections.find { |s| s.name == 'Uncategorized' }
           unless current_section
             current_section = TwineSection.new('Uncategorized')
@@ -111,7 +111,7 @@ module Twine
       end
 
       def should_include_definition(definition, lang)
-        definition.translated_string_for_lang(lang)
+        return !definition.translation_for_lang(lang).nil?
       end
 
       def format_section(section, lang)
@@ -139,7 +139,7 @@ module Twine
       end
 
       def format_key_value(definition, lang)
-        value = definition.translated_string_for_lang(lang)
+        value = definition.translation_for_lang(lang)
         key_value_pattern % { key: format_key(definition.key.dup), value: format_value(value.dup) }
       end
 

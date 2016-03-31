@@ -23,7 +23,7 @@ Make sure you run the `twine` executable at the root of the project as it proper
 
 ## Twine File Format
 
-Twine stores everything in a single file, the Twine data file. The format of this file is a slight variant of the [Git][git] config file format, which itself is based on the old [Windows INI file][INI] format. The entire file is broken up into sections, which are created by placing the section name between two pairs of square brackets. Sections are optional, but they are the recommended way of grouping your strings into smaller, more manageable chunks.
+Twine stores everything in a single file, the Twine data file. The format of this file is a slight variant of the [Git][git] config file format, which itself is based on the old [Windows INI file][INI] format. The entire file is broken up into sections, which are created by placing the section name between two pairs of square brackets. Sections are optional, but they are the recommended way of grouping your definitions into smaller, more manageable chunks.
 
 Each grouping section contains N definitions. These definitions start with the key placed within a single pair of square brackets. It then contains a number of key-value pairs, including a comment, a comma-separated list of tags and all of the translations.
 
@@ -100,46 +100,46 @@ If you would like to enable Twine to create localization files in another format
 
 ### Commands
 
-#### `generate-string-file`
+#### `generate-localization-file`
 
 This command creates a localization file from the Twine data file. If the output file would not contain any translations, Twine will exit with an error.
 
-	$ twine generate-string-file /path/to/twine.txt values-ja.xml --tags common,app1
-	$ twine generate-string-file /path/to/twine.txt Localizable.strings --lang ja --tags mytag
-	$ twine generate-string-file /path/to/twine.txt all-english.strings --lang en
+	$ twine generate-localization-file /path/to/twine.txt values-ja.xml --tags common,app1
+	$ twine generate-localization-file /path/to/twine.txt Localizable.strings --lang ja --tags mytag
+	$ twine generate-localization-file /path/to/twine.txt all-english.strings --lang en
 
-#### `generate-all-string-files`
+#### `generate-all-localization-files`
 
-This command is a convenient way to call [`generate-string-file`](#generate-string-file) multiple times. It uses standard conventions to figure out exactly which files to create given a parent directory. For example, if you point it to a parent directory containing `en.lproj`, `fr.lproj`, and `ja.lproj` subdirectories, Twine will create a `Localizable.strings` file of the appropriate language in each of them. However, files that would not contain any translations will not be created; instead warnings will be logged to `stderr`. This is often the command you will want to execute during the build phase of your project.
+This command is a convenient way to call [`generate-localization-file`](#generate-localization-file) multiple times. It uses standard conventions to figure out exactly which files to create given a parent directory. For example, if you point it to a parent directory containing `en.lproj`, `fr.lproj`, and `ja.lproj` subdirectories, Twine will create a `Localizable.strings` file of the appropriate language in each of them. However, files that would not contain any translations will not be created; instead warnings will be logged to `stderr`. This is often the command you will want to execute during the build phase of your project.
 
-	$ twine generate-all-string-files /path/to/twine.txt /path/to/project/locales/directory --tags common,app1
+	$ twine generate-all-localization-files /path/to/twine.txt /path/to/project/locales/directory --tags common,app1
 
-#### `consume-string-file`
+#### `consume-localization-file`
 
 This command slurps all of the translations from a localization file and incorporates the translated strings into the Twine data file. This is a simple way to incorporate any changes made to a single file by one of your translators. It will only identify definitions that already exist in the data file.
 
-	$ twine consume-string-file /path/to/twine.txt fr.strings
-	$ twine consume-string-file /path/to/twine.txt Localizable.strings --lang ja
-	$ twine consume-string-file /path/to/twine.txt es.xml
+	$ twine consume-localization-file /path/to/twine.txt fr.strings
+	$ twine consume-localization-file /path/to/twine.txt Localizable.strings --lang ja
+	$ twine consume-localization-file /path/to/twine.txt es.xml
 
-#### `consume-all-string-files`
+#### `consume-all-localization-files`
 
 This command reads in a folder containing many localization files. These files should be in a standard folder hierarchy so that Twine knows the language of each file. When combined with the `--developer-language`, `--consume-comments`, and `--consume-all` flags, this command is a great way to create your initial Twine data file from an existing project. Just make sure that you create a blank Twine data file first!
 
-	$ twine consume-all-string-files twine.txt Resources/Locales --developer-language en --consume-all --consume-comments
+	$ twine consume-all-localization-files twine.txt Resources/Locales --developer-language en --consume-all --consume-comments
 
 #### `generate-loc-drop`
 
-This command is a convenient way to generate a zip file containing files created by the [`generate-string-file`](#generate-string-file) command. If a file would not contain any translated strings, it is skipped and a warning is logged to `stderr`. This command can be used to create a single zip containing a large number of strings in all languages which you can then hand off to your translation team.
+This command is a convenient way to generate a zip file containing files created by the [`generate-localization-file`](#generate-localization-file) command. If a file would not contain any translated strings, it is skipped and a warning is logged to `stderr`. This command can be used to create a single zip containing a large number of translations in all languages which you can then hand off to your translation team.
 
 	$ twine generate-loc-drop /path/to/twine.txt LocDrop1.zip
 	$ twine generate-loc-drop /path/to/twine.txt LocDrop2.zip --lang en,fr,ja,ko --tags common,app1
 
 #### `consume-loc-drop`
 
-This command is a convenient way of taking a zip file and executing the [`consume-string-file`](#consume-string-file) command on each file within the archive. It is most often used to incorporate all of the changes made by the translation team after they have completed work on a localization drop.
+This command is a convenient way of taking a zip file and executing the [`consume-localization-file`](#consume-localization-file) command on each file within the archive. It is most often used to incorporate all of the changes made by the translation team after they have completed work on a localization drop.
 
-	$ twine consume-loc-drop /path/to/twine_strings.txt LocDrop2.zip
+	$ twine consume-loc-drop /path/to/twine.txt LocDrop2.zip
 
 #### `validate-twine-file`
 
@@ -149,10 +149,10 @@ This command validates that the Twine data file can be parsed, contains no dupli
 
 ## Creating Your First Twine Data File
 
-The easiest way to create your first Twine Data file is to run the [`consume-all-string-files`](#consume-all-string-files) command. The one caveat is to first create a blank file to use as your starting point. Then, just point the `consume-all-string-files` command at a directory in your project containing all of your localization files.
+The easiest way to create your first Twine data file is to run the [`consume-all-localization-files`](#consume-all-localization-files) command. The one caveat is to first create a blank file to use as your starting point. Then, just point the `consume-all-localization-files` command at a directory in your project containing all of your localization files.
 
 	$ touch twine.txt
-	$ twine consume-all-string-files twine.txt Resources/Locales --developer-language en --consume-all --consume-comments
+	$ twine consume-all-localization-files twine.txt Resources/Locales --developer-language en --consume-all --consume-comments
 
 ## Twine and Your Build Process
 
@@ -161,9 +161,9 @@ The easiest way to create your first Twine Data file is to run the [`consume-all
 It is easy to incorporate Twine right into your iOS and OS X app build processes.
 
 1. In your project folder, create all of the `.lproj` directories that you need. It does not really matter where they are. We tend to put them in `Resources/Locales/`.
-2. Run the [`generate-all-string-files`](#generate-all-string-files) command to create all of the string files you need in these directories. For example,
+2. Run the [`generate-all-localization-files`](#generate-all-localization-files) command to create all of the `.strings` files you need in these directories. For example,
 
-		$ twine generate-all-string-files twine.txt Resources/Locales/ --tags tag1,tag2
+		$ twine generate-all-localization-files twine.txt Resources/Locales/ --tags tag1,tag2
 
 	Make sure you point Twine at your data file, the directory that contains all of your `.lproj` directories, and the tags that describe the definitions you want to use for this project.
 3. Drag the `Resources/Locales/` directory to the Xcode project navigator so that Xcode knows to include all of these `.strings` files in your build.
@@ -178,8 +178,8 @@ Now, whenever you build your application, Xcode will automatically invoke Twine 
 
 Add the following task at the top level in app/build.gradle:
 ```
-task generateStrings {
-    String script = 'if hash twine 2>/dev/null; then twine generate-string-file strings.txt ./src/main/res/values/generated_strings.xml; fi'
+task generateLocalizations {
+    Localization script = 'if hash twine 2>/dev/null; then twine generate-localization-file twine.txt ./src/main/res/values/generated_strings.xml; fi'
     exec {
         executable "sh"
         args '-c', script
@@ -187,12 +187,12 @@ task generateStrings {
 }
 ```
 
-Now every time you build your app the strings are generated from the twine file.
+Now every time you build your app the localization files are generated from the Twine file.
 
 
 ## User Interface
 
-* [Twine TextMate 2 Bundle](https://github.com/mobiata/twine.tmbundle) — This [TextMate 2](https://github.com/textmate/textmate) bundle will make it easier for you to work with Twine strings files. In particular, it lets you use code folding to easily collapse and expand both strings and sections.
+* [Twine TextMate 2 Bundle](https://github.com/mobiata/twine.tmbundle) — This [TextMate 2](https://github.com/textmate/textmate) bundle will make it easier for you to work with Twine files. In particular, it lets you use code folding to easily collapse and expand both definitions and sections.
 * [twine_ui](https://github.com/Daij-Djan/twine_ui) — A user interface for Twine written by [Dominik Pich](https://github.com/Daij-Djan/). Consider using this if you would prefer to use Twine without dropping to a command line.
 
 ## Plugin Support
@@ -229,7 +229,7 @@ Many thanks to all of the contributors to the Twine project, including:
 * [Kevin Wood](https://github.com/kwood)
 * [Mohammad Hejazi](https://github.com/MohammadHejazi)
 * [Robert Guo](http://www.robertguo.me/)
-* [sebastianludwig](https://github.com/sebastianludwig)
+* [Sebastian Ludwig](https://github.com/sebastianludwig)
 * [Sergey Pisarchik](https://github.com/SergeyPisarchik)
 * [Shai Shamir](https://github.com/pichirichi)
 

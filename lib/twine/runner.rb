@@ -13,14 +13,14 @@ module Twine
       runner = new(options, twine_file)
 
       case options[:command]
-      when 'generate-string-file'
-        runner.generate_string_file
-      when 'generate-all-string-files'
-        runner.generate_all_string_files
-      when 'consume-string-file'
-        runner.consume_string_file
-      when 'consume-all-string-files'
-        runner.consume_all_string_files
+      when 'generate-localization-file'
+        runner.generate_localization_file
+      when 'generate-all-localization-files'
+        runner.generate_all_localization_files
+      when 'consume-localization-file'
+        runner.consume_localization_file
+      when 'consume-all-localization-files'
+        runner.consume_all_localization_files
       when 'generate-loc-drop'
         runner.generate_loc_drop
       when 'consume-loc-drop'
@@ -42,7 +42,7 @@ module Twine
       @twine_file.write(path)
     end
 
-    def generate_string_file
+    def generate_localization_file
       validate_twine_file if @options[:validate]
 
       lang = nil
@@ -51,12 +51,12 @@ module Twine
       formatter, lang = prepare_read_write(@options[:output_path], lang)
       output = formatter.format_file(lang)
 
-      raise Twine::Error.new "Nothing to generate! The resulting file would not contain any strings." unless output
+      raise Twine::Error.new "Nothing to generate! The resulting file would not contain any translations." unless output
 
       IO.write(@options[:output_path], output, encoding: encoding)
     end
 
-    def generate_all_string_files
+    def generate_all_localization_files
       validate_twine_file if @options[:validate]
 
       if !File.directory?(@options[:output_path])
@@ -85,7 +85,7 @@ module Twine
 
           output = formatter.format_file(lang)
           unless output
-            Twine::stderr.puts "Skipping file at path #{file_path} since it would not contain any strings."
+            Twine::stderr.puts "Skipping file at path #{file_path} since it would not contain any translations."
             next
           end
 
@@ -107,7 +107,7 @@ module Twine
           file_path = File.join(output_path, file_name)
           output = formatter.format_file(lang)
           unless output
-            Twine::stderr.puts "Skipping file at path #{file_path} since it would not contain any strings."
+            Twine::stderr.puts "Skipping file at path #{file_path} since it would not contain any translations."
             next
           end
 
@@ -121,18 +121,18 @@ module Twine
 
     end
 
-    def consume_string_file
+    def consume_localization_file
       lang = nil
       if @options[:languages]
         lang = @options[:languages][0]
       end
 
-      read_string_file(@options[:input_path], lang)
+      read_localization_file(@options[:input_path], lang)
       output_path = @options[:output_path] || @options[:twine_file]
       write_twine_data(output_path)
     end
 
-    def consume_all_string_files
+    def consume_all_localization_files
       if !File.directory?(@options[:input_path])
         raise Twine::Error.new("Directory does not exist: #{@options[:output_path]}")
       end
@@ -140,7 +140,7 @@ module Twine
       Dir.glob(File.join(@options[:input_path], "**/*")) do |item|
         if File.file?(item)
           begin
-            read_string_file(item)
+            read_localization_file(item)
           rescue Twine::Error => e
             Twine::stderr.puts "#{e.message}"
           end
@@ -173,7 +173,7 @@ module Twine
 
               output = formatter.format_file(lang)
               unless output
-                Twine::stderr.puts "Skipping file #{file_name} since it would not contain any strings."
+                Twine::stderr.puts "Skipping file #{file_name} since it would not contain any translations."
                 next
               end
               
@@ -201,7 +201,7 @@ module Twine
             FileUtils.mkdir_p(File.dirname(real_path))
             zipfile.extract(entry.name, real_path)
             begin
-              read_string_file(real_path)
+              read_localization_file(real_path)
             rescue Twine::Error => e
               Twine::stderr.puts "#{e.message}"
             end
@@ -289,7 +289,7 @@ module Twine
       formatter
     end
 
-    def read_string_file(path, lang = nil)
+    def read_localization_file(path, lang = nil)
       unless File.file?(path)
         raise Twine::Error.new("File does not exist: #{path}")
       end

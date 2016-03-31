@@ -1,6 +1,6 @@
 require 'command_test_case'
 
-class TestConsumeStringFile < CommandTestCase
+class TestConsumeLocalizationFile < CommandTestCase
   def new_runner(language, file)
     options = {}
     options[:output_path] = File.join(@output_dir, file) if file
@@ -22,25 +22,25 @@ class TestConsumeStringFile < CommandTestCase
   def test_deducts_android_format_from_output_path
     prepare_mock_read_formatter Twine::Formatters::Android
 
-    new_runner('fr', 'fr.xml').consume_string_file
+    new_runner('fr', 'fr.xml').consume_localization_file
   end
 
   def test_deducts_apple_format_from_output_path
     prepare_mock_read_formatter Twine::Formatters::Apple
 
-    new_runner('fr', 'fr.strings').consume_string_file
+    new_runner('fr', 'fr.strings').consume_localization_file
   end
 
   def test_deducts_jquery_format_from_output_path
     prepare_mock_read_formatter Twine::Formatters::JQuery
 
-    new_runner('fr', 'fr.json').consume_string_file
+    new_runner('fr', 'fr.json').consume_localization_file
   end
 
   def test_deducts_gettext_format_from_output_path
     prepare_mock_read_formatter Twine::Formatters::Gettext
 
-    new_runner('fr', 'fr.po').consume_string_file
+    new_runner('fr', 'fr.po').consume_localization_file
   end
 
   def test_deducts_language_from_input_path
@@ -48,7 +48,7 @@ class TestConsumeStringFile < CommandTestCase
     formatter = prepare_mock_formatter Twine::Formatters::Android
     formatter.expects(:read).with(anything, random_language)
 
-    new_runner(nil, "#{random_language}.xml").consume_string_file
+    new_runner(nil, "#{random_language}.xml").consume_localization_file
   end
 
   class TestEncodings < CommandTestCase
@@ -88,31 +88,31 @@ class TestConsumeStringFile < CommandTestCase
 
     def test_reads_utf8
       formatter = prepare_mock_formatter DummyFormatter
-      new_runner(fixture_path('enc_utf8.dummy')).consume_string_file
+      new_runner(fixture_path('enc_utf8.dummy')).consume_localization_file
       assert_equal @expected_content, formatter.content
     end
 
     def test_reads_utf16le_bom
       formatter = prepare_mock_formatter DummyFormatter
-      new_runner(fixture_path('enc_utf16le_bom.dummy')).consume_string_file
+      new_runner(fixture_path('enc_utf16le_bom.dummy')).consume_localization_file
       assert_equal @expected_content, formatter.content
     end
 
     def test_reads_utf16be_bom
       formatter = prepare_mock_formatter DummyFormatter
-      new_runner(fixture_path('enc_utf16be_bom.dummy')).consume_string_file
+      new_runner(fixture_path('enc_utf16be_bom.dummy')).consume_localization_file
       assert_equal @expected_content, formatter.content
     end
 
     def test_reads_utf16le
       formatter = prepare_mock_formatter DummyFormatter
-      new_runner(fixture_path('enc_utf16le.dummy'), 'UTF-16LE').consume_string_file
+      new_runner(fixture_path('enc_utf16le.dummy'), 'UTF-16LE').consume_localization_file
       assert_equal @expected_content, formatter.content
     end
 
     def test_reads_utf16be
       formatter = prepare_mock_formatter DummyFormatter
-      new_runner(fixture_path('enc_utf16be.dummy'), 'UTF-16BE').consume_string_file
+      new_runner(fixture_path('enc_utf16be.dummy'), 'UTF-16BE').consume_localization_file
       assert_equal @expected_content, formatter.content
     end
   end

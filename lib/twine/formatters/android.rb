@@ -137,7 +137,7 @@ module Twine
         #  4) escape non resource identifier @ signs (http://developer.android.com/guide/topics/resources/accessing-resources.html#ResourcesFromXml)
         resource_identifier_regex = /@(?!([a-z\.]+:)?[a-z+]+\/[a-zA-Z_]+)/   # @[<package_name>:]<resource_type>/<resource_name>
         value.gsub!(resource_identifier_regex, '\@')
-        #  5) replace beginning and end spaces with \0020. Otherwise Android strips them.
+        #  5) replace beginning and end spaces with \u0020. Otherwise Android strips them.
         value.gsub(/\A *| *\z/) { |spaces| '\u0020' * spaces.length }
       end
 

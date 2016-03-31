@@ -79,7 +79,7 @@ module Twine
       end
 
       def should_include_definition(definition, lang)
-        super and definition.translated_string_for_lang(@default_lang)
+        super and !definition.translation_for_lang(@default_lang).nil?
       end
 
       def format_comment(definition, lang)
@@ -87,7 +87,7 @@ module Twine
       end
 
       def format_key_value(definition, lang)
-        value = definition.translated_string_for_lang(lang)
+        value = definition.translation_for_lang(lang)
         [format_key(definition.key.dup), format_base_translation(definition), format_value(value.dup)].compact.join
       end
 

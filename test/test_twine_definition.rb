@@ -36,12 +36,12 @@ class TestTwineDefinition < TwineTestCase
   end
 
   def test_reference_translation_used
-    assert_equal 'ref-value', @definition.translated_string_for_lang('en')
+    assert_equal 'ref-value', @definition.translation_for_lang('en')
   end
 
   def test_reference_translation_override
     @definition.translations['en'] = 'value'
 
-    assert_equal 'value', @definition.translated_string_for_lang('en')
+    assert_equal 'value', @definition.translation_for_lang('en')
   end
 end
