@@ -6,7 +6,13 @@ require 'tempfile'
 module Twine
   module Transformers
     class PythonTranslator
-      def translate_dict(dict_key_text, from_language, to_language, script)
+      attr_reader :script
+
+      def initialize(script)
+        @script = script
+      end
+
+      def translate_dict(dict_key_text, from_language, to_language)
         keys, texts = dict_key_text.to_a.transpose
         payload = {
           "to_language" => to_language,
@@ -40,4 +46,4 @@ module Twine
   end
 end
 
-Twine::Transformers.transformers << Twine::Transformers::PythonTranslator.new
+#Twine::Transformers.transformers << Twine::Transformers::PythonTranslator.new
