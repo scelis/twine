@@ -52,5 +52,3 @@ module Twine
     end
   end
 end
-
-#Twine::Transformers.transformers << Twine::Transformers::PythonTranslator.new
