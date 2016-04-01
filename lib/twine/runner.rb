@@ -266,16 +266,17 @@ module Twine
       output_path = @options[:output_path] || @options[:strings_file]
       default_language = @options[:developer_language] || @strings.language_codes[0]
       langs = Set.new(@strings.language_codes)
-      langs.delete(default_language) #ignore default language unless :languagues overrides
+      langs.delete default_language #ignore default language unless :languagues overrides
       langs = Set.new(@options[:languages]) if @options[:languages]
 
       translator = Transformers::PythonTranslator.new("~/code/twistle/health/converse/util/translate_text_array.py")
       langs.each do |lang|
         untranslated_rows = @strings.strings_map.values.reject do |e|
-          e.own_translated_string_for_lang(lang) != nil
+          t = e.translated_string_for_lang lang
+          t != nil && t != ""
         end
         untranslated_texts = untranslated_rows.reduce({}) do |h, e|
-          fallback = e.translated_string_for_lang(default_language)
+          fallback = e.translated_string_for_lang default_language
           if fallback == nil
             puts "Key " + e.key + " lacks value for " + default_language
           else
