@@ -20,26 +20,31 @@ module Twine
           "texts" => texts
         }
         param = JSON.generate payload
+        req_temp = Tempfile.new('r_to_p')
+        res_temp = Tempfile.new('p_to_r')
+        err_temp = Tempfile.new('translation_errors')
 
-        req_temp = Tempfile.new('r-to-p')
-        res_temp = Tempfile.new('p-to-r')
-
+        translations = []
         begin
-
           req_temp.write param
           req_temp.close
 
-          `#{script} < #{req_temp.path} > #{res_temp.path}`
+          `#{script} < #{req_temp.path} > #{res_temp.path} 2> #{err_temp.path}`
 
+          errors = err_temp.read
+          err_temp.close
           output = res_temp.read
-
           res_temp.close
 
-          result = JSON.parse output #if errors == ""
-          #puts result
+          if errors != ""
+            puts errors
+          else
+            translations = JSON.parse output
+          end
         ensure
           req_temp.close true
           res_temp.close true
+          err_temp.close true
         end
       end
     end
