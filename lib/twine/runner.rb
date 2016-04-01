@@ -291,6 +291,13 @@ module Twine
           row.translations[lang] = e
         end
 
+        failures = untranslated_texts.keys.reject { |k| successes.key? k }
+        failure_count = failures.length
+        if failure_count > 0
+          puts failure_count.to_s + " failed keys:"
+          puts failures
+          puts ""
+        end
       end
       #write_strings_data(output_path)
     end
