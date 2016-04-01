@@ -284,6 +284,12 @@ module Twine
           h
         end
         translations = translator.translate_dict(untranslated_texts, default_language, lang)
+        @strings.add_language_code lang if translations.any?
+        successes = translations.reject { |k, e| k == nil || k == "" || e == nil || e =="" }
+        successes.each do |k, e|
+          row = @strings.strings_map[k]
+          row.translations[lang] = e
+        end
 
       end
       #write_strings_data(output_path)
