@@ -287,13 +287,13 @@ module Twine
         next if untranslated_texts.empty?
         translations = translator.translate_dict(untranslated_texts, default_language, lang)
         @strings.add_language_code lang if translations.any?
-        successes = translations.reject { |k, e| k == nil || k == "" || e == nil || e =="" }
-        successes.each do |k, e|
+        translations.each do |k, e|
+          next if k == nil || k == "" || e == nil || e ==""
           row = @strings.strings_map[k]
           row.translations[lang] = e
         end
 
-        failures = untranslated_texts.keys.reject { |k| successes.key? k }
+        failures = untranslated_texts.keys.reject { |k| translations.key? k }
         failure_count = failures.length
         if failure_count > 0
           puts failure_count.to_s + " failed keys:"
