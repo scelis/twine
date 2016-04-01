@@ -284,6 +284,7 @@ module Twine
           end
           h
         end
+        next if untranslated_texts.empty?
         translations = translator.translate_dict(untranslated_texts, default_language, lang)
         @strings.add_language_code lang if translations.any?
         successes = translations.reject { |k, e| k == nil || k == "" || e == nil || e =="" }

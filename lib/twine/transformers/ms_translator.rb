@@ -13,6 +13,7 @@ module Twine
       end
 
       def translate_dict(dict_key_text, from_language, to_language)
+        return {} if dict_key_text.empty?
         keys, texts = dict_key_text.to_a.transpose
         payload = {
           "to_language" => to_language,
