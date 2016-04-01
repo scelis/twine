@@ -50,6 +50,7 @@ module Twine
 
       def format_sections(strings, lang)
         sections = strings.sections.map { |section| format_section(section, lang) }
+        sections.delete_if &:empty?
         sections.join(",\n\n")
       end
 
