@@ -28,6 +28,7 @@ module Twine
   require 'twine/output_processor'
   require 'twine/placeholders'
   require 'twine/formatters'
+  require 'twine/transformers'
   require 'twine/runner'
   require 'twine/version'
 end

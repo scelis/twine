@@ -136,7 +136,7 @@ module Twine
             if match
               key = match[1].strip
               value = match[2].strip
-              
+
               value = value[1..-2] if value[0] == '`' && value[-1] == '`'
 
               case key
@@ -187,7 +187,7 @@ module Twine
             if !value && !row.reference_key
               puts "Warning: #{row.key} does not exist in developer language '#{dev_lang}'"
             end
-            
+
             if row.reference_key
               f.puts "\t\tref = #{row.reference_key}"
             end

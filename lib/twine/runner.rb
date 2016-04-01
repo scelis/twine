@@ -7,7 +7,7 @@ module Twine
   class Runner
     def self.run(args)
       options = CLI.parse(args)
-      
+
       strings = StringsFile.new
       strings.read options[:strings_file]
       runner = new(options, strings)
@@ -27,6 +27,8 @@ module Twine
         runner.consume_loc_drop
       when 'validate-strings-file'
         runner.validate_strings_file
+      when 'translate-strings-file'
+        runner.translate_strings_file
       end
     end
 
@@ -69,7 +71,7 @@ module Twine
 
       formatter_for_directory = find_formatter { |f| f.can_handle_directory?(@options[:output_path]) }
       formatter = formatter_for_format(@options[:format]) || formatter_for_directory
-      
+
       unless formatter
         raise Twine::Error.new "Could not determine format given the contents of #{@options[:output_path]}"
       end
@@ -153,7 +155,7 @@ module Twine
 
     def generate_loc_drop
       validate_strings_file if @options[:validate]
-      
+
       require_rubyzip
 
       if File.file?(@options[:output_path])
@@ -176,7 +178,7 @@ module Twine
                 Twine::stderr.puts "Skipping file #{file_name} since it would not contain any strings."
                 next
               end
-              
+
               IO.write(temp_path, output, encoding: encoding)
               zipfile.add(zip_path, temp_path)
             end
@@ -258,6 +260,50 @@ module Twine
       Twine::stdout.puts "#{@options[:strings_file]} is valid."
     end
 
+    def translate_strings_file
+      validate_strings_file if @options[:validate]
+
+      output_path = @options[:output_path] || @options[:strings_file]
+      default_language = @options[:developer_language] || @strings.language_codes[0]
+      langs = Set.new(@strings.language_codes)
+      langs.delete default_language #ignore default language unless :languagues overrides
+      langs = Set.new(@options[:languages]) if @options[:languages]
+
+      translator = Transformers::ShellTranslator.new("~/code/twistle/health/converse/util/translate_text_array.py")
+      langs.each do |lang|
+        untranslated_rows = @strings.strings_map.values.reject do |e|
+          t = e.translated_string_for_lang lang
+          t != nil && t != ""
+        end
+        untranslated_texts = untranslated_rows.reduce({}) do |h, e|
+          fallback = e.translated_string_for_lang default_language
+          if fallback == nil
+            puts "Key " + e.key + " lacks value for " + default_language
+          else
+            h[e.key] = fallback
+          end
+          h
+        end
+        next if untranslated_texts.empty?
+        translations = translator.translate_dict(untranslated_texts, default_language, lang)
+        @strings.add_language_code lang if translations.any?
+        translations.each do |k, e|
+          next if k == nil || k == "" || e == nil || e ==""
+          row = @strings.strings_map[k]
+          row.translations[lang] = e
+        end
+
+        failures = untranslated_texts.keys.reject { |k| translations.key? k }
+        failure_count = failures.length
+        if failure_count > 0
+          puts failure_count.to_s + " failed keys:"
+          puts failures
+          puts ""
+        end
+      end
+      write_strings_data(output_path)
+    end
+
     private
 
     def encoding
@@ -307,10 +353,10 @@ module Twine
     def prepare_read_write(path, lang)
       formatter_for_path = find_formatter { |f| f.extension == File.extname(path) }
       formatter = formatter_for_format(@options[:format]) || formatter_for_path
-      
+
       unless formatter
         raise Twine::Error.new "Unable to determine format of #{path}"
-      end      
+      end
 
       lang = lang || determine_language_given_path(path) || formatter.determine_language_given_path(path)
       unless lang
