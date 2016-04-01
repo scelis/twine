@@ -299,7 +299,7 @@ module Twine
           puts ""
         end
       end
-      #write_strings_data(output_path)
+      write_strings_data(output_path)
     end
 
     private
