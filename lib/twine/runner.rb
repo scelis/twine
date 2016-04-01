@@ -269,7 +269,7 @@ module Twine
       langs.delete default_language #ignore default language unless :languagues overrides
       langs = Set.new(@options[:languages]) if @options[:languages]
 
-      translator = Transformers::PythonTranslator.new("~/code/twistle/health/converse/util/translate_text_array.py")
+      translator = Transformers::ShellTranslator.new("~/code/twistle/health/converse/util/translate_text_array.py")
       langs.each do |lang|
         untranslated_rows = @strings.strings_map.values.reject do |e|
           t = e.translated_string_for_lang lang

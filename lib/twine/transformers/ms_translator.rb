@@ -5,7 +5,7 @@ require 'tempfile'
 
 module Twine
   module Transformers
-    class PythonTranslator
+    class ShellTranslator
       attr_reader :script
 
       def initialize(script)
