@@ -46,6 +46,7 @@ module Twine
           res_temp.close true
           err_temp.close true
         end
+        result = Hash[keys.zip(translations)]
       end
     end
   end
