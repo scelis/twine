@@ -179,7 +179,7 @@ Now, whenever you build your application, Xcode will automatically invoke Twine 
 Add the following task at the top level in app/build.gradle:
 ```
 task generateLocalizations {
-    Localization script = 'if hash twine 2>/dev/null; then twine generate-localization-file twine.txt ./src/main/res/values/generated_strings.xml; fi'
+    String script = 'if hash twine 2>/dev/null; then twine generate-localization-file twine.txt ./src/main/res/values/generated_strings.xml; fi'
     exec {
         executable "sh"
         args '-c', script
