@@ -197,7 +197,7 @@ Now every time you build your app the strings are generated from the twine file.
 
 ## Extending Twine
 
-If there's a format Twine does not yet support and you're keen to change that, check out the [documentation in the wiki](https://github.com/mobiata/twine/wiki/Formatters).
+If there's a format Twine does not yet support and you're keen to change that, check out the [documentation](documentation/formatters.md).
 
 ## Contributors
 
