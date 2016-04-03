@@ -5,7 +5,7 @@ Gem::Specification.new do |s|
   s.name         = "twine"
   s.version      = Twine::VERSION
   s.date         = Time.now.strftime('%Y-%m-%d')
-  s.summary      = "Manage strings and their translations for your iOS and Android projects."
+  s.summary      = "Manage strings and their translations for your iOS, Android and other projects."
   s.homepage     = "https://github.com/mobiata/twine"
   s.email        = "twine@mobiata.com"
   s.authors      = [ "Sebastian Celis" ]
@@ -31,4 +31,6 @@ Gem::Specification.new do |s|
 
   It is geared toward Mac OS X, iOS, and Android developers.
 desc
+
+  s.post_install_message = "Twine command names have changed! Please check the documentation for their new names."
 end

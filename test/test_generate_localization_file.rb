@@ -1,15 +1,15 @@
 require 'command_test_case'
 
-class TestGenerateStringFile < CommandTestCase
+class TestGenerateLocalizationFile < CommandTestCase
   def new_runner(language, file)
     options = {}
     options[:output_path] = File.join(@output_dir, file) if file
     options[:languages] = language if language
 
-    strings = Twine::StringsFile.new
-    strings.language_codes.concat KNOWN_LANGUAGES
+    twine_file = Twine::TwineFile.new
+    twine_file.language_codes.concat KNOWN_LANGUAGES
 
-    Twine::Runner.new(options, strings)
+    Twine::Runner.new(options, twine_file)
   end
 
   def prepare_mock_format_file_formatter(formatter_class)
@@ -20,25 +20,25 @@ class TestGenerateStringFile < CommandTestCase
   def test_deducts_android_format_from_output_path
     prepare_mock_format_file_formatter Twine::Formatters::Android
 
-    new_runner('fr', 'fr.xml').generate_string_file
+    new_runner('fr', 'fr.xml').generate_localization_file
   end
 
   def test_deducts_apple_format_from_output_path
     prepare_mock_format_file_formatter Twine::Formatters::Apple
 
-    new_runner('fr', 'fr.strings').generate_string_file
+    new_runner('fr', 'fr.strings').generate_localization_file
   end
 
   def test_deducts_jquery_format_from_output_path
     prepare_mock_format_file_formatter Twine::Formatters::JQuery
 
-    new_runner('fr', 'fr.json').generate_string_file
+    new_runner('fr', 'fr.json').generate_localization_file
   end
 
   def test_deducts_gettext_format_from_output_path
     prepare_mock_format_file_formatter Twine::Formatters::Gettext
 
-    new_runner('fr', 'fr.po').generate_string_file
+    new_runner('fr', 'fr.po').generate_localization_file
   end
 
   def test_deducts_language_from_output_path
@@ -46,7 +46,7 @@ class TestGenerateStringFile < CommandTestCase
     formatter = prepare_mock_formatter Twine::Formatters::Android
     formatter.expects(:format_file).with(random_language).returns(true)
 
-    new_runner(nil, "#{random_language}.xml").generate_string_file
+    new_runner(nil, "#{random_language}.xml").generate_localization_file
   end
 
   def test_returns_error_if_nothing_written
@@ -54,7 +54,7 @@ class TestGenerateStringFile < CommandTestCase
     formatter.expects(:format_file).returns(false)
 
     assert_raises Twine::Error do
-      new_runner('fr', 'fr.xml').generate_string_file
+      new_runner('fr', 'fr.xml').generate_localization_file
     end
   end
 
@@ -68,23 +68,23 @@ class TestGenerateStringFile < CommandTestCase
 
       twine_file = build_twine_file 'en' do
         add_section 'Section' do
-          add_row key: 'value'
-          add_row key: 'value'
+          add_definition key: 'value'
+          add_definition key: 'value'
         end
       end
 
       Twine::Runner.new(options, twine_file)
     end
 
-    def test_does_not_validate_strings_file
+    def test_does_not_validate_twine_file
       prepare_mock_formatter Twine::Formatters::Android
 
-      new_runner(false).generate_string_file
+      new_runner(false).generate_localization_file
     end
 
-    def test_validates_strings_file_if_validate
+    def test_validates_twine_file_if_validate
       assert_raises Twine::Error do
-        new_runner(true).generate_string_file
+        new_runner(true).generate_localization_file
       end
     end
   end

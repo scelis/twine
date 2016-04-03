@@ -3,11 +3,11 @@ require 'fileutils'
 module Twine
   module Formatters
     class Abstract
-      attr_accessor :strings
+      attr_accessor :twine_file
       attr_accessor :options
 
       def initialize
-        @strings = StringsFile.new
+        @twine_file = TwineFile.new
         @options = {}
       end
 
@@ -30,47 +30,47 @@ module Twine
       def set_translation_for_key(key, lang, value)
         value = value.gsub("\n", "\\n")
 
-        if @strings.strings_map.include?(key)
-          row = @strings.strings_map[key]
-          reference = @strings.strings_map[row.reference_key] if row.reference_key
+        if @twine_file.definitions_by_key.include?(key)
+          definition = @twine_file.definitions_by_key[key]
+          reference = @twine_file.definitions_by_key[definition.reference_key] if definition.reference_key
 
           if !reference or value != reference.translations[lang]
-            row.translations[lang] = value
+            definition.translations[lang] = value
           end
         elsif @options[:consume_all]
-          Twine::stderr.puts "Adding new string '#{key}' to strings data file."
-          current_section = @strings.sections.find { |s| s.name == 'Uncategorized' }
+          Twine::stderr.puts "Adding new definition '#{key}' to twine file."
+          current_section = @twine_file.sections.find { |s| s.name == 'Uncategorized' }
           unless current_section
-            current_section = StringsSection.new('Uncategorized')
-            @strings.sections.insert(0, current_section)
+            current_section = TwineSection.new('Uncategorized')
+            @twine_file.sections.insert(0, current_section)
           end
-          current_row = StringsRow.new(key)
-          current_section.rows << current_row
+          current_definition = TwineDefinition.new(key)
+          current_section.definitions << current_definition
           
           if @options[:tags] && @options[:tags].length > 0
-            current_row.tags = @options[:tags]            
+            current_definition.tags = @options[:tags]            
           end
           
-          @strings.strings_map[key] = current_row
-          @strings.strings_map[key].translations[lang] = value
+          @twine_file.definitions_by_key[key] = current_definition
+          @twine_file.definitions_by_key[key].translations[lang] = value
         else
-          Twine::stderr.puts "Warning: '#{key}' not found in strings data file."
+          Twine::stderr.puts "Warning: '#{key}' not found in twine file."
         end
-        if !@strings.language_codes.include?(lang)
-          @strings.add_language_code(lang)
+        if !@twine_file.language_codes.include?(lang)
+          @twine_file.add_language_code(lang)
         end
       end
 
       def set_comment_for_key(key, comment)
         return unless @options[:consume_comments]
         
-        if @strings.strings_map.include?(key)
-          row = @strings.strings_map[key]
+        if @twine_file.definitions_by_key.include?(key)
+          definition = @twine_file.definitions_by_key[key]
           
-          reference = @strings.strings_map[row.reference_key] if row.reference_key
+          reference = @twine_file.definitions_by_key[definition.reference_key] if definition.reference_key
 
           if !reference or comment != reference.raw_comment
-            row.comment = comment
+            definition.comment = comment
           end
         end
       end
@@ -88,35 +88,35 @@ module Twine
       end
 
       def format_file(lang)
-        output_processor = Processors::OutputProcessor.new(@strings, @options)
-        processed_strings = output_processor.process(lang)
+        output_processor = Processors::OutputProcessor.new(@twine_file, @options)
+        processed_twine_file = output_processor.process(lang)
 
-        return nil if processed_strings.strings_map.empty?
+        return nil if processed_twine_file.definitions_by_key.empty?
 
         header = format_header(lang)
         result = ""
         result += header + "\n" if header
-        result += format_sections(processed_strings, lang)
+        result += format_sections(processed_twine_file, lang)
       end
 
       def format_header(lang)
       end
 
-      def format_sections(strings, lang)
-        sections = strings.sections.map { |section| format_section(section, lang) }
+      def format_sections(twine_file, lang)
+        sections = twine_file.sections.map { |section| format_section(section, lang) }
         sections.compact.join("\n")
       end
 
       def format_section_header(section)
       end
 
-      def should_include_row(row, lang)
-        row.translated_string_for_lang(lang)
+      def should_include_definition(definition, lang)
+        return !definition.translation_for_lang(lang).nil?
       end
 
       def format_section(section, lang)
-        rows = section.rows.select { |row| should_include_row(row, lang) }
-        return if rows.empty?
+        definitions = section.definitions.select { |definition| should_include_definition(definition, lang) }
+        return if definitions.empty?
 
         result = ""
 
@@ -125,22 +125,22 @@ module Twine
           result += "\n#{section_header}" if section_header
         end
 
-        rows.map! { |row| format_row(row, lang) }
-        rows.compact! # remove nil entries
-        rows.map! { |row| "\n#{row}" }  # prepend newline
-        result += rows.join
+        definitions.map! { |definition| format_definition(definition, lang) }
+        definitions.compact! # remove nil definitions
+        definitions.map! { |definition| "\n#{definition}" }  # prepend newline
+        result += definitions.join
       end
 
-      def format_row(row, lang)
-        [format_comment(row, lang), format_key_value(row, lang)].compact.join
+      def format_definition(definition, lang)
+        [format_comment(definition, lang), format_key_value(definition, lang)].compact.join
       end
 
-      def format_comment(row, lang)
+      def format_comment(definition, lang)
       end
 
-      def format_key_value(row, lang)
-        value = row.translated_string_for_lang(lang)
-        key_value_pattern % { key: format_key(row.key.dup), value: format_value(value.dup) }
+      def format_key_value(definition, lang)
+        value = definition.translation_for_lang(lang)
+        key_value_pattern % { key: format_key(definition.key.dup), value: format_value(value.dup) }
       end
 
       def key_value_pattern

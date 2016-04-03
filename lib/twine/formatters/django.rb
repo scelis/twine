@@ -63,7 +63,7 @@ module Twine
       end
 
       def format_file(lang)
-        @default_lang = @strings.language_codes[0]
+        @default_lang = @twine_file.language_codes[0]
         result = super
         @default_lang = nil
         result
@@ -77,12 +77,12 @@ module Twine
         "#--------- #{section.name} ---------#\n"
       end
 
-      def format_row(row, lang)
-        [format_comment(row, lang), format_base_translation(row), format_key_value(row, lang)].compact.join
+      def format_definition(definition, lang)
+        [format_comment(definition, lang), format_base_translation(definition), format_key_value(definition, lang)].compact.join
       end
 
-      def format_base_translation(row)
-        base_translation = row.translations[@default_lang]
+      def format_base_translation(definition)
+        base_translation = definition.translations[@default_lang]
         "# base translation: \"#{base_translation}\"\n" if base_translation
       end
 
@@ -91,8 +91,8 @@ module Twine
         "msgstr \"%{value}\"\n"
       end
 
-      def format_comment(row, lang)
-        "#. #{escape_quotes(row.comment)}\n" if row.comment
+      def format_comment(definition, lang)
+        "#. #{escape_quotes(definition.comment)}\n" if definition.comment
       end
 
       def format_key(key)

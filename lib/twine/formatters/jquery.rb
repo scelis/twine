@@ -48,8 +48,8 @@ module Twine
         "{\n#{super}\n}\n"
       end
 
-      def format_sections(strings, lang)
-        sections = strings.sections.map { |section| format_section(section, lang) }
+      def format_sections(twine_file, lang)
+        sections = twine_file.sections.map { |section| format_section(section, lang) }
         sections.join(",\n\n")
       end
 
@@ -57,11 +57,11 @@ module Twine
       end
 
       def format_section(section, lang)
-        rows = section.rows.dup
+        definitions = section.definitions.dup
 
-        rows.map! { |row| format_row(row, lang) }
-        rows.compact! # remove nil entries
-        rows.join(",\n")
+        definitions.map! { |definition| format_definition(definition, lang) }
+        definitions.compact! # remove nil definitions
+        definitions.join(",\n")
       end
 
       def key_value_pattern

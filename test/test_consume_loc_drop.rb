@@ -11,7 +11,7 @@ class TestConsumeLocDrop < CommandTestCase
 
     @twine_file = build_twine_file 'en', 'es' do
       add_section 'Section' do
-        add_row key1: 'value1'
+        add_definition key1: 'value1'
       end
     end
 
@@ -21,7 +21,7 @@ class TestConsumeLocDrop < CommandTestCase
   def test_consumes_zip_file
     @runner.consume_loc_drop
 
-    assert @twine_file.strings_map['key1'].translations['en'], 'value1-english'
-    assert @twine_file.strings_map['key1'].translations['es'], 'value1-spanish'
+    assert @twine_file.definitions_by_key['key1'].translations['en'], 'value1-english'
+    assert @twine_file.definitions_by_key['key1'].translations['es'], 'value1-spanish'
   end
 end

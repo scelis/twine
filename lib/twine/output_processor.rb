@@ -2,13 +2,13 @@ module Twine
   module Processors
 
     class OutputProcessor
-      def initialize(strings, options)
-        @strings = strings
+      def initialize(twine_file, options)
+        @twine_file = twine_file
         @options = options
       end
 
       def default_language
-        @options[:developer_language] || @strings.language_codes[0]
+        @options[:developer_language] || @twine_file.language_codes[0]
       end
 
       def fallback_languages(language)
@@ -20,30 +20,30 @@ module Twine
       end
 
       def process(language)
-        result = StringsFile.new
+        result = TwineFile.new
 
-        result.language_codes.concat @strings.language_codes
-        @strings.sections.each do |section|
-          new_section = StringsSection.new section.name
+        result.language_codes.concat @twine_file.language_codes
+        @twine_file.sections.each do |section|
+          new_section = TwineSection.new section.name
 
-          section.rows.each do |row|
-            next unless row.matches_tags?(@options[:tags], @options[:untagged])
+          section.definitions.each do |definition|
+            next unless definition.matches_tags?(@options[:tags], @options[:untagged])
 
-            value = row.translated_string_for_lang(language)
+            value = definition.translation_for_lang(language)
 
             next if value && @options[:include] == :untranslated
 
             if value.nil? && @options[:include] != :translated
-              value = row.translated_string_for_lang(fallback_languages(language))
+              value = definition.translation_for_lang(fallback_languages(language))
             end
 
             next unless value
 
-            new_row = row.dup
-            new_row.translations[language] = value
+            new_definition = definition.dup
+            new_definition.translations[language] = value
 
-            new_section.rows << new_row
-            result.strings_map[new_row.key] = new_row
+            new_section.definitions << new_definition
+            result.definitions_by_key[new_definition.key] = new_definition
           end
 
           result.sections << new_section

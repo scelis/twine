@@ -4,7 +4,7 @@ class CLITestCase < TwineTestCase
   def setup
     super
 
-    @strings_file_path = File.join @output_dir, SecureRandom.uuid
+    @twine_file_path = File.join @output_dir, SecureRandom.uuid
     @input_path = File.join @output_dir, SecureRandom.uuid
     @input_dir = @output_dir
   end
@@ -13,205 +13,205 @@ class CLITestCase < TwineTestCase
     @options = Twine::CLI::parse command.split
   end
 
-  class TestValidateStringsFile < CLITestCase
+  class TestValidateTwineFile < CLITestCase
     def test_command
-      parse "validate-strings-file #{@strings_file_path}"
+      parse "validate-twine-file #{@twine_file_path}"
 
-      assert_equal 'validate-strings-file', @options[:command]
-      assert_equal @strings_file_path, @options[:strings_file]
+      assert_equal 'validate-twine-file', @options[:command]
+      assert_equal @twine_file_path, @options[:twine_file]
     end
 
     def test_pedantic
-      parse "validate-strings-file #{@strings_file_path} --pedantic"
+      parse "validate-twine-file #{@twine_file_path} --pedantic"
       assert @options[:pedantic]
     end
 
     def test_missing_parameter
       assert_raises Twine::Error do
-        parse 'validate-strings-file'
+        parse 'validate-twine-file'
       end
     end
 
     def test_extra_parameter
       assert_raises Twine::Error do
-        parse 'validate-strings-file strings extra'
+        parse 'validate-twine-file twine_file extra'
       end
     end
   end
 
-  class TestGenerateStringFile < CLITestCase
+  class TestGenerateLocalizationFile < CLITestCase
     def test_command
-      parse "generate-string-file #{@strings_file_path} #{@output_path}"
+      parse "generate-localization-file #{@twine_file_path} #{@output_path}"
 
-      assert_equal 'generate-string-file', @options[:command]
-      assert_equal @strings_file_path, @options[:strings_file]
+      assert_equal 'generate-localization-file', @options[:command]
+      assert_equal @twine_file_path, @options[:twine_file]
       assert_equal @output_path, @options[:output_path]
     end
 
     def test_missing_parameter
       assert_raises Twine::Error do
-        parse 'generate-string-file strings'
+        parse 'generate-localization-file twine_file'
       end
     end
 
     def test_validate
-      parse "generate-string-file #{@strings_file_path} #{@output_path} --validate"
+      parse "generate-localization-file #{@twine_file_path} #{@output_path} --validate"
       assert @options[:validate]
     end
 
     def test_extra_parameter
       assert_raises Twine::Error do
-        parse 'generate-string-file strings output extra'
+        parse 'generate-localization-file twine_file output extra'
       end
     end
 
     def test_only_allows_one_language
       assert_raises Twine::Error do
-        parse "generate-string-file strings output --lang en,fr"
+        parse "generate-localization-file twine_file output --lang en,fr"
       end
     end
   end
 
-  class TestGenerateAllStringFiles < CLITestCase
+  class TestGenerateAllLocalizationFiles < CLITestCase
     def test_command
-      parse "generate-all-string-files #{@strings_file_path} #{@output_dir}"
+      parse "generate-all-localization-files #{@twine_file_path} #{@output_dir}"
 
-      assert_equal 'generate-all-string-files', @options[:command]
-      assert_equal @strings_file_path, @options[:strings_file]
+      assert_equal 'generate-all-localization-files', @options[:command]
+      assert_equal @twine_file_path, @options[:twine_file]
       assert_equal @output_dir, @options[:output_path]
     end
 
     def test_missing_parameter
       assert_raises Twine::Error do
-        parse "generate-all-string-files strings"
+        parse "generate-all-localization-files twine_file"
       end
     end
 
     def test_validate
-      parse "generate-all-string-files #{@strings_file_path} #{@output_dir} --validate"
+      parse "generate-all-localization-files #{@twine_file_path} #{@output_dir} --validate"
       assert @options[:validate]
     end
 
     def test_extra_parameter
       assert_raises Twine::Error do
-        parse "generate-all-string-files strings output extra"
+        parse "generate-all-localization-files twine_file output extra"
       end
     end
   end
 
-  class TestConsumeStringFile < CLITestCase
+  class TestConsumeLocalizationFile < CLITestCase
     def test_command
-      parse "consume-string-file #{@strings_file_path} #{@input_path}"
+      parse "consume-localization-file #{@twine_file_path} #{@input_path}"
 
-      assert_equal 'consume-string-file', @options[:command]
-      assert_equal @strings_file_path, @options[:strings_file]
+      assert_equal 'consume-localization-file', @options[:command]
+      assert_equal @twine_file_path, @options[:twine_file]
       assert_equal @input_path, @options[:input_path]
     end
 
     def test_missing_parameter
       assert_raises Twine::Error do
-        parse "consume-string-file strings"
+        parse "consume-localization-file twine_file"
       end
     end
 
     def test_extra_parameter
       assert_raises Twine::Error do
-        parse "consume-string-file strings output extra"
+        parse "consume-localization-file twine_file output extra"
       end
     end
 
     def test_only_allows_one_language
       assert_raises Twine::Error do
-        parse "consume-string-file strings output --lang en,fr"
+        parse "consume-localization-file twine_file output --lang en,fr"
       end
     end
   end
 
-  class TestConsumeAllStringFiles < CLITestCase
+  class TestConsumeAllLocalizationFiles < CLITestCase
     def test_command
-      parse "consume-all-string-files #{@strings_file_path} #{@input_dir}"
+      parse "consume-all-localization-files #{@twine_file_path} #{@input_dir}"
 
-      assert_equal 'consume-all-string-files', @options[:command]
-      assert_equal @strings_file_path, @options[:strings_file]
+      assert_equal 'consume-all-localization-files', @options[:command]
+      assert_equal @twine_file_path, @options[:twine_file]
       assert_equal @input_dir, @options[:input_path]
     end
 
     def test_missing_parameter
       assert_raises Twine::Error do
-        parse "consume-all-string-files strings"
+        parse "consume-all-localization-files twine_file"
       end
     end
 
     def test_extra_parameter
       assert_raises Twine::Error do
-        parse "consume-all-string-files strings output extra"
+        parse "consume-all-localization-files twine_file output extra"
       end
     end
   end
 
   class TestGenerateLocDrop < CLITestCase
     def test_command
-      parse "generate-loc-drop #{@strings_file_path} #{@output_path} --format apple"
+      parse "generate-loc-drop #{@twine_file_path} #{@output_path} --format apple"
 
       assert_equal 'generate-loc-drop', @options[:command]
-      assert_equal @strings_file_path, @options[:strings_file]
+      assert_equal @twine_file_path, @options[:twine_file]
       assert_equal @output_path, @options[:output_path]
     end
 
     def test_missing_parameter
       assert_raises Twine::Error do
-        parse "generate-loc-drop strings --format apple"
+        parse "generate-loc-drop twine_file --format apple"
       end
     end
 
     def test_validate
-      parse "generate-loc-drop #{@strings_file_path} #{@output_path} --format apple --validate"
+      parse "generate-loc-drop #{@twine_file_path} #{@output_path} --format apple --validate"
       assert @options[:validate]
     end
 
     def test_extra_parameter
       assert_raises Twine::Error do
-        parse "generate-loc-drop strings output extra --format apple"
+        parse "generate-loc-drop twine_file output extra --format apple"
       end
     end
 
     def test_format_needed
       assert_raises Twine::Error do
-        parse "generate-loc-drop strings output"
+        parse "generate-loc-drop twine_file output"
       end
     end
   end
 
   class TestConsumeLocDrop < CLITestCase
     def test_command
-      parse "consume-loc-drop #{@strings_file_path} #{@input_path}"
+      parse "consume-loc-drop #{@twine_file_path} #{@input_path}"
 
       assert_equal 'consume-loc-drop', @options[:command]
-      assert_equal @strings_file_path, @options[:strings_file]
+      assert_equal @twine_file_path, @options[:twine_file]
       assert_equal @input_path, @options[:input_path]
     end
 
     def test_missing_parameter
       assert_raises Twine::Error do
-        parse "consume-loc-drop strings"
+        parse "consume-loc-drop twine_file"
       end
     end
 
     def test_extra_parameter
       assert_raises Twine::Error do
-        parse "consume-loc-drop strings input extra"
+        parse "consume-loc-drop twine_file input extra"
       end
     end
   end
 
   class TestParameters < CLITestCase
     def parse_with(parameter)
-      parse 'validate-strings-file input.txt ' + parameter
+      parse 'validate-twine-file input.txt ' + parameter
     end
 
     def test_default_options
       parse_with ''
-      expected = {command: 'validate-strings-file', strings_file: 'input.txt', include: :all}
+      expected = {command: 'validate-twine-file', twine_file: 'input.txt', include: :all}
       assert_equal expected, @options
     end
 

@@ -1,15 +1,5 @@
 module Twine
-  class StringsSection
-    attr_reader :name
-    attr_reader :rows
-
-    def initialize(name)
-      @name = name
-      @rows = []
-    end
-  end
-
-  class StringsRow
+  class TwineDefinition
     attr_reader :key
     attr_accessor :comment
     attr_accessor :tags
@@ -37,7 +27,7 @@ module Twine
         # The user did not specify any tags. Everything passes.
         return true
       elsif @tags == nil
-        # This row has no tags.
+        # This definition has no tags.
         return reference ? reference.matches_tags?(tags, include_untagged) : include_untagged
       elsif @tags.empty?
         return include_untagged
@@ -48,18 +38,28 @@ module Twine
       return false
     end
 
-    def translated_string_for_lang(lang)
+    def translation_for_lang(lang)
       translation = [lang].flatten.map { |l| @translations[l] }.first
 
-      translation = reference.translated_string_for_lang(lang) if translation.nil? && reference
+      translation = reference.translation_for_lang(lang) if translation.nil? && reference
 
       return translation
     end
   end
 
-  class StringsFile
+  class TwineSection
+    attr_reader :name
+    attr_reader :definitions
+
+    def initialize(name)
+      @name = name
+      @definitions = []
+    end
+  end
+
+  class TwineFile
     attr_reader :sections
-    attr_reader :strings_map
+    attr_reader :definitions_by_key
     attr_reader :language_codes
 
     private
@@ -73,7 +73,7 @@ module Twine
 
     def initialize
       @sections = []
-      @strings_map = {}
+      @definitions_by_key = {}
       @language_codes = []
     end
 
@@ -102,7 +102,7 @@ module Twine
       File.open(path, 'r:UTF-8') do |f|
         line_num = 0
         current_section = nil
-        current_row = nil
+        current_definition = nil
         while line = f.gets
           parsed = false
           line.strip!
@@ -115,20 +115,20 @@ module Twine
           if line.length > 4 && line[0, 2] == '[['
             match = /^\[\[(.+)\]\]$/.match(line)
             if match
-              current_section = StringsSection.new(match[1])
+              current_section = TwineSection.new(match[1])
               @sections << current_section
               parsed = true
             end
           elsif line.length > 2 && line[0, 1] == '['
             key = match_key(line)
             if key
-              current_row = StringsRow.new(key)
-              @strings_map[current_row.key] = current_row
+              current_definition = TwineDefinition.new(key)
+              @definitions_by_key[current_definition.key] = current_definition
               if !current_section
-                current_section = StringsSection.new('')
+                current_section = TwineSection.new('')
                 @sections << current_section
               end
-              current_section.rows << current_row
+              current_section.definitions << current_definition
               parsed = true
             end
           else
@@ -141,16 +141,16 @@ module Twine
 
               case key
               when 'comment'
-                current_row.comment = value
+                current_definition.comment = value
               when 'tags'
-                current_row.tags = value.split(',')
+                current_definition.tags = value.split(',')
               when 'ref'
-                current_row.reference_key = value if value
+                current_definition.reference_key = value if value
               else
                 if !@language_codes.include? key
                   add_language_code(key)
                 end
-                current_row.translations[key] = value
+                current_definition.translations[key] = value
               end
               parsed = true
             end
@@ -163,9 +163,9 @@ module Twine
       end
 
       # resolve_references
-      @strings_map.each do |key, row|
-        next unless row.reference_key
-        row.reference = @strings_map[row.reference_key]
+      @definitions_by_key.each do |key, definition|
+        next unless definition.reference_key
+        definition.reference = @definitions_by_key[definition.reference_key]
       end
     end
 
@@ -180,26 +180,26 @@ module Twine
 
           f.puts "[[#{section.name}]]"
 
-          section.rows.each do |row|
-            f.puts "\t[#{row.key}]"
+          section.definitions.each do |definition|
+            f.puts "\t[#{definition.key}]"
 
-            value = write_value(row, dev_lang, f)
-            if !value && !row.reference_key
-              puts "Warning: #{row.key} does not exist in developer language '#{dev_lang}'"
+            value = write_value(definition, dev_lang, f)
+            if !value && !definition.reference_key
+              puts "Warning: #{definition.key} does not exist in developer language '#{dev_lang}'"
             end
             
-            if row.reference_key
-              f.puts "\t\tref = #{row.reference_key}"
+            if definition.reference_key
+              f.puts "\t\tref = #{definition.reference_key}"
             end
-            if row.tags && row.tags.length > 0
-              tag_str = row.tags.join(',')
+            if definition.tags && definition.tags.length > 0
+              tag_str = definition.tags.join(',')
               f.puts "\t\ttags = #{tag_str}"
             end
-            if row.raw_comment and row.raw_comment.length > 0
-              f.puts "\t\tcomment = #{row.raw_comment}"
+            if definition.raw_comment and definition.raw_comment.length > 0
+              f.puts "\t\tcomment = #{definition.raw_comment}"
             end
             @language_codes[1..-1].each do |lang|
-              write_value(row, lang, f)
+              write_value(definition, lang, f)
             end
           end
         end
@@ -208,8 +208,8 @@ module Twine
 
     private
 
-    def write_value(row, language, file)
-      value = row.translations[language]
+    def write_value(definition, language, file)
+      value = definition.translations[language]
       return nil unless value
 
       if value[0] == ' ' || value[-1] == ' ' || (value[0] == '`' && value[-1] == '`')
