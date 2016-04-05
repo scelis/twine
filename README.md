@@ -33,7 +33,7 @@ Twine supports [`printf` style placeholders][printf] with one peculiarity: `@` i
 
 ### Tags
 
-Tags are used by Twine as a way to only work with a subset of your definitions at any given point in time. Each definition can be assigned zero or more tags which are separated by commas. Tags are optional, though highly recommended. You can get a list of all definitions currently missing tags by executing the [`validate-twine-file`](#validate-twine-file) command.
+Tags are used by Twine as a way to only work with a subset of your definitions at any given point in time. Each definition can be assigned zero or more tags which are separated by commas. Tags are optional, though highly recommended. You can get a list of all definitions currently missing tags by executing the [`validate-twine-file`](#validate-twine-file) command with the `--pedantic` option.
 
 ### Whitespace
 
