@@ -1,6 +1,6 @@
-require 'twine_test_case'
+require 'twine_test'
 
-class FormatterTest < TwineTestCase
+class FormatterTest < TwineTest
   def setup(formatter_class)
     super()
 

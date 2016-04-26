@@ -1,6 +1,6 @@
-require 'command_test_case'
+require 'command_test'
 
-class TestGenerateLocDrop < CommandTestCase
+class TestGenerateLocDrop < CommandTest
   def new_runner(twine_file = nil)
     options = {}
     options[:output_path] = @output_path
@@ -48,7 +48,7 @@ class TestGenerateLocDrop < CommandTestCase
     assert_match "Skipping file", Twine::stderr.string
   end
 
-  class TestValidate < CommandTestCase
+  class TestValidate < CommandTest
     def new_runner(validate)
       options = {}
       options[:output_path] = @output_path

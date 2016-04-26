@@ -1,6 +1,6 @@
-require 'twine_test_case'
+require 'twine_test'
 
-class TestOutputProcessor < TwineTestCase
+class TestOutputProcessor < TwineTest
   def setup
     super
 
@@ -56,7 +56,7 @@ class TestOutputProcessor < TwineTestCase
     assert_equal %w(key1 key2 key3), result.definitions_by_key.keys.sort
   end
 
-  class TranslationFallback < TwineTestCase
+  class TranslationFallback < TwineTest
     def setup
       super
 

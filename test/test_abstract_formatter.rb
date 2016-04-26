@@ -1,7 +1,7 @@
-require 'twine_test_case'
+require 'twine_test'
 
-class TestAbstractFormatter < TwineTestCase
-  class SetTranslation < TwineTestCase
+class TestAbstractFormatter < TwineTest
+  class SetTranslation < TwineTest
     def setup
       super
 
@@ -76,7 +76,7 @@ class TestAbstractFormatter < TwineTestCase
     end
   end
 
-  class ValueReference < TwineTestCase
+  class ValueReference < TwineTest
     def setup
       super
 
@@ -104,7 +104,7 @@ class TestAbstractFormatter < TwineTestCase
     end
   end
 
-  class SetComment < TwineTestCase
+  class SetComment < TwineTest
     def setup
       super
 
@@ -133,7 +133,7 @@ class TestAbstractFormatter < TwineTestCase
     end
   end
 
-  class CommentReference < TwineTestCase
+  class CommentReference < TwineTest
     def setup
       super
 

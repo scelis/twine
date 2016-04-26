@@ -1,6 +1,6 @@
-require 'twine_test_case'
+require 'twine_test'
 
-class CLITestCase < TwineTestCase
+class CLITest < TwineTest
   def setup
     super
 
@@ -13,7 +13,7 @@ class CLITestCase < TwineTestCase
     @options = Twine::CLI::parse command.split
   end
 
-  class TestValidateTwineFile < CLITestCase
+  class TestValidateTwineFile < CLITest
     def test_command
       parse "validate-twine-file #{@twine_file_path}"
 
@@ -39,7 +39,7 @@ class CLITestCase < TwineTestCase
     end
   end
 
-  class TestGenerateLocalizationFile < CLITestCase
+  class TestGenerateLocalizationFile < CLITest
     def test_command
       parse "generate-localization-file #{@twine_file_path} #{@output_path}"
 
@@ -72,7 +72,7 @@ class CLITestCase < TwineTestCase
     end
   end
 
-  class TestGenerateAllLocalizationFiles < CLITestCase
+  class TestGenerateAllLocalizationFiles < CLITest
     def test_command
       parse "generate-all-localization-files #{@twine_file_path} #{@output_dir}"
 
@@ -99,7 +99,7 @@ class CLITestCase < TwineTestCase
     end
   end
 
-  class TestConsumeLocalizationFile < CLITestCase
+  class TestConsumeLocalizationFile < CLITest
     def test_command
       parse "consume-localization-file #{@twine_file_path} #{@input_path}"
 
@@ -127,7 +127,7 @@ class CLITestCase < TwineTestCase
     end
   end
 
-  class TestConsumeAllLocalizationFiles < CLITestCase
+  class TestConsumeAllLocalizationFiles < CLITest
     def test_command
       parse "consume-all-localization-files #{@twine_file_path} #{@input_dir}"
 
@@ -149,7 +149,7 @@ class CLITestCase < TwineTestCase
     end
   end
 
-  class TestGenerateLocDrop < CLITestCase
+  class TestGenerateLocDrop < CLITest
     def test_command
       parse "generate-loc-drop #{@twine_file_path} #{@output_path} --format apple"
 
@@ -182,7 +182,7 @@ class CLITestCase < TwineTestCase
     end
   end
 
-  class TestConsumeLocDrop < CLITestCase
+  class TestConsumeLocDrop < CLITest
     def test_command
       parse "consume-loc-drop #{@twine_file_path} #{@input_path}"
 
@@ -204,7 +204,7 @@ class CLITestCase < TwineTestCase
     end
   end
 
-  class TestParameters < CLITestCase
+  class TestParameters < CLITest
     def parse_with(parameter)
       parse 'validate-twine-file input.txt ' + parameter
     end

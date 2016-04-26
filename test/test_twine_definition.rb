@@ -1,6 +1,6 @@
-require 'twine_test_case'
+require 'twine_test'
 
-class TestTwineDefinition < TwineTestCase
+class TestTwineDefinition < TwineTest
   def setup
     super
 

@@ -1,8 +1,8 @@
 # encoding: utf-8
 
-require 'command_test_case'
+require 'command_test'
 
-class TestValidateTwineFile < CommandTestCase
+class TestValidateTwineFile < CommandTest
   def setup
     super
     @options = { twine_file: 'input.txt' }
