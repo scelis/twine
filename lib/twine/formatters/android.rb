@@ -11,7 +11,6 @@ module Twine
         'zh-rCN' => 'zh-Hans',
         'zh-rHK' => 'zh-Hant',
         'en-rGB' => 'en-UK',
-        'zh' => 'zh-Hans',
         'in' => 'id',
         'nb' => 'no'
         # TODO: spanish
