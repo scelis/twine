@@ -122,7 +122,16 @@ class TestAndroidFormatter < FormatterTest
   end
 
   def test_output_path_language_mappings
-    assert_equal 'values-zh-rCN', @formatter.output_path_for_language('zh-Hans')
+    mappings = {
+      'zh-Hans' => 'zh-rCN',
+      'zh-Hant' => 'zh-rHK',
+      'en-UK' => 'en-rGB',
+      'id' => 'in',
+      'no' => 'nb'
+    }
+    mappings.each do |lang, output_path|
+      assert_equal "values-#{output_path}", @formatter.output_path_for_language(lang)
+    end
   end
 end
 
