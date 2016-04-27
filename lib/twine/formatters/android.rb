@@ -68,35 +68,23 @@ module Twine
       end
 
       def read(io, lang)
-        resources_regex = /<resources(?:[^>]*)>(.*)<\/resources>/m
-        key_regex = /<string name="(\w+)">/
-        comment_regex = /<!-- (.*) -->/
-        value_regex = /<string name="\w+">(.*)<\/string>/
-        key = nil
-        value = nil
-        comment = nil
+        document = REXML::Document.new io, :compress_whitespace => %w{ string }
 
-        content_match = resources_regex.match(io.read)
-        if content_match
-          for line in content_match[1].split(/\r?\n/)
-            key_match = key_regex.match(line)
-            if key_match
-              key = key_match[1]
-              value_match = value_regex.match(line)
-              value = value_match ? value_match[1] : ""
-              
-              set_translation_for_key(key, lang, value)
-              if comment and comment.length > 0 and !comment.start_with?("SECTION:")
-                set_comment_for_key(key, comment)
-              end
-              comment = nil
-            end
-            
-            comment_match = comment_regex.match(line)
-            if comment_match
-              comment = comment_match[1]
-            end
-          end
+        comment = nil
+        document.root.children.each do |child|
+          if child.is_a? REXML::Comment
+            content = child.string.strip
+            comment = content if content.length > 0 and not content.start_with?("SECTION:")
+          elsif child.is_a? REXML::Element
+            next unless child.name == 'string'
+
+            key = child.attributes['name']
+
+            set_translation_for_key(key, lang, child.text)
+            set_comment_for_key(key, comment) if comment
+
+            comment = nil
+          end 
         end
       end
 
