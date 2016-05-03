@@ -101,10 +101,24 @@ class TestAndroidFormatter < FormatterTest
     assert_equal "value\\u0020", @formatter.format_value('value ')
   end
 
-  def test_format_value_escapes_single_quotes
-    skip 'not working with ruby 2.0'
-    # http://stackoverflow.com/questions/18735608/cgiescapehtml-is-escaping-single-quote
-    assert_equal "not \\'so\\' easy", @formatter.format_value("not 'so' easy")
+  def test_format_value_escaping
+    values = {
+      'this & that'               => 'this &amp; that',
+      'this < that'               => 'this &lt; that',
+      "it's complicated"          => "it\\'s complicated",
+      'a "good" way'              => 'a \"good\" way',
+      '<b>bold</b>'               => '&lt;b>bold&lt;/b>',
+      '<a href="target">link</a>' => '&lt;a href=\"target\">link&lt;/a>',
+
+      '<xliff:g></xliff:g>' => '<xliff:g></xliff:g>',
+      '<xliff:g>untouched</xliff:g>' => '<xliff:g>untouched</xliff:g>',
+      '<xliff:g id="42">untouched</xliff:g>' => '<xliff:g id="42">untouched</xliff:g>',
+      '<xliff:g id="1">first</xliff:g> inbetween <xliff:g id="2">second</xliff:g>' => '<xliff:g id="1">first</xliff:g> inbetween <xliff:g id="2">second</xliff:g>'
+    }
+    
+    values.each do |input, expected|
+      assert_equal expected, @formatter.format_value(input)
+    end
   end
 
   def test_format_value_escapes_non_resource_identifier_at_signs
