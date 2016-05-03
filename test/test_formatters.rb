@@ -239,6 +239,20 @@ class TestJQueryFormatter < FormatterTest
     assert_equal content('formatter_jquery.json'), formatter.format_file('en')
   end
 
+  def test_empty_sections_are_removed
+    @twine_file = build_twine_file 'en' do
+      add_section 'Section 1' do
+      end
+
+      add_section 'Section 2' do
+        add_definition key: 'value'
+      end
+    end
+    formatter = Twine::Formatters::JQuery.new
+    formatter.twine_file = @twine_file
+    refute_includes formatter.format_file('en'), ','
+  end
+
   def test_format_value_with_newline
     assert_equal "value\nwith\nline\nbreaks", @formatter.format_value("value\nwith\nline\nbreaks")
   end
