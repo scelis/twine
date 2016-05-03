@@ -1,6 +1,6 @@
-require 'command_test_case'
+require 'command_test'
 
-class TestConsumeLocDrop < CommandTestCase
+class TestConsumeLocDrop < CommandTest
   def setup
     super
 

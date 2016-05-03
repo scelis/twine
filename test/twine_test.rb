@@ -6,7 +6,7 @@ require 'stringio'
 require 'twine'
 require 'twine_file_dsl'
 
-class TwineTestCase < Minitest::Test
+class TwineTest < Minitest::Test
   include TwineFileDSL
 
   KNOWN_LANGUAGES = %w(en fr de es)

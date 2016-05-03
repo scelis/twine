@@ -1,6 +1,6 @@
-require 'command_test_case'
+require 'command_test'
 
-class TestConsumeLocalizationFile < CommandTestCase
+class TestConsumeLocalizationFile < CommandTest
   def new_runner(language, file)
     options = {}
     options[:output_path] = File.join(@output_dir, file) if file
@@ -51,7 +51,7 @@ class TestConsumeLocalizationFile < CommandTestCase
     new_runner(nil, "#{random_language}.xml").consume_localization_file
   end
 
-  class TestEncodings < CommandTestCase
+  class TestEncodings < CommandTest
     class DummyFormatter < Twine::Formatters::Abstract
       attr_reader :content
 

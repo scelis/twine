@@ -1,6 +1,6 @@
-require 'command_test_case'
+require 'command_test'
 
-class TestGenerateAllLocalizationFiles < CommandTestCase
+class TestGenerateAllLocalizationFiles < CommandTest
   def new_runner(create_folders, twine_file = nil)
     options = {}
     options[:output_path] = @output_dir
@@ -68,7 +68,7 @@ class TestGenerateAllLocalizationFiles < CommandTestCase
     end
   end
 
-  class TestValidate < CommandTestCase
+  class TestValidate < CommandTest
     def new_runner(validate)
       Dir.mkdir File.join @output_dir, 'values-en'
 

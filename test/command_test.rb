@@ -1,6 +1,6 @@
-require 'twine_test_case'
+require 'twine_test'
 
-class CommandTestCase < TwineTestCase
+class CommandTest < TwineTest
   def prepare_mock_formatter(formatter_class)
     twine_file = Twine::TwineFile.new
     twine_file.language_codes.concat KNOWN_LANGUAGES

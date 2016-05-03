@@ -1,6 +1,6 @@
-require 'twine_test_case'
+require 'twine_test'
 
-class PlaceholderTestCase < TwineTestCase
+class PlaceholderTest < TwineTest
   def assert_starts_with(prefix, value)
     msg = message(nil) { "Expected #{mu_pp(value)} to start with #{mu_pp(prefix)}" }
     assert value.start_with?(prefix), msg
@@ -17,10 +17,8 @@ class PlaceholderTestCase < TwineTestCase
     placeholder += %w(h hh l ll L z j t).sample if lucky.call
     placeholder += type || 'diufFeEgGxXocpaA'.chars.to_a.sample # this does not contain s or @ because strings are a special case
   end
-end
 
-class PlaceholderTest < TwineTestCase
-  class ToAndroid < PlaceholderTestCase
+  class ToAndroid < PlaceholderTest
     def to_android(value)
       Twine::Placeholders.convert_placeholders_from_twine_to_android(value)
     end
@@ -74,7 +72,7 @@ class PlaceholderTest < TwineTestCase
     end
   end
 
-  class FromAndroid < PlaceholderTestCase
+  class FromAndroid < PlaceholderTest
     def from_android(value)
       Twine::Placeholders.convert_placeholders_from_android_to_twine(value)
     end

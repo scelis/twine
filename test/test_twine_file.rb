@@ -1,7 +1,7 @@
-require 'twine_test_case'
+require 'twine_test'
 
-class TestTwineFile < TwineTestCase
-  class Reading < TwineTestCase
+class TestTwineFile < TwineTest
+  class Reading < TwineTest
     def setup
       super
 
@@ -34,7 +34,7 @@ class TestTwineFile < TwineTestCase
     end
   end
 
-  class Writing < TwineTestCase
+  class Writing < TwineTest
 
     def test_accent_wrapping
       @twine_file = build_twine_file 'en' do

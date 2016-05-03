@@ -1,6 +1,6 @@
-require 'command_test_case'
+require 'command_test'
 
-class TestGenerateLocalizationFile < CommandTestCase
+class TestGenerateLocalizationFile < CommandTest
   def new_runner(language, file)
     options = {}
     options[:output_path] = File.join(@output_dir, file) if file
@@ -58,7 +58,7 @@ class TestGenerateLocalizationFile < CommandTestCase
     end
   end
 
-  class TestValidate < CommandTestCase
+  class TestValidate < CommandTest
     def new_runner(validate)
       options = {}
       options[:output_path] = @output_path
