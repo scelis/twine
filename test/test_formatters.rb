@@ -39,6 +39,20 @@ end
 class TestAndroidFormatter < FormatterTest
   def setup
     super Twine::Formatters::Android
+    
+    @escape_test_values = {
+      'this & that'               => 'this &amp; that',
+      'this < that'               => 'this &lt; that',
+      "it's complicated"          => "it\\'s complicated",
+      'a "good" way'              => 'a \"good\" way',
+      '<b>bold</b>'               => '&lt;b>bold&lt;/b>',
+      '<a href="target">link</a>' => '&lt;a href=\"target\">link&lt;/a>',
+
+      '<xliff:g></xliff:g>' => '<xliff:g></xliff:g>',
+      '<xliff:g>untouched</xliff:g>' => '<xliff:g>untouched</xliff:g>',
+      '<xliff:g id="42">untouched</xliff:g>' => '<xliff:g id="42">untouched</xliff:g>',
+      '<xliff:g id="1">first</xliff:g> inbetween <xliff:g id="2">second</xliff:g>' => '<xliff:g id="1">first</xliff:g> inbetween <xliff:g id="2">second</xliff:g>'
+    }
   end
 
   def test_read_format
@@ -83,6 +97,13 @@ class TestAndroidFormatter < FormatterTest
     assert_equal '@value', @empty_twine_file.definitions_by_key['key1'].translations['en']
   end
 
+  def test_set_translation_unescaping
+    @escape_test_values.each do |expected, input|
+      @formatter.set_translation_for_key 'key1', 'en', input
+      assert_equal expected, @empty_twine_file.definitions_by_key['key1'].translations['en']
+    end
+  end
+
   def test_format_file
     formatter = Twine::Formatters::Android.new
     formatter.twine_file = @twine_file
@@ -101,10 +122,10 @@ class TestAndroidFormatter < FormatterTest
     assert_equal "value\\u0020", @formatter.format_value('value ')
   end
 
-  def test_format_value_escapes_single_quotes
-    skip 'not working with ruby 2.0'
-    # http://stackoverflow.com/questions/18735608/cgiescapehtml-is-escaping-single-quote
-    assert_equal "not \\'so\\' easy", @formatter.format_value("not 'so' easy")
+  def test_format_value_escaping
+    @escape_test_values.each do |input, expected|
+      assert_equal expected, @formatter.format_value(input)
+    end
   end
 
   def test_format_value_escapes_non_resource_identifier_at_signs

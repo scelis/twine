@@ -112,19 +112,44 @@ module Twine
         "\t<string name=\"%{key}\">%{value}</string>"
       end
 
-      def format_value(value)
-        # Android enforces the following rules on the values
-        #  1) apostrophes and quotes must be escaped with a backslash
+      def escape_value(value)
+        # escape double and single quotes, & signs and tags
         value = escape_quotes(value)
         value.gsub!("'", "\\\\'")
-        #  2) HTML escape the string
-        value = CGI.escapeHTML(value)
-        #  3) convert placeholders (e.g. %@ -> %s)
-        value = convert_placeholders_from_twine_to_android(value)
-        #  4) escape non resource identifier @ signs (http://developer.android.com/guide/topics/resources/accessing-resources.html#ResourcesFromXml)
+        value.gsub!(/&/, '&amp;')
+        value.gsub!('<', '&lt;')
+
+        # escape non resource identifier @ signs (http://developer.android.com/guide/topics/resources/accessing-resources.html#ResourcesFromXml)
         resource_identifier_regex = /@(?!([a-z\.]+:)?[a-z+]+\/[a-zA-Z_]+)/   # @[<package_name>:]<resource_type>/<resource_name>
-        value.gsub!(resource_identifier_regex, '\@')
-        #  5) replace beginning and end spaces with \u0020. Otherwise Android strips them.
+        value.gsub(resource_identifier_regex, '\@')
+      end
+
+      # see http://developer.android.com/guide/topics/resources/string-resource.html#FormattingAndStyling
+      # however unescaped HTML markup like in "Welcome to <b>Android</b>!" is stripped when retrieved with getString() (http://stackoverflow.com/questions/9891996/)
+      def format_value(value)
+        value = value.dup
+
+        # capture xliff tags and replace them with a placeholder
+        xliff_tags = []
+        value.gsub! /<xliff:g.+?<\/xliff:g>/ do
+          xliff_tags << $&
+          'TWINE_XLIFF_TAG_PLACEHOLDER'
+        end
+
+        # escape everything outside xliff tags
+        value = escape_value(value)
+
+        # put xliff tags back into place
+        xliff_tags.each do |xliff_tag|
+          # escape content of xliff tags
+          xliff_tag.gsub! /(<xliff:g.*?>)(.*)(<\/xliff:g>)/ do "#{$1}#{escape_value($2)}#{$3}" end
+          value.sub! 'TWINE_XLIFF_TAG_PLACEHOLDER', xliff_tag
+        end
+        
+        # convert placeholders (e.g. %@ -> %s)
+        value = convert_placeholders_from_twine_to_android(value)
+        
+        # replace beginning and end spaces with \u0020. Otherwise Android strips them.
         value.gsub(/\A *| *\z/) { |spaces| '\u0020' * spaces.length }
       end
 
