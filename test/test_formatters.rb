@@ -39,7 +39,7 @@ end
 class TestAndroidFormatter < FormatterTest
   def setup
     super Twine::Formatters::Android
-    
+
     @escape_test_values = {
       'this & that'               => 'this &amp; that',
       'this < that'               => 'this &lt; that',
@@ -135,6 +135,11 @@ class TestAndroidFormatter < FormatterTest
   def test_format_value_does_not_modify_resource_identifiers
     identifier = '@android:string/cancel'
     assert_equal identifier, @formatter.format_value(identifier)
+  end
+
+  def test_does_not_replace_single_percent_signs_when_followed_by_space_and_format_letter
+    # Said differently: formartter parser should not recognize %a in "70% and"
+    assert_equal 'If 70% and 30% dog 80% end', @formatter.format_value('If 70% and 30% dog 80% end')
   end
 
   def test_deducts_language_from_resource_folder

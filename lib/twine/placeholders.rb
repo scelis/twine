@@ -2,7 +2,7 @@ module Twine
   module Placeholders
     extend self
 
-    PLACEHOLDER_FLAGS_WIDTH_PRECISION_LENGTH = '([-+ 0#])?(\d+|\*)?(\.(\d+|\*))?(hh?|ll?|L|z|j|t)?'
+    PLACEHOLDER_FLAGS_WIDTH_PRECISION_LENGTH = '([-+0#])?(\d+|\*)?(\.(\d+|\*))?(hh?|ll?|L|z|j|t)?'
     PLACEHOLDER_PARAMETER_FLAGS_WIDTH_PRECISION_LENGTH = '(\d+\$)?' + PLACEHOLDER_FLAGS_WIDTH_PRECISION_LENGTH
 
     # http://developer.android.com/guide/topics/resources/string-resource.html#FormattingAndStyling
