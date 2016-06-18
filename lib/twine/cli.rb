@@ -48,9 +48,11 @@ module Twine
         opts.on('-l', '--lang LANGUAGES', Array, 'The language code(s) to use for the specified action.') do |l|
           options[:languages] = l
         end
-        opts.on('-t', '--tags TAG1,TAG2,TAG3', Array, 'The tag(s) to use for the specified action. Only definitions with that tag will be processed. Omit this option to match',
-                                                      '  all definitions in the Twine data file.') do |t|
-          options[:tags] = t
+        opts.on('-t', '--tags TAG1,TAG2,TAG3', Array, 'The tag(s) to use for the specified action. Only definitions with ANY of the specified tags will be processed.',
+                                                      '  Specify this option multiple times to only include definitions with ALL of the specified tags. Prefix a tag',
+                                                      '  with ~ to include definitions NOT containing that tag. Omit this option to match all definitions in the Twine',
+                                                      '  data file.') do |t|
+          options[:tags] = (options[:tags] || []) << t
         end
         opts.on('-u', '--[no-]untagged', 'If you have specified tags using the --tags flag, then only those tags will be selected. If you also want to select',
                                          '  all definitions that are untagged, then you can specify this option to do so.') do |u|
@@ -75,7 +77,8 @@ module Twine
                                                    '  running the consume-localization-file or consume-loc-drop commands.') do |o|
           options[:output_path] = o
         end
-        opts.on('-n', '--file-name FILE_NAME', 'When running the generate-all-localization-files command, this flag may be used to overwrite the default file name of the format.') do |n|
+        opts.on('-n', '--file-name FILE_NAME', 'When running the generate-all-localization-files command, this flag may be used to overwrite the default file name of',
+                                               ' the format.') do |n|
           options[:file_name] = n
         end
         opts.on('-r', '--[no-]create-folders', "When running the generate-all-localization-files command, this flag may be used to create output folders for all languages,",

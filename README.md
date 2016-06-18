@@ -35,6 +35,8 @@ Twine supports [`printf` style placeholders][printf] with one peculiarity: `@` i
 
 Tags are used by Twine as a way to only work with a subset of your definitions at any given point in time. Each definition can be assigned zero or more tags which are separated by commas. Tags are optional, though highly recommended. You can get a list of all definitions currently missing tags by executing the [`validate-twine-file`](#validate-twine-file) command with the `--pedantic` option.
 
+When generating a localization file, you can specify which definitions should be included using the `--tags` option. Provide a comma separated list of tags to match all definitions that contain any of the tags (`--tags tag1,tag2` matches all definitions tagged with `tag1` _or_ `tag2`). Provide multiple `--tags` options to match defintions containing all specified tags (`--tags tag1 --tags tag2` matches all definitions tagged with `tag1` _and_ `tag2`). You can match definitions _not_ containing a tag by prefixing the tag with a tilde (`--tags ~tag1` matches all definitions _not_ tagged with `tag1`.). All three options are combinable.
+
 ### Whitespace
 
 Whitepace in this file is mostly ignored. If you absolutely need to put spaces at the beginning or end of your translated string, you can wrap the entire string in a pair of `` ` `` characters. If your actual string needs to start *and* end with a grave accent, you can wrap it in another pair of `` ` `` characters. See the example, below.
