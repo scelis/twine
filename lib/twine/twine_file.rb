@@ -22,17 +22,22 @@ module Twine
       @comment
     end
 
+    # [['tag1', 'tag2'], ['~tag3']] == (tag1 OR tag2) AND (!tag3)
     def matches_tags?(tags, include_untagged)
-      if tags == nil || tags.empty?
-        # The user did not specify any tags. Everything passes.
+      if tags == nil || tags.empty?  # The user did not specify any tags. Everything passes.
         return true
-      elsif @tags == nil
-        # This definition has no tags.
+      elsif @tags == nil  # This definition has no tags -> check reference (if any)
         return reference ? reference.matches_tags?(tags, include_untagged) : include_untagged
       elsif @tags.empty?
         return include_untagged
       else
-        return !(tags & @tags).empty?
+        return tags.all? do |set|
+          regular_tags, negated_tags = set.partition { |tag| tag[0] != '~' }
+          negated_tags.map! { |tag| tag[1..-1] }
+          matches_regular_tags = (!regular_tags.empty? && !(regular_tags & @tags).empty?)
+          matches_negated_tags = (!negated_tags.empty? && (negated_tags & @tags).empty?)
+          matches_regular_tags or matches_negated_tags
+        end
       end
 
       return false

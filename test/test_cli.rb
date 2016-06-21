@@ -256,13 +256,21 @@ class CLITest < TwineTest
     def test_single_tag
       random_tag = "tag#{rand(100)}"
       parse_with "--tags #{random_tag}"
-      assert_equal [random_tag], @options[:tags]
+      assert_equal [[random_tag]], @options[:tags]
     end
 
-    def test_multiple_tags
-      random_tags = ([nil] * 3).map { "tag#{rand(100)}" }
+    def test_multiple_OR_tags
+      random_tags = ["tag#{rand(100)}", "tag#{rand(100)}", "tag#{rand(100)}"]
       parse_with "--tags #{random_tags.join(',')}"
-      assert_equal random_tags.sort, @options[:tags].sort
+      sorted_tags = @options[:tags].map { |tags| tags.sort }
+      assert_equal [random_tags.sort], sorted_tags
+    end
+
+    def test_multiple_AND_tags
+      random_tag_1 = "tag#{rand(100)}"
+      random_tag_2 = "tag#{rand(100)}"
+      parse_with "--tags #{random_tag_1} --tags #{random_tag_2}"
+      assert_equal [[random_tag_1], [random_tag_2]], @options[:tags]
     end
 
     def test_format

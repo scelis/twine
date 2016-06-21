@@ -22,21 +22,21 @@ class TestOutputProcessor < TwineTest
   end
 
   def test_filter_by_tag
-    processor = Twine::Processors::OutputProcessor.new(@twine_file, { tags: ['tag1'] })
+    processor = Twine::Processors::OutputProcessor.new(@twine_file, { tags: [['tag1']] })
     result = processor.process('en')
 
     assert_equal %w(key1 key2), result.definitions_by_key.keys.sort
   end
 
   def test_filter_by_multiple_tags
-    processor = Twine::Processors::OutputProcessor.new(@twine_file, { tags: ['tag1', 'tag2'] })
+    processor = Twine::Processors::OutputProcessor.new(@twine_file, { tags: [['tag1', 'tag2']] })
     result = processor.process('en')
 
     assert_equal %w(key1 key2 key3), result.definitions_by_key.keys.sort
   end
 
   def test_filter_untagged
-    processor = Twine::Processors::OutputProcessor.new(@twine_file, { tags: ['tag1'], untagged: true })
+    processor = Twine::Processors::OutputProcessor.new(@twine_file, { tags: [['tag1']], untagged: true })
     result = processor.process('en')
 
     assert_equal %w(key1 key2 key4), result.definitions_by_key.keys.sort
