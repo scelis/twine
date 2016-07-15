@@ -66,7 +66,7 @@ module Twine
 
       def format_value(value)
         placeHolderNumber = -1
-        value.gsub(/%[d@]/) { placeHolderNumber += 1; '{%d}' % placeHolderNumber }
+        value.gsub(/%(?:\d+\$)?((\.(\d)?\d)|.)?[dfsu@]/) { placeHolderNumber += 1; '{%d}' % placeHolderNumber }
       end
     end
   end
