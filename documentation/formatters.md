@@ -53,15 +53,15 @@ Or, highlighted by the method that produces each piece of the output
 
 ![highlighted formatter method output](assets/formatter_4.png)
 
-The process described above is implemented by the structure giving formatter base class [`Abstract`](/mobiata/twine/blob/master/lib/twine/formatters/abstract.rb). To generate a desired output format, a formatter overwrites just enough methods to gain as much control as it needs - it's basically the [Template Method Pattern](https://en.wikipedia.org/wiki/Template_method_pattern) applied again and again.
+The process described above is implemented by the structure giving formatter base class [`Abstract`](/lib/twine/formatters/abstract.rb). To generate a desired output format, a formatter overwrites just enough methods to gain as much control as it needs - it's basically the [Template Method Pattern](https://en.wikipedia.org/wiki/Template_method_pattern) applied again and again.
 
 # Write a Formatter
 
-Formatters inherit from [`Abstract`](/mobiata/twine/blob/master/lib/twine/formatters/abstract.rb) and need to specify some information about the format they are supporting like the format name, the default file name, if they can handle a directory of localization files and so on - just take a look at the class and the [other formatters](/mobiata/twine/tree/master/lib/twine/formatters) to get an idea.
+Formatters inherit from [`Abstract`](/lib/twine/formatters/abstract.rb) and need to specify some information about the format they are supporting like the format name, the default file name, if they can handle a directory of localization files and so on - just take a look at the class and the [other formatters](/lib/twine/formatters) to get an idea.
 
 The `Abstract` formatter also specifies two utility methods to be used when read a localization file, `set_translation_for_key` and `set_comment_for_key`, however the actual parsing is too formatter specific and must be implemented in the `read` method of a formatter.
 
-Which methods to overwrite to produce the desired output depends pretty much on the format. Again, looking at the [bundeled formatters](/mobiata/twine/tree/master/lib/twine/formatters) will provide some insight.
+Which methods to overwrite to produce the desired output depends pretty much on the format. Again, looking at the [bundeled formatters](/lib/twine/formatters) will provide some insight.
 
 Finally, to make a formatter available, it needs to be added to the list of formatters
 
