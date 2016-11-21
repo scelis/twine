@@ -7,15 +7,6 @@ module Twine
     class Android < Abstract
       include Twine::Placeholders
 
-      LANG_MAPPINGS = Hash[
-        'zh-rCN' => 'zh-Hans',
-        'zh-rHK' => 'zh-Hant',
-        'en-rGB' => 'en-UK',
-        'in' => 'id',
-        'nb' => 'no'
-        # TODO: spanish
-      ]
-
       def format_name
         'android'
       end
@@ -41,12 +32,8 @@ module Twine
             # The language is defined by a two-letter ISO 639-1 language code, optionally followed by a two letter ISO 3166-1-alpha-2 region code (preceded by lowercase "r").
             # see http://developer.android.com/guide/topics/resources/providing-resources.html#AlternativeResources
             match = /^values-([a-z]{2}(-r[a-z]{2})?)$/i.match(segment)
-            if match
-              lang = match[1]
-              lang = LANG_MAPPINGS.fetch(lang, lang)
-              lang.sub!('-r', '-')
-              return lang
-            end
+            
+            return match[1].sub('-r', '-') if match
           end
         end
 
@@ -54,7 +41,7 @@ module Twine
       end
 
       def output_path_for_language(lang)
-        "values-" + (LANG_MAPPINGS.key(lang) || lang)
+        "values-#{lang}"
       end
 
       def set_translation_for_key(key, lang, value)
