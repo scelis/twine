@@ -146,29 +146,12 @@ class TestAndroidFormatter < FormatterTest
     assert_equal 'de-AT', @formatter.determine_language_given_path("res/values-de-rAT")
   end
 
-  def test_maps_laguage_deducted_from_resource_folder
-    assert_equal 'zh-Hans', @formatter.determine_language_given_path("res/values-zh-rCN")
-  end
-
   def test_does_not_deduct_language_from_device_capability_resource_folder
     assert_nil @formatter.determine_language_given_path('res/values-w820dp')
   end
 
   def test_output_path_is_prefixed
     assert_equal 'values-en', @formatter.output_path_for_language('en')
-  end
-
-  def test_output_path_language_mappings
-    mappings = {
-      'zh-Hans' => 'zh-rCN',
-      'zh-Hant' => 'zh-rHK',
-      'en-UK' => 'en-rGB',
-      'id' => 'in',
-      'no' => 'nb'
-    }
-    mappings.each do |lang, output_path|
-      assert_equal "values-#{output_path}", @formatter.output_path_for_language(lang)
-    end
   end
 end
 
