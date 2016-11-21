@@ -11,7 +11,7 @@ class PlaceholderTest < TwineTest
     lucky = lambda { rand > 0.5 }
     placeholder = '%'
     placeholder += (rand * 20).to_i.to_s + '$' if lucky.call
-    placeholder += '-+ 0#'.chars.to_a.sample if lucky.call
+    placeholder += '-+0#'.chars.to_a.sample if lucky.call
     placeholder += (0.upto(20).map(&:to_s) << "*").sample if lucky.call
     placeholder += '.' + (0.upto(20).map(&:to_s) << "*").sample if lucky.call
     placeholder += %w(h hh l ll L z j t).sample if lucky.call
@@ -37,6 +37,11 @@ class PlaceholderTest < TwineTest
 
     def test_does_not_modify_single_percent_signs
       assert_equal "some % value", to_android("some % value")
+    end
+
+    def test_does_not_modify_single_percent_signs_when_followed_by_space_and_format_letter
+      # Said differently: formartter parser should not recognize %a in "70% and"
+      assert_equal 'If 70% and 30% dog 80% end', to_android('If 70% and 30% dog 80% end')
     end
 
     def test_escapes_single_percent_signs_if_placeholder_present
