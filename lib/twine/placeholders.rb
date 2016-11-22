@@ -5,17 +5,21 @@ module Twine
     # Note: the ` ` (single space) flag is NOT supported
     PLACEHOLDER_FLAGS_WIDTH_PRECISION_LENGTH = '([-+0#])?(\d+|\*)?(\.(\d+|\*))?(hh?|ll?|L|z|j|t)?'
     PLACEHOLDER_PARAMETER_FLAGS_WIDTH_PRECISION_LENGTH = '(\d+\$)?' + PLACEHOLDER_FLAGS_WIDTH_PRECISION_LENGTH
+    PLACEHOLDER_TYPES = '[diufFeEgGxXoscpaA]'
+
+    def convert_twine_string_placeholder(input)
+      # %@ -> %s
+      input.gsub(/(%#{PLACEHOLDER_PARAMETER_FLAGS_WIDTH_PRECISION_LENGTH})@/, '\1s')
+    end
 
     # http://developer.android.com/guide/topics/resources/string-resource.html#FormattingAndStyling
     # http://stackoverflow.com/questions/4414389/android-xml-percent-symbol
     # https://github.com/mobiata/twine/pull/106
     def convert_placeholders_from_twine_to_android(input)
-      placeholder_types = '[diufFeEgGxXoscpaA]'
-
       # %@ -> %s
-      value = input.gsub(/(%#{PLACEHOLDER_PARAMETER_FLAGS_WIDTH_PRECISION_LENGTH})@/, '\1s')
+      value = convert_twine_string_placeholder(input)
 
-      placeholder_syntax = PLACEHOLDER_PARAMETER_FLAGS_WIDTH_PRECISION_LENGTH + placeholder_types
+      placeholder_syntax = PLACEHOLDER_PARAMETER_FLAGS_WIDTH_PRECISION_LENGTH + PLACEHOLDER_TYPES
       placeholder_regex = /%#{placeholder_syntax}/
 
       number_of_placeholders = value.scan(placeholder_regex).size
@@ -30,7 +34,7 @@ module Twine
       return value if number_of_placeholders < 2
 
       # number placeholders
-      non_numbered_placeholder_regex = /%(#{PLACEHOLDER_FLAGS_WIDTH_PRECISION_LENGTH}#{placeholder_types})/
+      non_numbered_placeholder_regex = /%(#{PLACEHOLDER_FLAGS_WIDTH_PRECISION_LENGTH}#{PLACEHOLDER_TYPES})/
 
       number_of_non_numbered_placeholders = value.scan(non_numbered_placeholder_regex).size
 
@@ -50,6 +54,21 @@ module Twine
 
       # %s -> %@
       input.gsub(placeholder_regex, '\1@')
+    end
+
+    # http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/mx/resources/IResourceManager.html#getString()
+    # http://soenkerohde.com/2008/07/flex-localization/comment-page-1/
+    def convert_placeholders_from_twine_to_flash(input)
+      value = convert_twine_string_placeholder(input)
+
+      placeholder_regex = /%#{PLACEHOLDER_PARAMETER_FLAGS_WIDTH_PRECISION_LENGTH}#{PLACEHOLDER_TYPES}/
+      value.gsub(placeholder_regex).each_with_index do |match, index|
+        "{#{index}}"
+      end
+    end
+
+    def convert_placeholders_from_flash_to_twine(input)
+      input.gsub /\{\d+\}/, '%@'
     end
   end
 end

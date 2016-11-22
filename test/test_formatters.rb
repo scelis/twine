@@ -338,9 +338,18 @@ class TestFlashFormatter < FormatterTest
     assert_file_contents_read_correctly
   end
 
+  def test_set_translation_converts_placeholders
+    @formatter.set_translation_for_key 'key1', 'en', "value {#{rand(10)}}"
+    assert_equal 'value %@', @empty_twine_file.definitions_by_key['key1'].translations['en']
+  end
+
   def test_format_file
     formatter = Twine::Formatters::Flash.new
     formatter.twine_file = @twine_file
     assert_equal content('formatter_flash.properties'), formatter.format_file('en')
+  end
+
+  def test_format_value_converts_placeholders
+    assert_equal "value {0}", @formatter.format_value('value %d')
   end
 end

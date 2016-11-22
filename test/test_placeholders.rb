@@ -86,4 +86,32 @@ class PlaceholderTest < TwineTest
       assert_equal "some %@ value", from_android("some %s value")
     end
   end
+
+  class ToFlash < PlaceholderTest
+    def to_flash(value)
+      Twine::Placeholders.convert_placeholders_from_twine_to_flash(value)
+    end
+
+    def test_replaces_placeholder
+      assert_equal "some {0} text", to_flash("some #{placeholder} text")
+    end
+
+    def test_replaces_string_placeholder
+      assert_equal "some {0} text", to_flash("some #{placeholder('@')} text")
+    end
+
+    def test_numbers_placeholders
+      assert_equal "some {0} more {1} text {2}", to_flash("some #{placeholder('@')} more #{placeholder('@')} text #{placeholder('@')}")
+    end
+  end
+
+  class FromFlash < PlaceholderTest
+    def from_flash(value)
+      Twine::Placeholders.convert_placeholders_from_flash_to_twine(value)
+    end
+
+    def test_maps_all_placeholders_to_string
+      assert_equal "some %@ more %@ text %@", from_flash("some {0} more {1} text {2}")
+    end
+  end
 end
