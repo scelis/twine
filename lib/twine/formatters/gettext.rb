@@ -11,10 +11,6 @@ module Twine
         '.po'
       end
 
-      def can_handle_directory?(path)
-        Dir.entries(path).any? { |item| /^.+\.po$/.match(item) }
-      end
-
       def default_file_name
         'strings.po'
       end

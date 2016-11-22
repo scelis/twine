@@ -9,10 +9,6 @@ module Twine
         '.properties'
       end
 
-      def can_handle_directory?(path)
-        return false
-      end
-
       def default_file_name
         'resources.properties'
       end
