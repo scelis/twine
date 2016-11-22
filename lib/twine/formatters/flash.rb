@@ -1,6 +1,8 @@
 module Twine
   module Formatters
     class Flash < Abstract
+      include Twine::Placeholders
+
       def format_name
         'flash'
       end
@@ -19,6 +21,10 @@ module Twine
 
       def determine_language_given_path(path)
         return
+
+      def set_translation_for_key(key, lang, value)
+        value = convert_placeholders_from_android_to_twine(value)
+        super(key, lang, value)
       end
 
       def read(io, lang)
@@ -28,19 +34,13 @@ module Twine
           if match
             key = match[1]
             value = match[2].strip
-            value.gsub!(/\{[0-9]\}/, '%@')
+
             set_translation_for_key(key, lang, value)
-            if last_comment
-              set_comment_for_key(key, last_comment)
-            end
+            set_comment_for_key(key, last_comment) if last_comment
           end
           
           match = /# *(.*)/.match(line)
-          if match
-            last_comment = match[1]
-          else
-            last_comment = nil
-          end
+          last_comment = match ? match[1] : nil
         end
       end
 
@@ -65,8 +65,7 @@ module Twine
       end
 
       def format_value(value)
-        placeHolderNumber = -1
-        value.gsub(/%[d@]/) { placeHolderNumber += 1; '{%d}' % placeHolderNumber }
+        convert_placeholders_from_twine_to_flash(value)
       end
     end
   end
