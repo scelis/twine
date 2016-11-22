@@ -14,7 +14,7 @@ module Twine
       end
 
       def default_file_name
-        return 'resources.properties'
+        'resources.properties'
       end
 
       def determine_language_given_path(path)

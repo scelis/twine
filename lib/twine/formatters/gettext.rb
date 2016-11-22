@@ -16,7 +16,7 @@ module Twine
       end
 
       def default_file_name
-        return 'strings.po'
+        'strings.po'
       end
 
       def determine_language_given_path(path)

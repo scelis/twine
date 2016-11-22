@@ -14,7 +14,7 @@ module Twine
       end
 
       def default_file_name
-        return 'Localizable.strings'
+        'Localizable.strings'
       end
 
       def determine_language_given_path(path)
