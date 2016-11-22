@@ -352,4 +352,13 @@ class TestFlashFormatter < FormatterTest
   def test_format_value_converts_placeholders
     assert_equal "value {0}", @formatter.format_value('value %d')
   end
+
+  def test_deducts_language_from_resource_folder
+    language = %w(en de fr).sample
+    assert_equal language, @formatter.determine_language_given_path("locale/#{language}")
+  end
+
+  def test_deducts_language_and_region_from_resource_folder
+    assert_equal 'de-AT', @formatter.determine_language_given_path("locale/de-AT")
+  end
 end

@@ -20,7 +20,8 @@ module Twine
       end
 
       def determine_language_given_path(path)
-        return
+        # match two-letter language code, optionally followed by a two letter region code
+        path.split(File::SEPARATOR).reverse.find { |segment| segment =~ /^([a-z]{2}(-[a-z]{2})?)$/i }
       end
 
       def set_translation_for_key(key, lang, value)
