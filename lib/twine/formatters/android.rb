@@ -20,7 +20,7 @@ module Twine
       end
 
       def default_file_name
-        return 'strings.xml'
+        'strings.xml'
       end
 
       def determine_language_given_path(path)

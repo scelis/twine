@@ -20,7 +20,7 @@ module Twine
       end
 
       def can_handle_directory?(path)
-        raise NotImplementedError.new("You must implement can_handle_directory? in your formatter class.")
+        Dir.entries(path).any? { |item| /^.+#{Regexp.escape(extension)}$/.match(item) }
       end
 
       def default_file_name

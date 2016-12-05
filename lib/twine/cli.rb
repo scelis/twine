@@ -139,19 +139,6 @@ module Twine
         exit false
       end
 
-      # TODO: Remove this mapping of deprecated commands some time in the future - added on 31.03.
-      deprecated_command_mappings = { 
-        'generate-string-file' => 'generate-localization-file',
-        'generate-all-string-file' => 'generate-all-localization-files',
-        'consume-string-file' => 'consume-localization-file',
-        'consume-all-string-files' => 'consume-all-localization-files'
-      }
-      mapped_command = deprecated_command_mappings[args[0]]
-      if mapped_command
-        Twine::stderr.puts "WARNING: Twine commands names have changed. `#{args[0]}` is now `#{mapped_command}`. The old command is deprecated will soon stop working. For more information please check the documentation at https://github.com/mobiata/twine"
-        args[0] = mapped_command
-      end
-
       number_of_needed_arguments = NEEDED_COMMAND_ARGUMENTS[args[0]]
       unless number_of_needed_arguments
         raise Twine::Error.new "Invalid command: #{args[0]}"
