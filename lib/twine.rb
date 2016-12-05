@@ -21,8 +21,8 @@ module Twine
   class Error < StandardError
   end
 
+  require 'twine/version'
   require 'twine/plugin'
-  require 'twine/cli'
   require 'twine/twine_file'
   require 'twine/encoding'
   require 'twine/output_processor'
@@ -37,5 +37,5 @@ module Twine
   require 'twine/formatters/jquery'
   require 'twine/formatters/tizen'
   require 'twine/runner'
-  require 'twine/version'
+  require 'twine/cli'
 end
