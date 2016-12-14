@@ -9,23 +9,17 @@ module Twine
         '.po'
       end
 
-      def can_handle_directory?(path)
-        Dir.entries(path).any? { |item| /^.+\.po$/.match(item) }
-      end
-
       def default_file_name
-        return 'strings.po'
+        'strings.po'
       end
 
       def determine_language_given_path(path)
-          path_arr = path.split(File::SEPARATOR)
-          path_arr.each do |segment|
-              match = /(..)\.po$/.match(segment)
-              if match
-                  return match[1]
-              end
-          end
-          
+        path_arr = path.split(File::SEPARATOR)
+        path_arr.each do |segment|
+          match = /(..)\.po$/.match(segment)
+          return match[1] if match
+        end
+        
         return
       end
 

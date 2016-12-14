@@ -9,12 +9,8 @@ module Twine
         '.json'
       end
 
-      def can_handle_directory?(path)
-        Dir.entries(path).any? { |item| /^.+\.json$/.match(item) }
-      end
-
       def default_file_name
-        return 'localize.json'
+        'localize.json'
       end
 
       def determine_language_given_path(path)
