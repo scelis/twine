@@ -122,6 +122,10 @@ class TestAndroidFormatter < FormatterTest
     assert_equal "value\\u0020", @formatter.format_value('value ')
   end
 
+  def test_format_value_string_placeholder
+    assert_equal "The file %s could not be found.", @formatter.format_value("The file %@ could not be found.")
+  end
+
   def test_format_value_escaping
     @escape_test_values.each do |input, expected|
       assert_equal expected, @formatter.format_value(input)

@@ -116,6 +116,9 @@ module Twine
       def format_value(value)
         value = value.dup
 
+        # convert placeholders (e.g. %@ -> %s)
+        value = convert_placeholders_from_twine_to_android(value)
+
         # capture xliff tags and replace them with a placeholder
         xliff_tags = []
         value.gsub! /<xliff:g.+?<\/xliff:g>/ do
@@ -132,9 +135,6 @@ module Twine
           xliff_tag.gsub! /(<xliff:g.*?>)(.*)(<\/xliff:g>)/ do "#{$1}#{escape_value($2)}#{$3}" end
           value.sub! 'TWINE_XLIFF_TAG_PLACEHOLDER', xliff_tag
         end
-        
-        # convert placeholders (e.g. %@ -> %s)
-        value = convert_placeholders_from_twine_to_android(value)
         
         # replace beginning and end spaces with \u0020. Otherwise Android strips them.
         value.gsub(/\A *| *\z/) { |spaces| '\u0020' * spaces.length }

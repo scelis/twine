@@ -23,9 +23,13 @@ class PlaceholderTest < TwineTest
       Twine::Placeholders.convert_placeholders_from_twine_to_android(value)
     end
 
-    def test_replaces_string_placeholder
+    def test_replaces_simple_string_placeholder
+      assert_equal "some '%s' value", to_android("some '%@' value")
+    end
+
+    def test_replaces_complicated_string_placeholder
       placeholder = placeholder('@')
-      expected = placeholder
+      expected = placeholder.dup
       expected[-1] = 's'
       assert_equal "some #{expected} value", to_android("some #{placeholder} value")
     end
