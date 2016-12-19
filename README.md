@@ -35,7 +35,7 @@ Twine supports [`printf` style placeholders][printf] with one peculiarity: `@` i
 
 Tags are used by Twine as a way to only work with a subset of your definitions at any given point in time. Each definition can be assigned zero or more tags which are separated by commas. Tags are optional, though highly recommended. You can get a list of all definitions currently missing tags by executing the [`validate-twine-file`](#validate-twine-file) command with the `--pedantic` option.
 
-When generating a localization file, you can specify which definitions should be included using the `--tags` option. Provide a comma separated list of tags to match all definitions that contain any of the tags (`--tags tag1,tag2` matches all definitions tagged with `tag1` _or_ `tag2`). Provide multiple `--tags` options to match defintions containing all specified tags (`--tags tag1 --tags tag2` matches all definitions tagged with `tag1` _and_ `tag2`). You can match definitions _not_ containing a tag by prefixing the tag with a tilde (`--tags ~tag1` matches all definitions _not_ tagged with `tag1`.). All three options are combinable.
+When generating a localization file, you can specify which definitions should be included using the `--tags` option. Provide a comma separated list of tags to match all definitions that contain any of the tags (`--tags tag1,tag2` matches all definitions tagged with `tag1` _or_ `tag2`). Provide multiple `--tags` options to match defintions containing all specified tags (`--tags tag1 --tags tag2` matches all definitions tagged with `tag1` _and_ `tag2`). You can match definitions _not_ containing a tag by prefixing the tag with a tilde (`--tags ~tag1` matches all definitions _not_ tagged with `tag1`). All three options are combinable.
 
 ### Whitespace
 
@@ -93,6 +93,7 @@ Twine currently supports the following output formats:
 * [jquery-localize Language Files][jquerylocalize] (format: jquery)
 * [Django PO Files][djangopo] (format: django)
 * [Tizen String Resources][tizen] (format: tizen)
+* [Flash/Flex Properties][flash] (format: flash)
 
 If you would like to enable Twine to create localization files in another format, read the wiki page on how to create an appropriate formatter.
 
@@ -227,4 +228,5 @@ Many thanks to all of the contributors to the Twine project, including:
 [jquerylocalize]: https://github.com/coderifous/jquery-localize
 [djangopo]: https://docs.djangoproject.com/en/dev/topics/i18n/translation/
 [tizen]: https://developer.tizen.org/documentation/articles/localization
+[flash]: http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/mx/resources/IResourceManager.html#getString()
 [printf]: https://en.wikipedia.org/wiki/Printf_format_string

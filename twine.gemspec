@@ -31,6 +31,4 @@ Gem::Specification.new do |s|
 
   It is geared toward Mac OS X, iOS, and Android developers.
 desc
-
-  s.post_install_message = "Twine command names have changed! Please check the documentation for their new names."
 end
