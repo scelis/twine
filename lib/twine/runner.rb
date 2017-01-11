@@ -53,7 +53,7 @@ module Twine
 
       raise Twine::Error.new "Nothing to generate! The resulting file would not contain any translations." unless output
 
-      IO.write(@options[:output_path], output, encoding: encoding)
+      IO.write(@options[:output_path], output, encoding: output_encoding)
     end
 
     def generate_all_localization_files
@@ -89,7 +89,7 @@ module Twine
             next
           end
 
-          IO.write(file_path, output, encoding: encoding)
+          IO.write(file_path, output, encoding: output_encoding)
         end
       else
         language_found = false
@@ -111,7 +111,7 @@ module Twine
             next
           end
 
-          IO.write(file_path, output, encoding: encoding)
+          IO.write(file_path, output, encoding: output_encoding)
         end
 
         unless language_found
@@ -119,36 +119,6 @@ module Twine
         end
       end
 
-    end
-
-    def consume_localization_file
-      lang = nil
-      if @options[:languages]
-        lang = @options[:languages][0]
-      end
-
-      read_localization_file(@options[:input_path], lang)
-      output_path = @options[:output_path] || @options[:twine_file]
-      write_twine_data(output_path)
-    end
-
-    def consume_all_localization_files
-      if !File.directory?(@options[:input_path])
-        raise Twine::Error.new("Directory does not exist: #{@options[:output_path]}")
-      end
-
-      Dir.glob(File.join(@options[:input_path], "**/*")) do |item|
-        if File.file?(item)
-          begin
-            read_localization_file(item)
-          rescue Twine::Error => e
-            Twine::stderr.puts "#{e.message}"
-          end
-        end
-      end
-
-      output_path = @options[:output_path] || @options[:twine_file]
-      write_twine_data(output_path)
     end
 
     def generate_loc_drop
@@ -177,12 +147,42 @@ module Twine
                 next
               end
               
-              IO.write(temp_path, output, encoding: encoding)
+              IO.write(temp_path, output, encoding: output_encoding)
               zipfile.add(zip_path, temp_path)
             end
           end
         end
       end
+    end
+
+    def consume_localization_file
+      lang = nil
+      if @options[:languages]
+        lang = @options[:languages][0]
+      end
+
+      read_localization_file(@options[:input_path], lang)
+      output_path = @options[:output_path] || @options[:twine_file]
+      write_twine_data(output_path)
+    end
+
+    def consume_all_localization_files
+      if !File.directory?(@options[:input_path])
+        raise Twine::Error.new("Directory does not exist: #{@options[:input_path]}")
+      end
+
+      Dir.glob(File.join(@options[:input_path], "**/*")) do |item|
+        if File.file?(item)
+          begin
+            read_localization_file(item)
+          rescue Twine::Error => e
+            Twine::stderr.puts "#{e.message}"
+          end
+        end
+      end
+
+      output_path = @options[:output_path] || @options[:twine_file]
+      write_twine_data(output_path)
     end
 
     def consume_loc_drop
@@ -260,8 +260,8 @@ module Twine
 
     private
 
-    def encoding
-      @options[:output_encoding] || 'UTF-8'
+    def output_encoding
+      @options[:encoding] || 'UTF-8'
     end
 
     def require_rubyzip
@@ -296,9 +296,9 @@ module Twine
 
       formatter, lang = prepare_read_write(path, lang)
 
-      encoding = @options[:encoding] || Twine::Encoding.encoding_for_path(path)
+      external_encoding = @options[:encoding] || Twine::Encoding.encoding_for_path(path)
 
-      IO.open(IO.sysopen(path, 'rb'), 'rb', external_encoding: encoding, internal_encoding: 'UTF-8') do |io|
+      IO.open(IO.sysopen(path, 'rb'), 'rb', external_encoding: external_encoding, internal_encoding: 'UTF-8') do |io|
         io.read(2) if Twine::Encoding.has_bom?(path)
         formatter.read(io, lang)
       end
