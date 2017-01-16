@@ -192,22 +192,22 @@ class TestGenerateAllLocalizationFilesCLI < CLITest
   end
 end
 
-class TestGenerateLocDropCLI < CLITest
+class TestGenerateLocalizationArchiveCLI < CLITest
   def parse_with(parameters)
-    parse "generate-loc-drop #{@twine_file_path} #{@output_path} --format apple " + parameters
+    parse "generate-localization-archive #{@twine_file_path} #{@output_path} --format apple " + parameters
   end
 
   def test_command
     parse_with ""
 
-    assert_equal 'generate-loc-drop', @options[:command]
+    assert_equal 'generate-localization-archive', @options[:command]
     assert_equal @twine_file_path, @options[:twine_file]
     assert_equal @output_path, @options[:output_path]
   end
 
   def test_missing_argument
     assert_raises Twine::Error do
-      parse "generate-loc-drop twine_file --format apple"
+      parse "generate-localization-archive twine_file --format apple"
     end
   end
 
@@ -228,8 +228,18 @@ class TestGenerateLocDropCLI < CLITest
 
   def test_option_format_required
     assert_raises Twine::Error do
-      parse "generate-loc-drop twine_file output"
+      parse "generate-localization-archive twine_file output"
     end
+  end
+
+  def test_supports_deprecated_command
+    parse "generate-loc-drop #{@twine_file_path} #{@output_path} --format apple"
+    assert_equal 'generate-localization-archive', @options[:command]
+  end
+
+  def test_deprecated_command_prints_warning
+    parse "generate-loc-drop #{@twine_file_path} #{@output_path} --format apple"
+    assert_match "WARNING: Twine commands names have changed.", Twine::stderr.string
   end
 end
 
@@ -307,22 +317,22 @@ class TestConsumeAllLocalizationFilesCLI < CLITest
   end
 end
 
-class TestConsumeLocDropCLI < CLITest
+class TestConsumeLocalizationArchiveCLI < CLITest
   def parse_with(parameters)
-    parse "consume-loc-drop #{@twine_file_path} #{@input_path} " + parameters
+    parse "consume-localization-archive #{@twine_file_path} #{@input_path} " + parameters
   end
 
   def test_command
     parse_with  ""
 
-    assert_equal 'consume-loc-drop', @options[:command]
+    assert_equal 'consume-localization-archive', @options[:command]
     assert_equal @twine_file_path, @options[:twine_file]
     assert_equal @input_path, @options[:input_path]
   end
 
   def test_missing_argument
     assert_raises Twine::Error do
-      parse "consume-loc-drop twine_file"
+      parse "consume-localization-archive twine_file"
     end
   end
 
@@ -340,6 +350,16 @@ class TestConsumeLocDropCLI < CLITest
     assert_option_format
     assert_option_output_path
     assert_option_tags
+  end
+
+  def test_supports_deprecated_command
+    parse "consume-loc-drop #{@twine_file_path} #{@input_path}"
+    assert_equal 'consume-localization-archive', @options[:command]
+  end
+
+  def test_deprecated_command_prints_warning
+    parse "consume-loc-drop #{@twine_file_path} #{@input_path}"
+    assert_match "WARNING: Twine commands names have changed.", Twine::stderr.string
   end
 end
 

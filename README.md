@@ -131,18 +131,18 @@ This command reads in a folder containing many localization files. These files s
 
 	$ twine consume-all-localization-files twine.txt Resources/Locales --developer-language en --consume-all --consume-comments
 
-#### `generate-loc-drop`
+#### `generate-localization-archive`
 
 This command is a convenient way to generate a zip file containing files created by the [`generate-localization-file`](#generate-localization-file) command. If a file would not contain any translated strings, it is skipped and a warning is logged to `stderr`. This command can be used to create a single zip containing a large number of translations in all languages which you can then hand off to your translation team.
 
-	$ twine generate-loc-drop /path/to/twine.txt LocDrop1.zip
-	$ twine generate-loc-drop /path/to/twine.txt LocDrop2.zip --lang en,fr,ja,ko --tags common,app1
+	$ twine generate-localization-archive /path/to/twine.txt LocDrop1.zip
+	$ twine generate-localization-archive /path/to/twine.txt LocDrop2.zip --lang en,fr,ja,ko --tags common,app1
 
-#### `consume-loc-drop`
+#### `consume-localization-archive`
 
-This command is a convenient way of taking a zip file and executing the [`consume-localization-file`](#consume-localization-file) command on each file within the archive. It is most often used to incorporate all of the changes made by the translation team after they have completed work on a localization drop.
+This command is a convenient way of taking a zip file and executing the [`consume-localization-file`](#consume-localization-file) command on each file within the archive. It is most often used to incorporate all of the changes made by the translation team after they have completed work on a localization archive.
 
-	$ twine consume-loc-drop /path/to/twine.txt LocDrop2.zip
+	$ twine consume-localization-archive /path/to/twine.txt LocDrop2.zip
 
 #### `validate-twine-file`
 

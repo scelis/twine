@@ -21,10 +21,10 @@ module Twine
         runner.consume_localization_file
       when 'consume-all-localization-files'
         runner.consume_all_localization_files
-      when 'generate-loc-drop'
-        runner.generate_loc_drop
-      when 'consume-loc-drop'
-        runner.consume_loc_drop
+      when 'generate-localization-archive'
+        runner.generate_localization_archive
+      when 'consume-localization-archive'
+        runner.consume_localization_archive
       when 'validate-twine-file'
         runner.validate_twine_file
       end
@@ -121,7 +121,7 @@ module Twine
 
     end
 
-    def generate_loc_drop
+    def generate_localization_archive
       validate_twine_file if @options[:validate]
       
       require_rubyzip
@@ -185,7 +185,7 @@ module Twine
       write_twine_data(output_path)
     end
 
-    def consume_loc_drop
+    def consume_localization_archive
       require_rubyzip
 
       if !File.file?(@options[:input_path])
@@ -268,7 +268,7 @@ module Twine
       begin
         require 'zip'
       rescue LoadError
-        raise Twine::Error.new "You must run 'gem install rubyzip' in order to create or consume localization drops."
+        raise Twine::Error.new "You must run 'gem install rubyzip' in order to create or consume localization archives."
       end
     end
 

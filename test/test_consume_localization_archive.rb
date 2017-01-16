@@ -1,11 +1,11 @@
 require 'command_test'
 
-class TestConsumeLocDrop < CommandTest
+class TestConsumeLocalizationArchive < CommandTest
   def setup
     super
 
     options = {}
-    options[:input_path] = fixture_path 'consume_loc_drop.zip'
+    options[:input_path] = fixture_path 'consume_localization_archive.zip'
     options[:output_path] = @output_path
     options[:format] = 'apple'
 
@@ -19,7 +19,7 @@ class TestConsumeLocDrop < CommandTest
   end
 
   def test_consumes_zip_file
-    @runner.consume_loc_drop
+    @runner.consume_localization_archive
 
     assert @twine_file.definitions_by_key['key1'].translations['en'], 'value1-english'
     assert @twine_file.definitions_by_key['key1'].translations['es'], 'value1-spanish'
