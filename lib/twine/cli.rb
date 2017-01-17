@@ -137,8 +137,8 @@ module Twine
         ],
         example: 'twine generate-all-localization-files twine.txt Resources/Locales/ --tags FT,FB'
       },
-      'generate-loc-drop' => {
-        description: 'Generates a zip archive of localization files in a given format. The purpose of this command is to create a very simple archive that can be handed off to a translation team. The translation team can unzip the archive, translate all of the strings in the archived files, zip everything back up, and then hand that final archive back to be consumed by the consume-loc-drop command.',
+      'generate-localization-archive' => {
+        description: 'Generates a zip archive of localization files in a given format. The purpose of this command is to create a very simple archive that can be handed off to a translation team. The translation team can unzip the archive, translate all of the strings in the archived files, zip everything back up, and then hand that final archive back to be consumed by the consume-localization-archive command.',
         arguments: [:twine_file, :output_path],
         required_options: [
           :format
@@ -151,7 +151,7 @@ module Twine
           :untagged,
           :validate
         ],
-        example: 'twine generate-loc-drop twine.txt LocDrop5.zip --tags FT,FB --format android --lang de,en,en-GB,ja,ko'
+        example: 'twine generate-localization-archive twine.txt LocDrop5.zip --tags FT,FB --format android --lang de,en,en-GB,ja,ko'
       },
       'consume-localization-file' => {
         description: 'Slurps all of the translations from a localization file into the specified TWINE_FILE. If you have some files returned to you by your translators you can use this command to incorporate all of their changes. This script will attempt to guess both the language and the format given the filename and extension. For example, "ja.strings" will assume that the file is a Japanese iOS strings file.',
@@ -187,8 +187,8 @@ module Twine
         ],
         example: 'twine consume-all-localization-files twine.txt Resources/Locales/ --developer-language en --tags DefaultTag1,DefaultTag2'
       },
-      'consume-loc-drop' => {
-        description: 'Consumes an archive of translated files. This archive should be in the same format as the one created by the generate-loc-drop command.',
+      'consume-localization-archive' => {
+        description: 'Consumes an archive of translated files. This archive should be in the same format as the one created by the generate-localization-archive command.',
         arguments: [:twine_file, :input_path],
         optional_options: [
           :consume_all,
@@ -199,7 +199,7 @@ module Twine
           :output_path,
           :tags
         ],
-        example: 'twine consume-loc-drop twine.txt LocDrop5.zip'
+        example: 'twine consume-localization-archive twine.txt LocDrop5.zip'
       },
       'validate-twine-file' => {
         description: 'Validates that the given Twine file is parseable, contains no duplicates, and that no key contains invalid characters. Exits with a non-zero exit code if those criteria are not met.',
@@ -211,9 +211,20 @@ module Twine
         example: 'twine validate-twine-file twine.txt'
       }
     }
+    DEPRECATED_COMMAND_MAPPINGS = {
+      'generate-loc-drop' => 'generate-localization-archive',   # added on 17.01.2017 - version 0.10
+      'consume-loc-drop' => 'consume-localization-archive'      # added on 17.01.2017 - version 0.10
+    }
 
     def self.parse(args)
       command = args.select { |a| a[0] != '-' }[0]
+      args = args.reject { |a| a == command }
+
+      mapped_command = DEPRECATED_COMMAND_MAPPINGS[command]
+      if mapped_command
+        Twine::stderr.puts "WARNING: Twine commands names have changed. `#{command}` is now `#{mapped_command}`. The old command is deprecated will soon stop working. For more information please check the documentation at https://github.com/mobiata/twine"
+        command = mapped_command
+      end
 
       unless COMMANDS.keys.include? command
         Twine::stderr.puts "Invalid command: #{command}" unless command.nil?
@@ -311,7 +322,6 @@ module Twine
     end
 
     def self.parse_command_options(command_name, args)
-      args.delete(command_name)
       command = COMMANDS[command_name]
 
       result = {

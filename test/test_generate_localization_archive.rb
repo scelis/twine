@@ -1,6 +1,6 @@
 require 'command_test'
 
-class TestGenerateLocDrop < CommandTest
+class TestGenerateLocalizationArchive < CommandTest
   def new_runner(twine_file = nil)
     options = {}
     options[:output_path] = @output_path
@@ -18,13 +18,13 @@ class TestGenerateLocDrop < CommandTest
   end
 
   def test_generates_zip_file
-    new_runner.generate_loc_drop
+    new_runner.generate_localization_archive
 
     assert File.exists?(@output_path), "zip file should exist"
   end
 
   def test_zip_file_structure
-    new_runner.generate_loc_drop
+    new_runner.generate_localization_archive
 
     names = []
     Zip::File.open(@output_path) do |zipfile|
@@ -39,12 +39,12 @@ class TestGenerateLocDrop < CommandTest
     formatter = prepare_mock_formatter Twine::Formatters::Apple
     formatter.expects(:format_file).twice
 
-    new_runner.generate_loc_drop
+    new_runner.generate_localization_archive
   end
 
   def test_prints_empty_file_warnings
     empty_twine_file = build_twine_file('en') {}
-    new_runner(empty_twine_file).generate_loc_drop
+    new_runner(empty_twine_file).generate_localization_archive
     assert_match "Skipping file", Twine::stderr.string
   end
 
@@ -68,12 +68,12 @@ class TestGenerateLocDrop < CommandTest
     def test_does_not_validate_twine_file
       prepare_mock_formatter Twine::Formatters::Android
 
-      new_runner(false).generate_loc_drop
+      new_runner(false).generate_localization_archive
     end
 
     def test_validates_twine_file_if_validate
       assert_raises Twine::Error do
-        new_runner(true).generate_loc_drop
+        new_runner(true).generate_localization_archive
       end
     end
   end
