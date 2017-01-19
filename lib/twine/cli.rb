@@ -306,8 +306,13 @@ module Twine
         end
       end
 
+      if IO.console
+        console_width = IO.console.winsize[1]
+      else
+        console_width = 100
+      end
       summary_width += 7  # account for description padding
-      max_description_width = IO.console.winsize[1] - summary_width
+      max_description_width = console_width - summary_width
       merged_lines.map! do |line|
         if line[0] == ' '
           line = word_wrap(line.strip, max_description_width - 2)
