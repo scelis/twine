@@ -62,6 +62,12 @@ class CLITest < TwineTest
     assert_equal random_languages.sort, @options[:languages].sort
   end
 
+  def assert_option_section
+    section = "section"
+    parse_with "--section #{section}"
+    assert_equal [section], @options[:section]
+  end
+
   def assert_option_languages
     assert_option_single_language
     assert_option_multiple_languages
