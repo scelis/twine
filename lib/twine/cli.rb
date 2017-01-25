@@ -66,6 +66,10 @@ module Twine
         DESC
         default: :all
       },
+      :section => {
+        switch: ['-i', '--section SECTION'],
+        description: 'Appy the specified section to use when consuming a localization file.'
+      },
       languages: {
         switch: ['-l', '--lang LANGUAGES', Array],
         description: 'Comma separated list of language codes to use for the specified action.'
@@ -164,7 +168,8 @@ module Twine
           :format,
           :languages,
           :output_path,
-          :tags
+          :tags,
+          :section,
         ],
         option_validation: Proc.new { |options|
           if options[:languages] and options[:languages].length > 1

@@ -27,7 +27,7 @@ module Twine
         raise NotImplementedError.new("You must implement default_file_name in your formatter class.")
       end
 
-      def set_translation_for_key(key, lang, value)
+      def set_translation_for_key(key, lang, value, section_name = 'Uncategorized')
         value = value.gsub("\n", "\\n")
 
         if @twine_file.definitions_by_key.include?(key)
@@ -39,9 +39,9 @@ module Twine
           end
         elsif @options[:consume_all]
           Twine::stderr.puts "Adding new definition '#{key}' to twine file."
-          current_section = @twine_file.sections.find { |s| s.name == 'Uncategorized' }
+          current_section = @twine_file.sections.find { |s| s.name == section_name }
           unless current_section
-            current_section = TwineSection.new('Uncategorized')
+            current_section = TwineSection.new(section_name)
             @twine_file.sections.insert(0, current_section)
           end
           current_definition = TwineDefinition.new(key)
