@@ -45,7 +45,7 @@ module Twine
       end
 
       def set_translation_for_key(key, lang, value)
-        value = CGI.unescapeHTML(value)
+        value = CGI.unescapeHTML((value.nil? || value.empty?) ? "" : value)
         value.gsub!('\\\'', '\'')
         value.gsub!('\\"', '"')
         value = convert_placeholders_from_android_to_twine(value)
