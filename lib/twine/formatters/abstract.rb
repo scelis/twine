@@ -27,7 +27,7 @@ module Twine
         raise NotImplementedError.new("You must implement default_file_name in your formatter class.")
       end
 
-      def set_translation_for_key(key, lang, value, section_name = 'Uncategorized')
+      def set_translation_for_key(key, lang, value, section_name = @options[:section] || 'Uncategorized')
         value = value.gsub("\n", "\\n")
 
         if @twine_file.definitions_by_key.include?(key)
