@@ -64,10 +64,20 @@ module Twine
             comment = content if content.length > 0 and not content.start_with?("SECTION:")
           elsif child.is_a? REXML::Element
             next unless child.name == 'string'
-
+            child_text = child.text
+            if child.has_elements? 
+              children_string = String.new
+              child.children.each do |sub|
+                next unless sub_text = sub.get_text
+                children_string += sub_text.to_s
+              end
+              child_text = children_string
+            end
+            
             key = child.attributes['name']
 
-            set_translation_for_key(key, lang, child.text)
+        
+            set_translation_for_key(key, lang, child_text)
             set_comment_for_key(key, comment) if comment
 
             comment = nil
