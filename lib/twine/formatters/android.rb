@@ -64,6 +64,8 @@ module Twine
             comment = content if content.length > 0 and not content.start_with?("SECTION:")
           elsif child.is_a? REXML::Element
             next unless child.name == 'string'
+            next if child.attributes['translatable'].to_s == 'false'
+            
             child_text = child.text
             if child.has_elements? 
               children_string = String.new
