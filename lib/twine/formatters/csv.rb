@@ -46,8 +46,8 @@ module Twine
       end
 
       def format_section(section, lang)
-        # removes newline above section
-        super.strip
+        # removes empty lines
+        super.gsub(/^$\n/, '')
       end
 
       def format_definition(definition, lang)
@@ -55,7 +55,7 @@ module Twine
         value = definition.translation_for_lang(lang)
         comment = definition.comment
 
-        ::CSV.generate_line([key, value, comment], row_sep: '', force_quotes: true)
+        ::CSV.generate_line([key, value, comment], row_sep: '')
       end
     end
   end

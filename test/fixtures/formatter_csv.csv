@@ -1,5 +1,5 @@
 Key,Value,Comment
-"key1","value1-english","comment key1"
-"key2","value2-english",""
-"key3","value3-english",""
-"key4","value4-english","comment key4"
+key1,value1-english,comment key1
+key2,value2-english,
+key3,value3-english,
+key4,value4-english,comment key4
