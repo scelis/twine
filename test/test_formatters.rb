@@ -229,6 +229,25 @@ class TestAppleFormatter < FormatterTest
   end
 end
 
+class TestCSVFormatter < FormatterTest
+
+  def setup
+    super Twine::Formatters::CSV
+  end
+
+  def test_read_format
+    @formatter.read content_io('formatter_csv.csv'), 'en'
+
+    assert_translations_read_correctly
+  end
+
+  def test_format_file
+    formatter = Twine::Formatters::CSV.new
+    formatter.twine_file = @twine_file
+    assert_equal content('formatter_csv.csv'), formatter.format_file('en')
+  end
+end
+
 class TestJQueryFormatter < FormatterTest
 
   def setup
