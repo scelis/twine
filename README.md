@@ -94,6 +94,7 @@ Twine currently supports the following output formats:
 * [Django PO Files][djangopo] (format: django)
 * [Tizen String Resources][tizen] (format: tizen)
 * [Flash/Flex Properties][flash] (format: flash)
+* [Comma-separated values (CSV)][csv] (format: csv)
 
 If you would like to enable Twine to create localization files in another format, read the wiki page on how to create an appropriate formatter.
 
@@ -229,4 +230,5 @@ Many thanks to all of the contributors to the Twine project, including:
 [djangopo]: https://docs.djangoproject.com/en/dev/topics/i18n/translation/
 [tizen]: https://developer.tizen.org/documentation/articles/localization
 [flash]: http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/mx/resources/IResourceManager.html#getString()
+[csv]: http://en.wikipedia.org/wiki/Comma-separated_values
 [printf]: https://en.wikipedia.org/wiki/Printf_format_string
