@@ -1,5 +1,7 @@
 # Twine
 
+[![Continuous Integration by CircleCI](https://circleci.com/gh/teespring/twine.svg?style=shield)](https://circleci.com/gh/teespring/twine)
+
 Twine is a command line tool for managing your strings and their translations. These are all stored in a master text file and then Twine uses this file to import and export localization files in a variety of types, including iOS and Mac OS X `.strings` files, Android `.xml` files, gettext `.po` files, and [jquery-localize][jquerylocalize] `.json` files. This allows individuals and companies to easily share translations across multiple projects, as well as export localization files in any format the user wants.
 
 ## Install
