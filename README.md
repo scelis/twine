@@ -6,22 +6,9 @@ Twine is a command line tool for managing your strings and their translations. T
 
 ## Install
 
-### As a Gem
-
 Twine is most easily installed as a Gem.
 
 	$ gem install twine
-
-### From Source
-
-You can also run Twine directly from source. However, it requires [rubyzip][rubyzip] in order to create and read standard zip files.
-
-	$ gem install rubyzip
-	$ git clone git://github.com/mobiata/twine.git
-	$ cd twine
-	$ ./twine --help
-
-Make sure you run the `twine` executable at the root of the project as it properly sets up your Ruby library path. The `bin/twine` executable does not.
 
 ## Twine File Format
 
@@ -50,39 +37,39 @@ If you want a definition to inherit the values of another definition, you can us
 ### Example
 
 ```ini
-	[[General]]
-		[yes]
-			en = Yes
-			es = Sí
-			fr = Oui
-			ja = はい
-		[no]
-			en = No
-			fr = Non
-			ja = いいえ
+[[General]]
+	[yes]
+		en = Yes
+		es = Sí
+		fr = Oui
+		ja = はい
+	[no]
+		en = No
+		fr = Non
+		ja = いいえ
 
-	[[Errors]]
-		[path_not_found_error]
-			en = The file '%@' could not be found.
-			tags = app1,app6
-			comment = An error describing when a path on the filesystem could not be found.
-		[network_unavailable_error]
-			en = The network is currently unavailable.
-			tags = app1
-			comment = An error describing when the device can not connect to the internet.
-		[dismiss_error]
-			ref = yes
-			en = Dismiss
+[[Errors]]
+	[path_not_found_error]
+		en = The file '%@' could not be found.
+		tags = app1,app6
+		comment = An error describing when a path on the filesystem could not be found.
+	[network_unavailable_error]
+		en = The network is currently unavailable.
+		tags = app1
+		comment = An error describing when the device can not connect to the internet.
+	[dismiss_error]
+		ref = yes
+		en = Dismiss
 
-	[[Escaping Example]]
-		[list_item_separator]
-			en = `, `
-			tags = mytag
-			comment = A string that should be placed between multiple items in a list. For example: Red, Green, Blue
-		[grave_accent_quoted_string]
-			en = ``%@``
-			tags = myothertag
-			comment = This string will evaluate to `%@`.
+[[Escaping Example]]
+	[list_item_separator]
+		en = `, `
+		tags = mytag
+		comment = A string that should be placed between multiple items in a list. For example: Red, Green, Blue
+	[grave_accent_quoted_string]
+		en = ``%@``
+		tags = myothertag
+		comment = This string will evaluate to `%@`.
 ```
 
 ## Supported Output Formats
@@ -184,11 +171,11 @@ Now, whenever you build your application, Xcode will automatically invoke Twine 
 Add the following task at the top level in app/build.gradle:
 ```
 task generateLocalizations {
-    String script = 'if hash twine 2>/dev/null; then twine generate-localization-file twine.txt ./src/main/res/values/generated_strings.xml; fi'
-    exec {
-        executable "sh"
-        args '-c', script
-    }
+	String script = 'if hash twine 2>/dev/null; then twine generate-localization-file twine.txt ./src/main/res/values/generated_strings.xml; fi'
+	exec {
+		executable "sh"
+		args '-c', script
+	}
 }
 ```
 
