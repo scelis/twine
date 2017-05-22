@@ -20,11 +20,15 @@ class CLITest < TwineTest
   def assert_option_consume_all
     parse_with '--consume-all'
     assert @options[:consume_all]
+    parse_with '--no-consume-all'
+    refute @options[:consume_all]
   end
 
   def assert_option_consume_comments
     parse_with '--consume-comments'
     assert @options[:consume_comments]
+    parse_with '--no-consume-comments'
+    refute @options[:consume_comments]
   end
 
   def assert_option_developer_language
@@ -99,11 +103,15 @@ class CLITest < TwineTest
   def assert_option_untagged
     parse_with '--untagged'
     assert @options[:untagged]
+    parse_with '--no-untagged'
+    refute @options[:untagged]
   end
 
   def assert_option_validate
     parse_with "--validate"
     assert @options[:validate]
+    parse_with "--no-validate"
+    refute @options[:validate]
   end
 end
 
@@ -183,6 +191,8 @@ class TestGenerateAllLocalizationFilesCLI < CLITest
   def test_option_create_folders
     parse_with '--create-folders'
     assert @options[:create_folders]
+    parse_with '--no-create-folders'
+    refute @options[:create_folders]
   end
 
   def test_option_file_name
@@ -394,5 +404,7 @@ class TestValidateTwineFileCLI < CLITest
   def test_option_pedantic
     parse "validate-twine-file #{@twine_file_path} --pedantic"
     assert @options[:pedantic]
+    parse "validate-twine-file #{@twine_file_path} --no-pedantic"
+    refute @options[:pedantic]
   end
 end

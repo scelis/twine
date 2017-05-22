@@ -352,8 +352,6 @@ module Twine
             parser.define(*option[:switch]) do |value|
               if option[:repeated]
                 result[option_name] = (result[option_name] || []) << value
-              elsif option[:boolean]
-                result[option_name] = true
               else
                 result[option_name] = value
               end
