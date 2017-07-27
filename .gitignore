@@ -1,3 +1,4 @@
 *.gem
 .idea/
 *.lock
+.ruby-version
