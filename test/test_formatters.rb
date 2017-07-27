@@ -267,7 +267,6 @@ class TestJQueryFormatter < FormatterTest
 end
 
 class TestGettextFormatter < FormatterTest
-
   def setup
     super Twine::Formatters::Gettext
   end
@@ -290,6 +289,10 @@ class TestGettextFormatter < FormatterTest
     assert_equal content('formatter_gettext.po'), formatter.format_file('en')
   end
 
+  def test_deducts_language_and_region
+    language = "en-GB"
+    assert_equal language, @formatter.determine_language_given_path("#{language}.po")
+  end
 end
 
 class TestTizenFormatter < FormatterTest
@@ -328,6 +331,11 @@ class TestDjangoFormatter < FormatterTest
     formatter = Twine::Formatters::Django.new
     formatter.twine_file = @twine_file
     assert_equal content('formatter_django.po'), formatter.format_file('en')
+  end
+
+  def test_deducts_language_and_region
+    language = "en-GB"
+    assert_equal language, @formatter.determine_language_given_path("#{language}.po")
   end
 end
 
