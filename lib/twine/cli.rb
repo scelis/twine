@@ -22,7 +22,7 @@ module Twine
       create_folders: {
         switch: ['-r', '--[no-]create-folders'],
         description: <<-DESC,
-          This flag may be used to create output folders for all languages, if they  don't exist yet.
+          This flag may be used to create output folders for all languages, if they don't exist yet.
           As a result all languages will be exported, not only the ones where an output folder already exists.
         DESC
         boolean: true
@@ -222,7 +222,7 @@ module Twine
 
       mapped_command = DEPRECATED_COMMAND_MAPPINGS[command]
       if mapped_command
-        Twine::stderr.puts "WARNING: Twine commands names have changed. `#{command}` is now `#{mapped_command}`. The old command is deprecated will soon stop working. For more information please check the documentation at https://github.com/mobiata/twine"
+        Twine::stderr.puts "WARNING: Twine commands names have changed. `#{command}` is now `#{mapped_command}`. The old command is deprecated and will soon stop working. For more information please check the documentation at https://github.com/mobiata/twine"
         command = mapped_command
       end
 
