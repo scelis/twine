@@ -18,10 +18,8 @@ module Twine
       def determine_language_given_path(path)
         path_arr = path.split(File::SEPARATOR)
         path_arr.each do |segment|
-          match = /(..)\.po$/.match(segment)
-          if match
-            return match[1]
-          end
+          match = /([a-z]{2}(-[A-Za-z]{2})?)\.po$/.match(segment)
+          return match[1] if match
         end
 
         return
