@@ -41,7 +41,7 @@ module Twine
       end
 
       def output_path_for_language(lang)
-          "values-#{lang}".gsub(/-(\p{Lu})/, '-r\1')
+        "values-#{lang}".gsub(/-(\p{Lu})/, '-r\1')
       end
 
       def set_translation_for_key(key, lang, value)
