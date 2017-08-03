@@ -32,7 +32,7 @@ module Twine
             # The language is defined by a two-letter ISO 639-1 language code, optionally followed by a two letter ISO 3166-1-alpha-2 region code (preceded by lowercase "r").
             # see http://developer.android.com/guide/topics/resources/providing-resources.html#AlternativeResources
             match = /^values-([a-z]{2}(-r[a-z]{2})?)$/i.match(segment)
-            
+
             return match[1].sub('-r', '-') if match
           end
         end
@@ -41,7 +41,7 @@ module Twine
       end
 
       def output_path_for_language(lang)
-        "values-#{lang}"
+          "values-#{lang}".gsub(/-(\p{Lu})/, '-r\1')
       end
 
       def set_translation_for_key(key, lang, value)
