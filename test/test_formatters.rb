@@ -157,6 +157,10 @@ class TestAndroidFormatter < FormatterTest
   def test_output_path_is_prefixed
     assert_equal 'values-en', @formatter.output_path_for_language('en')
   end
+
+  def test_output_path_with_region
+    assert_equal 'values-en-rGB', @formatter.output_path_for_language('en-GB')
+  end
 end
 
 class TestAppleFormatter < FormatterTest
