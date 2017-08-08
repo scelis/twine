@@ -41,6 +41,24 @@ class TestGenerateLocalizationFile < CommandTest
     new_runner('fr', 'fr.po').generate_localization_file
   end
 
+  def test_deducts_django_format_from_output_path
+    prepare_mock_format_file_formatter Twine::Formatters::Django
+
+    new_runner('fr', 'fr.po').generate_localization_file
+  end
+
+  def test_returns_error_for_ambiguous_output_path
+    # both Gettext and Django use .po
+    gettext_formatter = prepare_mock_formatter(Twine::Formatters::Gettext)
+    gettext_formatter.stubs(:format_file).returns(true)
+    django_formatter = prepare_mock_formatter(Twine::Formatters::Django, false)
+    django_formatter.stubs(:format_file).returns(true)
+
+    assert_raises Twine::Error do
+      new_runner('fr', 'fr.po').generate_localization_file
+    end
+  end
+
   def test_deducts_language_from_output_path
     random_language = KNOWN_LANGUAGES.sample
     formatter = prepare_mock_formatter Twine::Formatters::Android
