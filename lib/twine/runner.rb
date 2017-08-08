@@ -282,8 +282,13 @@ module Twine
     end
 
     def find_formatter(&block)
-      formatter = Formatters.formatters.find &block
-      return nil unless formatter
+      formatters = Formatters.formatters.select &block
+      if formatters.empty?
+        return nil
+      elsif formatters.size > 1
+        raise Twine::Error.new("Unable to determine format. Candidates are: #{formatters.map(&:format_name).join(', ')}. Please specify the format you want using '--format'")
+      end
+      formatter = formatters.first
       formatter.twine_file = @twine_file
       formatter.options = @options
       formatter
