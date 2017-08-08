@@ -30,7 +30,7 @@ class TwineTest < Minitest::Test
   end
 
   def execute(command)
-    command += "  -o #{@output_path}"
+    command += " -o #{@output_path}"
     Twine::Runner.run(command.split(" "))
   end
 
