@@ -78,6 +78,7 @@ Twine currently supports the following output formats:
 
 * [iOS and OS X String Resources][applestrings] (format: apple)
 * [Android String Resources][androidstrings] (format: android)
+    * Supports [basic styling][androidstyling] with \<b\>, \<i\>, \<u\> and \<a\> links. These tags will *not* be escaped. Use [`getText()`](https://developer.android.com/reference/android/content/res/Resources.html#getText(int)) to read these strings. Also tags inside `<![CDATA[` won't be escaped. See [\#212](https://github.com/scelis/twine/issues/212) for details.
 * [Gettext PO Files][gettextpo] (format: gettext)
 * [jquery-localize Language Files][jquerylocalize] (format: jquery)
 * [Django PO Files][djangopo] (format: django)
@@ -212,6 +213,7 @@ Many thanks to all of the contributors to the Twine project, including:
 [INI]: http://en.wikipedia.org/wiki/INI_file
 [applestrings]: http://developer.apple.com/documentation/Cocoa/Conceptual/LoadingResources/Strings/Strings.html
 [androidstrings]: http://developer.android.com/guide/topics/resources/string-resource.html
+[androidstyling]: http://developer.android.com/guide/topics/resources/string-resource.html#FormattingAndStyling
 [gettextpo]: http://www.gnu.org/savannah-checkouts/gnu/gettext/manual/html_node/PO-Files.html
 [jquerylocalize]: https://github.com/coderifous/jquery-localize
 [djangopo]: https://docs.djangoproject.com/en/dev/topics/i18n/translation/
