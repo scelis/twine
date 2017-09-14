@@ -7,6 +7,8 @@ module Twine
   class Runner
     def self.run(args)
       options = CLI.parse(args)
+
+      return unless options
       
       twine_file = TwineFile.new
       twine_file.read options[:twine_file]

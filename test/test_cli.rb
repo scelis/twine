@@ -17,6 +17,12 @@ class CLITest < TwineTest
     raise "you need to implement `parse_with` in your test class"
   end
 
+  def assert_help
+    parse_with '--help'
+    assert_equal @options, false
+    assert_match /Usage: twine.*Examples:/m, Twine::stdout.string
+  end
+
   def assert_option_consume_all
     parse_with '--consume-all'
     assert @options[:consume_all]
@@ -115,6 +121,26 @@ class CLITest < TwineTest
   end
 end
 
+class TestCLI < CLITest
+  def test_version
+    parse "--version"
+
+    assert_equal @options, false
+    assert_equal "Twine version #{Twine::VERSION}\n", Twine::stdout.string
+  end
+
+  def test_help
+    parse ""
+    assert_match 'Usage: twine', Twine::stdout.string
+  end
+
+  def test_invalid_command
+    assert_raises Twine::Error do
+      parse "not a command"
+    end
+  end
+end
+
 class TestGenerateLocalizationFileCLI < CLITest
   def parse_with(parameters)
     parse "generate-localization-file #{@twine_file_path} #{@output_path} " + parameters
@@ -141,6 +167,7 @@ class TestGenerateLocalizationFileCLI < CLITest
   end
 
   def test_options
+    assert_help
     assert_option_developer_language
     assert_option_encoding
     assert_option_format
@@ -179,6 +206,7 @@ class TestGenerateAllLocalizationFilesCLI < CLITest
   end
 
   def test_options
+    assert_help
     assert_option_developer_language
     assert_option_encoding
     assert_option_format
@@ -228,6 +256,7 @@ class TestGenerateLocalizationArchiveCLI < CLITest
   end
 
   def test_options
+    assert_help
     assert_option_developer_language
     assert_option_encoding
     assert_option_include
@@ -279,6 +308,7 @@ class TestConsumeLocalizationFileCLI < CLITest
   end
 
   def test_options
+    assert_help
     assert_option_consume_all
     assert_option_consume_comments
     assert_option_developer_language
@@ -317,6 +347,7 @@ class TestConsumeAllLocalizationFilesCLI < CLITest
   end
 
   def test_options
+    assert_help
     assert_option_consume_all
     assert_option_consume_comments
     assert_option_developer_language
@@ -353,6 +384,7 @@ class TestConsumeLocalizationArchiveCLI < CLITest
   end
 
   def test_options
+    assert_help
     assert_option_consume_all
     assert_option_consume_comments
     assert_option_developer_language
@@ -398,6 +430,7 @@ class TestValidateTwineFileCLI < CLITest
   end
 
   def test_options
+    assert_help
     assert_option_developer_language
   end
 

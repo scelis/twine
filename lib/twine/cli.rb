@@ -220,21 +220,25 @@ module Twine
       command = args.select { |a| a[0] != '-' }[0]
       args = args.reject { |a| a == command }
 
+      if args.any? { |a| a == '--version' }
+        Twine::stdout.puts "Twine version #{Twine::VERSION}"
+        return false
+      end
+
       mapped_command = DEPRECATED_COMMAND_MAPPINGS[command]
       if mapped_command
         Twine::stderr.puts "WARNING: Twine commands names have changed. `#{command}` is now `#{mapped_command}`. The old command is deprecated and will soon stop working. For more information please check the documentation at https://github.com/mobiata/twine"
         command = mapped_command
       end
 
-      unless COMMANDS.keys.include? command
-        Twine::stderr.puts "Invalid command: #{command}" unless command.nil?
+      if command.nil?
         print_help(args)
-        abort
+        return false
+      elsif not COMMANDS.keys.include? command
+        raise Twine::Error.new "Invalid command: #{command}"
       end
 
-      options = parse_command_options(command, args)
-
-      return options
+      parse_command_options(command, args)
     end
 
     private
@@ -361,8 +365,8 @@ module Twine
       end
 
       parser.define('-h', '--help', 'Show this message.') do
-        puts parser.help
-        exit
+        Twine::stdout.puts parser.help
+        return false
       end
 
       parser.separator ''
