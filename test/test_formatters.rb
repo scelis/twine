@@ -45,8 +45,27 @@ class TestAndroidFormatter < FormatterTest
       'this < that'               => 'this &lt; that',
       "it's complicated"          => "it\\'s complicated",
       'a "good" way'              => 'a \"good\" way',
-      '<b>bold</b>'               => '&lt;b>bold&lt;/b>',
-      '<a href="target">link</a>' => '&lt;a href=\"target\">link&lt;/a>',
+
+      '<b>bold</b>'               => '<b>bold</b>',
+      '<i>italic</i>'             => '<i>italic</i>',
+      '<u>underline</u>'          => '<u>underline</u>',
+
+      '<span>inline</span>'       => '&lt;span>inline&lt;/span>',
+      '<p>paragraph</p>'          => '&lt;p>paragraph&lt;/p>',
+
+      '<a href="target">link</a>'     => '<a href="target">link</a>',
+      '<a href="target">"link"</a>'   => '<a href="target">\"link\"</a>',
+      '<a href="target"></a>"out"'    => '<a href="target"></a>\"out\"',
+      '<a href="http://url.com?param=1&param2=3&param3=%20">link</a>'   =>   '<a href="http://url.com?param=1&param2=3&param3=%20">link</a>',
+
+      '<p>escaped</p><![CDATA[]]>'    => '&lt;p>escaped&lt;/p><![CDATA[]]>',
+      '<![CDATA[]]><p>escaped</p>'    => '<![CDATA[]]>&lt;p>escaped&lt;/p>',
+      '<![CDATA[<p>unescaped</p>]]>'  => '<![CDATA[<p>unescaped</p>]]>',
+      '<![CDATA[]]><![CDATA[<p>unescaped</p>]]>'  => '<![CDATA[]]><![CDATA[<p>unescaped</p>]]>',
+
+      '<![CDATA[&]]>'  => '<![CDATA[&]]>',
+      '<![CDATA[\']]>' => '<![CDATA[\']]>',
+      '<![CDATA["]]>'  => '<![CDATA["]]>',
 
       '<xliff:g></xliff:g>' => '<xliff:g></xliff:g>',
       '<xliff:g>untouched</xliff:g>' => '<xliff:g>untouched</xliff:g>',

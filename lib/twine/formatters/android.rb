@@ -99,12 +99,28 @@ module Twine
         "\t<string name=\"%{key}\">%{value}</string>"
       end
 
+      def gsub_unless(text, pattern, replacement)
+        text.gsub(pattern) do |match|
+          match_start_position = Regexp.last_match.offset(0)[0]
+          yield(text[0, match_start_position]) ? match : replacement
+        end
+      end
+
+      # http://developer.android.com/guide/topics/resources/string-resource.html#FormattingAndStyling
       def escape_value(value)
-        # escape double and single quotes, & signs and tags
-        value = escape_quotes(value)
-        value.gsub!("'", "\\\\'")
-        value.gsub!(/&/, '&amp;')
-        value.gsub!('<', '&lt;')
+        inside_cdata = /<\!\[CDATA\[((?!\]\]>).)*$/       # opening CDATA tag ('<![CDATA[') not followed by a closing tag (']]>')
+        inside_opening_anchor_tag = /<a\s?((?!>).)*$/     # anchor tag start ('<a ') not followed by a '>'
+
+        # escape double and single quotes and & signs
+        value = gsub_unless(value, '"', '\\"') { |substring| substring =~ inside_cdata || substring =~ inside_opening_anchor_tag }
+        value = gsub_unless(value, "'", "\\'") { |substring| substring =~ inside_cdata }
+        value = gsub_unless(value, /&/, '&amp;') { |substring| substring =~ inside_cdata || substring =~ inside_opening_anchor_tag }
+
+        # escape opening angle brackes unless it's a supported styling tag
+        # https://github.com/scelis/twine/issues/212
+        # https://stackoverflow.com/questions/3235131/#18199543
+        angle_bracket = /<(?!(\/?(b|u|i|a|\!\[CDATA)))/   # matches all `<` but <b>, <u>, <i>, <a> and <![CDATA
+        value = gsub_unless(value, angle_bracket, '&lt;') { |substring| substring =~ inside_cdata }
 
         # escape non resource identifier @ signs (http://developer.android.com/guide/topics/resources/accessing-resources.html#ResourcesFromXml)
         resource_identifier_regex = /@(?!([a-z\.]+:)?[a-z+]+\/[a-zA-Z_]+)/   # @[<package_name>:]<resource_type>/<resource_name>
