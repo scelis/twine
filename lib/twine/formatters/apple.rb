@@ -25,6 +25,7 @@ module Twine
             if match[1] != "Base"
               return match[1]
             end
+            return @options[:developer_language]
           end
         end
 
