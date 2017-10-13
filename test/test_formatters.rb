@@ -19,7 +19,7 @@ class FormatterTest < TwineTest
     @empty_twine_file = Twine::TwineFile.new
     @formatter = formatter_class.new
     @formatter.twine_file = @empty_twine_file
-    @formatter.options = { consume_all: true, consume_comments: true, developer_language: 'en' }
+    @formatter.options = { consume_all: true, consume_comments: true }
   end
 
   def assert_translations_read_correctly
@@ -199,7 +199,7 @@ class TestAppleFormatter < FormatterTest
   end
 
   def test_deducts_base_language_from_resource_folder
-    #from options developer_language = 'en'
+    @formatter.options = { consume_all: true, consume_comments: true, developer_language: 'en' }
     assert_equal 'en', @formatter.determine_language_given_path('Base.lproj/Localizations.strings')
   end
 
