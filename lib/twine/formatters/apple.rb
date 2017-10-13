@@ -22,7 +22,9 @@ module Twine
         path_arr.each do |segment|
           match = /^(.+)\.lproj$/.match(segment)
           if match
-            if match[1] != "Base"
+            if match[1] == "Base"
+              return @options[:developer_language]
+            else
               return match[1]
             end
           end

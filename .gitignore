@@ -2,3 +2,4 @@
 .idea/
 *.lock
 .ruby-version
+.DS_Store
