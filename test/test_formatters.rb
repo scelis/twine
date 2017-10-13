@@ -19,7 +19,7 @@ class FormatterTest < TwineTest
     @empty_twine_file = Twine::TwineFile.new
     @formatter = formatter_class.new
     @formatter.twine_file = @empty_twine_file
-    @formatter.options = { consume_all: true, consume_comments: true }
+    @formatter.options = { consume_all: true, consume_comments: true, developer_language: 'en' }
   end
 
   def assert_translations_read_correctly
@@ -39,7 +39,7 @@ end
 class TestAndroidFormatter < FormatterTest
   def setup
     super Twine::Formatters::Android
-    
+
     @escape_test_values = {
       'this & that'               => 'this &amp; that',
       'this < that'               => 'this &lt; that',
@@ -191,6 +191,16 @@ class TestAppleFormatter < FormatterTest
     @formatter.read content_io('formatter_apple.strings'), 'en'
 
     assert_file_contents_read_correctly
+  end
+
+  def test_deducts_language_from_resource_folder
+    language = %w(en de fr).sample
+    assert_equal language, @formatter.determine_language_given_path("#{language}.lproj/Localizable.strings")
+  end
+
+  def test_deducts_base_language_from_resource_folder
+    #from options developer_language = 'en'
+    assert_equal 'en', @formatter.determine_language_given_path('Base.lproj/Localizations.strings')
   end
 
   def test_reads_quoted_keys
