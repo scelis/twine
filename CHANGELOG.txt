@@ -7,6 +7,7 @@
 - Bugfix: .po formatter language detection (#199)
 - Add 'q' placeholder for android strings (#194)
 - Bugfix: Boolean command line parameters are always true (#191)
+- Feature: In the Apple formatter, use developer language for the base localization (#219)
 
 # 0.10.1
 - Bugfix: Xcode integration (#184)
