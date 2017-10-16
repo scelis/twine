@@ -1,4 +1,4 @@
-# Upcoming Version
+# 1.0
 
 - Feature: Fail twine commands if there's more than one formatter candidate (#201)
 - Feature: In the Apple formatter, use developer language for the base localization (#219)
