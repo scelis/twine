@@ -69,8 +69,11 @@ module Twine
         end
       end
 
-      formatter_for_directory = find_formatter { |f| f.can_handle_directory?(@options[:output_path]) }
-      formatter = formatter_for_format(@options[:format]) || formatter_for_directory
+      if @options[:format]
+        formatter = formatter_for_format(@options[:format])
+      else
+        formatter = find_formatter { |f| f.can_handle_directory?(@options[:output_path]) }
+      end
       
       unless formatter
         raise Twine::Error.new "Could not determine format given the contents of #{@options[:output_path]}"
@@ -312,8 +315,11 @@ module Twine
     end
 
     def prepare_read_write(path, lang)
-      formatter_for_path = find_formatter { |f| f.extension == File.extname(path) }
-      formatter = formatter_for_format(@options[:format]) || formatter_for_path
+      if @options[:format]
+        formatter = formatter_for_format(@options[:format])
+      else
+        formatter = find_formatter { |f| f.extension == File.extname(path) }
+      end
       
       unless formatter
         raise Twine::Error.new "Unable to determine format of #{path}"
