@@ -1,4 +1,8 @@
-# 1.0
+# 1.0.1 (2017-10-17)
+
+- Bugfix: Always prefer the passed-in formatter (#221)
+
+# 1.0 (2017-10-16)
 
 - Feature: Fail twine commands if there's more than one formatter candidate (#201)
 - Feature: In the Apple formatter, use developer language for the base localization (#219)
@@ -10,6 +14,6 @@
 - Bugfix: Add 'q' placeholder for android strings (#194)
 - Bugfix: Boolean command line parameters are always true (#191)
 
-# 0.10.1
+# 0.10.1 (2017-01-19)
 
 - Bugfix: Xcode integration (#184)
