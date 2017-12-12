@@ -1,11 +1,13 @@
 require 'command_test'
 
 class TestGenerateAllLocalizationFiles < CommandTest
-  def new_runner(create_folders, twine_file = nil)
-    options = {}
-    options[:output_path] = @output_dir
-    options[:format] = 'apple'
-    options[:create_folders] = create_folders
+  def new_runner(create_folders, twine_file = nil, options = {})
+    default_options = {}
+    default_options[:output_path] = @output_dir
+    default_options[:format] = 'apple'
+    default_options[:create_folders] = create_folders
+
+    options = default_options.merge options
 
     unless twine_file
       twine_file = build_twine_file 'en', 'es' do
@@ -16,6 +18,32 @@ class TestGenerateAllLocalizationFiles < CommandTest
     end
 
     Twine::Runner.new(options, twine_file)
+  end
+
+  class TestFormatterSelection < TestGenerateAllLocalizationFiles
+    def setup
+      super
+      Dir.mkdir File.join @output_dir, 'values-en'
+
+      # both Android and Tizen can handle folders containing `values-en`
+      android_formatter = prepare_mock_formatter(Twine::Formatters::Android)
+      tizen_formatter = prepare_mock_formatter(Twine::Formatters::Tizen, false)
+    end
+
+    def new_runner(options = {})
+      super(true, nil, options)
+    end
+
+    def test_returns_error_for_ambiguous_output_path
+      assert_raises Twine::Error do
+        new_runner(format: nil).generate_all_localization_files
+      end
+    end
+
+    def test_uses_specified_formatter_to_resolve_ambiguity
+      # implicit assert that this call doesn't raise an exception
+      new_runner(format: 'android').generate_all_localization_files
+    end
   end
 
   class TestDoNotCreateFolders < TestGenerateAllLocalizationFiles

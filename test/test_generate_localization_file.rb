@@ -1,8 +1,7 @@
 require 'command_test'
 
 class TestGenerateLocalizationFile < CommandTest
-  def new_runner(language, file)
-    options = {}
+  def new_runner(language, file, options = {})
     options[:output_path] = File.join(@output_dir, file) if file
     options[:languages] = language if language
 
@@ -57,6 +56,17 @@ class TestGenerateLocalizationFile < CommandTest
     assert_raises Twine::Error do
       new_runner('fr', 'fr.po').generate_localization_file
     end
+  end
+
+  def test_uses_specified_formatter_to_resolve_ambiguity
+    # both Android and Tizen use .xml
+    android_formatter = prepare_mock_formatter(Twine::Formatters::Android)
+    android_formatter.stubs(:format_file).returns(true)
+    tizen_formatter = prepare_mock_formatter(Twine::Formatters::Tizen, false)
+    tizen_formatter.stubs(:format_file).returns(true)
+
+    # implicit assert that this call doesn't raise an exception
+    new_runner('fr', 'fr.xml', format: 'android').generate_localization_file
   end
 
   def test_deducts_language_from_output_path
