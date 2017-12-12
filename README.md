@@ -211,7 +211,7 @@ Many thanks to all of the contributors to the Twine project, including:
 [rubyzip]: http://rubygems.org/gems/rubyzip
 [git]: http://git-scm.org/
 [INI]: http://en.wikipedia.org/wiki/INI_file
-[applestrings]: http://developer.apple.com/documentation/Cocoa/Conceptual/LoadingResources/Strings/Strings.html
+[applestrings]: https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/LoadingResources/Strings/Strings.html
 [androidstrings]: http://developer.android.com/guide/topics/resources/string-resource.html
 [androidstyling]: http://developer.android.com/guide/topics/resources/string-resource.html#FormattingAndStyling
 [gettextpo]: http://www.gnu.org/savannah-checkouts/gnu/gettext/manual/html_node/PO-Files.html
