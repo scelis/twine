@@ -188,20 +188,20 @@ module Twine
           section.definitions.each do |definition|
             f.puts "\t[#{definition.key}]"
 
-            value = write_value(definition, dev_lang, f)
-            if !value && !definition.reference_key
-              puts "Warning: #{definition.key} does not exist in developer language '#{dev_lang}'"
-            end
-            
-            if definition.reference_key
-              f.puts "\t\tref = #{definition.reference_key}"
+            if definition.raw_comment and definition.raw_comment.length > 0
+              f.puts "\t\tcomment = #{definition.raw_comment}"
             end
             if definition.tags && definition.tags.length > 0
               tag_str = definition.tags.join(',')
               f.puts "\t\ttags = #{tag_str}"
             end
-            if definition.raw_comment and definition.raw_comment.length > 0
-              f.puts "\t\tcomment = #{definition.raw_comment}"
+            if definition.reference_key
+              f.puts "\t\tref = #{definition.reference_key}"
+            end
+
+            value = write_value(definition, dev_lang, f)
+            if !value && !definition.reference_key
+              puts "Warning: #{definition.key} does not exist in developer language '#{dev_lang}'"
             end
             @language_codes[1..-1].each do |lang|
               write_value(definition, lang, f)

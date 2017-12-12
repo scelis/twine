@@ -1,3 +1,7 @@
+# next version
+
+- Feature: Definitions in Twine file are ordered comment, tags, reference key, developer language translation, other translations (#227)
+
 # 1.0.1 (2017-10-17)
 
 - Bugfix: Always prefer the passed-in formatter (#221)
