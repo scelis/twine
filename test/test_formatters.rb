@@ -50,6 +50,10 @@ class TestAndroidFormatter < FormatterTest
       '<i>italic</i>'             => '<i>italic</i>',
       '<u>underline</u>'          => '<u>underline</u>',
 
+      '<b>%@</b>'                 => '&lt;b>%s&lt;/b>',
+      '<i>%@</i>'                 => '&lt;i>%s&lt;/i>',
+      '<u>%@</u>'                 => '&lt;u>%s&lt;/u>',
+
       '<span>inline</span>'       => '&lt;span>inline&lt;/span>',
       '<p>paragraph</p>'          => '&lt;p>paragraph&lt;/p>',
 
@@ -58,9 +62,10 @@ class TestAndroidFormatter < FormatterTest
       '<a href="target"></a>"out"'    => '<a href="target"></a>\"out\"',
       '<a href="http://url.com?param=1&param2=3&param3=%20">link</a>'   =>   '<a href="http://url.com?param=1&param2=3&param3=%20">link</a>',
 
-      '<p>escaped</p><![CDATA[]]>'    => '&lt;p>escaped&lt;/p><![CDATA[]]>',
-      '<![CDATA[]]><p>escaped</p>'    => '<![CDATA[]]>&lt;p>escaped&lt;/p>',
-      '<![CDATA[<p>unescaped</p>]]>'  => '<![CDATA[<p>unescaped</p>]]>',
+      '<p>escaped</p><![CDATA[]]>'                => '&lt;p>escaped&lt;/p><![CDATA[]]>',
+      '<![CDATA[]]><p>escaped</p>'                => '<![CDATA[]]>&lt;p>escaped&lt;/p>',
+      '<![CDATA[<p>unescaped</p>]]>'              => '<![CDATA[<p>unescaped</p>]]>',
+      '<![CDATA[<p>unescaped with %@</p>]]>'      => '<![CDATA[<p>unescaped with %s</p>]]>',
       '<![CDATA[]]><![CDATA[<p>unescaped</p>]]>'  => '<![CDATA[]]><![CDATA[<p>unescaped</p>]]>',
 
       '<![CDATA[&]]>'  => '<![CDATA[&]]>',

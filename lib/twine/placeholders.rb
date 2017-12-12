@@ -6,6 +6,11 @@ module Twine
     PLACEHOLDER_FLAGS_WIDTH_PRECISION_LENGTH = '([-+0#])?(\d+|\*)?(\.(\d+|\*))?(hh?|ll?|L|z|j|t|q)?'
     PLACEHOLDER_PARAMETER_FLAGS_WIDTH_PRECISION_LENGTH = '(\d+\$)?' + PLACEHOLDER_FLAGS_WIDTH_PRECISION_LENGTH
     PLACEHOLDER_TYPES = '[diufFeEgGxXoscpaA]'
+    PLACEHOLDER_REGEX = /%#{PLACEHOLDER_PARAMETER_FLAGS_WIDTH_PRECISION_LENGTH}#{PLACEHOLDER_TYPES}/
+
+    def number_of_twine_placeholders(input)
+      input.scan(PLACEHOLDER_REGEX).size
+    end
 
     def convert_twine_string_placeholder(input)
       # %@ -> %s
@@ -19,15 +24,13 @@ module Twine
       # %@ -> %s
       value = convert_twine_string_placeholder(input)
 
-      placeholder_syntax = PLACEHOLDER_PARAMETER_FLAGS_WIDTH_PRECISION_LENGTH + PLACEHOLDER_TYPES
-      placeholder_regex = /%#{placeholder_syntax}/
-
-      number_of_placeholders = value.scan(placeholder_regex).size
+      number_of_placeholders = number_of_twine_placeholders(input)
 
       return value if number_of_placeholders == 0
 
       # got placeholders -> need to double single percent signs
       # % -> %% (but %% -> %%, %d -> %d)
+      placeholder_syntax = PLACEHOLDER_PARAMETER_FLAGS_WIDTH_PRECISION_LENGTH + PLACEHOLDER_TYPES
       single_percent_regex = /([^%])(%)(?!(%|#{placeholder_syntax}))/
       value.gsub! single_percent_regex, '\1%%'
 
@@ -61,8 +64,7 @@ module Twine
     def convert_placeholders_from_twine_to_flash(input)
       value = convert_twine_string_placeholder(input)
 
-      placeholder_regex = /%#{PLACEHOLDER_PARAMETER_FLAGS_WIDTH_PRECISION_LENGTH}#{PLACEHOLDER_TYPES}/
-      value.gsub(placeholder_regex).each_with_index do |match, index|
+      value.gsub(PLACEHOLDER_REGEX).each_with_index do |match, index|
         "{#{index}}"
       end
     end
