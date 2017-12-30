@@ -1,3 +1,7 @@
+# next version
+
+- Improvement: Better support for placeholders in HTML styled Android strings (#212)
+
 # 1.0.1 (2017-10-17)
 
 - Bugfix: Always prefer the passed-in formatter (#221)

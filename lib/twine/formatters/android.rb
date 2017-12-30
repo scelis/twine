@@ -116,10 +116,15 @@ module Twine
         value = gsub_unless(value, "'", "\\'") { |substring| substring =~ inside_cdata }
         value = gsub_unless(value, /&/, '&amp;') { |substring| substring =~ inside_cdata || substring =~ inside_opening_anchor_tag }
 
-        # escape opening angle brackes unless it's a supported styling tag
+        # if `value` contains a placeholder, escape all angle brackets
+        # if not, escape opening angle brackes unless it's a supported styling tag
         # https://github.com/scelis/twine/issues/212
         # https://stackoverflow.com/questions/3235131/#18199543
-        angle_bracket = /<(?!(\/?(b|u|i|a|\!\[CDATA)))/   # matches all `<` but <b>, <u>, <i>, <a> and <![CDATA
+        if number_of_twine_placeholders(value) > 0
+          angle_bracket = /<(?!(\/?(\!\[CDATA)))/           # matches all `<` but <![CDATA
+        else  
+          angle_bracket = /<(?!(\/?(b|u|i|a|\!\[CDATA)))/   # matches all `<` but <b>, <u>, <i>, <a> and <![CDATA
+        end
         value = gsub_unless(value, angle_bracket, '&lt;') { |substring| substring =~ inside_cdata }
 
         # escape non resource identifier @ signs (http://developer.android.com/guide/topics/resources/accessing-resources.html#ResourcesFromXml)
