@@ -1,4 +1,4 @@
-# next version
+# 1.0.2 (2018-01-20)
 
 - Improvement: Better support for placeholders in HTML styled Android strings (#212)
 
