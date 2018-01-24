@@ -24,7 +24,7 @@ module Twine
       # %@ -> %s
       value = convert_twine_string_placeholder(input)
 
-      number_of_placeholders = number_of_twine_placeholders(input)
+      number_of_placeholders = number_of_twine_placeholders(value)
 
       return value if number_of_placeholders == 0
 
