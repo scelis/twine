@@ -1,3 +1,4 @@
+require 'date'
 require 'safe_yaml/load'
 
 SafeYAML::OPTIONS[:suppress_warnings] = true
