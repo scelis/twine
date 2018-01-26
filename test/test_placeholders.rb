@@ -79,6 +79,10 @@ class PlaceholderTest < TwineTest
         to_android("some %d second %2$f")
       end
     end
+
+    def test_complicated_float_placeholders
+      assert_equal "%1$.0f%2$s (apparent: %3$.0f)", to_android("%.0f%@ (apparent: %.0f)")
+    end
   end
 
   class FromAndroid < PlaceholderTest
