@@ -1,6 +1,7 @@
-# Upcoming
+# 1.0.3 (2018-01-26)
 
 - Bugfix: Workaround a possible crash in safe_yaml (#237)
+- Bugfix: Fix an error caused by combining %@ with other placeholders (#235)
 
 # 1.0.2 (2018-01-20)
 
