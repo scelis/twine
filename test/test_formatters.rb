@@ -101,6 +101,21 @@ class TestAndroidFormatter < FormatterTest
     assert_equal 'This is\n a string', @empty_twine_file.definitions_by_key["foo"].translations['en']
   end
 
+  def test_read_html_tags
+    content = <<-EOCONTENT
+      <?xml version="1.0" encoding="utf-8"?>
+      <resources>
+        <string name="foo">Hello, <b>BOLD</b></string>
+      </resources>
+    EOCONTENT
+
+    io = StringIO.new(content)
+
+    @formatter.read io, 'en'
+
+    assert_equal 'Hello, <b>BOLD</b>', @empty_twine_file.definitions_by_key["foo"].translations['en']
+  end
+
   def test_set_translation_converts_leading_spaces
     @formatter.set_translation_for_key 'key1', 'en', "\u0020value"
     assert_equal ' value', @empty_twine_file.definitions_by_key['key1'].translations['en']
