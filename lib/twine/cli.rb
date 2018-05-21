@@ -227,7 +227,7 @@ module Twine
 
       mapped_command = DEPRECATED_COMMAND_MAPPINGS[command]
       if mapped_command
-        Twine::stderr.puts "WARNING: Twine commands names have changed. `#{command}` is now `#{mapped_command}`. The old command is deprecated and will soon stop working. For more information please check the documentation at https://github.com/mobiata/twine"
+        Twine::stdout.puts "WARNING: Twine commands names have changed. `#{command}` is now `#{mapped_command}`. The old command is deprecated and will soon stop working. For more information please check the documentation at https://github.com/mobiata/twine"
         command = mapped_command
       end
 

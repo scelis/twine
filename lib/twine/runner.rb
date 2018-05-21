@@ -90,7 +90,7 @@ module Twine
 
           output = formatter.format_file(lang)
           unless output
-            Twine::stderr.puts "Skipping file at path #{file_path} since it would not contain any translations."
+            Twine::stdout.puts "Skipping file at path #{file_path} since it would not contain any translations."
             next
           end
 
@@ -112,7 +112,7 @@ module Twine
           file_path = File.join(output_path, file_name)
           output = formatter.format_file(lang)
           unless output
-            Twine::stderr.puts "Skipping file at path #{file_path} since it would not contain any translations."
+            Twine::stdout.puts "Skipping file at path #{file_path} since it would not contain any translations."
             next
           end
 
@@ -148,7 +148,7 @@ module Twine
 
               output = formatter.format_file(lang)
               unless output
-                Twine::stderr.puts "Skipping file #{file_name} since it would not contain any translations."
+                Twine::stdout.puts "Skipping file #{file_name} since it would not contain any translations."
                 next
               end
               

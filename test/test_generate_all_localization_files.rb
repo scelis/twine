@@ -67,7 +67,7 @@ class TestGenerateAllLocalizationFiles < CommandTest
       Dir.mkdir File.join @output_dir, 'en.lproj'
       empty_twine_file = build_twine_file('en') {}
       new_runner(empty_twine_file).generate_all_localization_files
-      assert_match "Skipping file at path", Twine::stderr.string
+      assert_match "Skipping file at path", Twine::stdout.string
     end
   end
 
@@ -92,7 +92,7 @@ class TestGenerateAllLocalizationFiles < CommandTest
       empty_twine_file = build_twine_file('en') {}
       new_runner(empty_twine_file).generate_all_localization_files
 
-      assert_match "Skipping file at path", Twine::stderr.string
+      assert_match "Skipping file at path", Twine::stdout.string
     end
   end
 

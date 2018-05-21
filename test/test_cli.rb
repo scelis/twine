@@ -278,7 +278,7 @@ class TestGenerateLocalizationArchiveCLI < CLITest
 
   def test_deprecated_command_prints_warning
     parse "generate-loc-drop #{@twine_file_path} #{@output_path} --format apple"
-    assert_match "WARNING: Twine commands names have changed.", Twine::stderr.string
+    assert_match "WARNING: Twine commands names have changed.", Twine::stdout.string
   end
 end
 
@@ -401,7 +401,7 @@ class TestConsumeLocalizationArchiveCLI < CLITest
 
   def test_deprecated_command_prints_warning
     parse "consume-loc-drop #{@twine_file_path} #{@input_path}"
-    assert_match "WARNING: Twine commands names have changed.", Twine::stderr.string
+    assert_match "WARNING: Twine commands names have changed.", Twine::stdout.string
   end
 end
 
