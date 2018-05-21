@@ -1,8 +1,7 @@
 require 'command_test'
 
 class TestGenerateLocalizationArchive < CommandTest
-  def new_runner(twine_file = nil)
-    options = {}
+  def new_runner(twine_file = nil, options = {})
     options[:output_path] = @output_path
     options[:format] = 'apple'
 
@@ -46,6 +45,12 @@ class TestGenerateLocalizationArchive < CommandTest
     empty_twine_file = build_twine_file('en') {}
     new_runner(empty_twine_file).generate_localization_archive
     assert_match "Skipping file", Twine::stdout.string
+  end
+
+  def test_does_not_print_empty_file_warnings_if_quite
+    empty_twine_file = build_twine_file('en') {}
+    new_runner(empty_twine_file, quite: true).generate_localization_archive
+    refute_match "Skipping file", Twine::stdout.string
   end
 
   class TestValidate < CommandTest

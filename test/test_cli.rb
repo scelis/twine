@@ -82,6 +82,13 @@ class CLITest < TwineTest
     assert_equal @output_path, @options[:output_path]  
   end
 
+  def assert_option_quiet
+    parse_with '--quiet'
+    assert @options[:quiet]
+    parse_with '--no-quiet'
+    refute @options[:quiet]
+  end
+
   def assert_option_tags
     # single tag
     random_tag = "tag#{rand(100)}"
@@ -174,6 +181,7 @@ class TestGenerateLocalizationFileCLI < CLITest
     assert_option_include
     assert_option_single_language
     assert_raises(Twine::Error) { assert_option_multiple_languages }
+    assert_option_quiet
     assert_option_tags
     assert_option_untagged
     assert_option_validate
@@ -211,6 +219,7 @@ class TestGenerateAllLocalizationFilesCLI < CLITest
     assert_option_encoding
     assert_option_format
     assert_option_include
+    assert_option_quiet
     assert_option_tags
     assert_option_untagged
     assert_option_validate
@@ -260,6 +269,7 @@ class TestGenerateLocalizationArchiveCLI < CLITest
     assert_option_developer_language
     assert_option_encoding
     assert_option_include
+    assert_option_quiet
     assert_option_tags
     assert_option_untagged
     assert_option_validate
@@ -317,6 +327,7 @@ class TestConsumeLocalizationFileCLI < CLITest
     assert_option_single_language
     assert_raises(Twine::Error) { assert_option_multiple_languages }
     assert_option_output_path
+    assert_option_quiet
     assert_option_tags
   end
 end
@@ -354,6 +365,7 @@ class TestConsumeAllLocalizationFilesCLI < CLITest
     assert_option_encoding
     assert_option_format
     assert_option_output_path
+    assert_option_quiet
     assert_option_tags
   end
 end
@@ -391,6 +403,7 @@ class TestConsumeLocalizationArchiveCLI < CLITest
     assert_option_encoding
     assert_option_format
     assert_option_output_path
+    assert_option_quiet
     assert_option_tags
   end
 
@@ -432,6 +445,7 @@ class TestValidateTwineFileCLI < CLITest
   def test_options
     assert_help
     assert_option_developer_language
+    assert_option_quiet
   end
 
   def test_option_pedantic

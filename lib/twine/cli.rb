@@ -78,6 +78,10 @@ module Twine
         switch: ['-p', '--[no-]pedantic'],
         description: 'When validating a Twine file, perform additional checks that go beyond pure validity (like presence of tags).'
       },
+      quiet: {
+        switch: ['-q', '--[no-]quiet'],
+        description: 'Suppress all console output except error messages.'
+      },
       tags: {
         switch: ['-t', '--tags TAG1,TAG2,TAG3', Array],
         description: <<-DESC,
@@ -110,6 +114,7 @@ module Twine
           :format,
           :include,
           :languages,
+          :quiet,
           :tags,
           :untagged,
           :validate
@@ -131,6 +136,7 @@ module Twine
           :file_name,
           :format,
           :include,
+          :quiet,
           :tags,
           :untagged,
           :validate
@@ -147,6 +153,7 @@ module Twine
           :developer_language,
           :encoding,
           :include,
+          :quiet,
           :tags,
           :untagged,
           :validate
@@ -164,6 +171,7 @@ module Twine
           :format,
           :languages,
           :output_path,
+          :quiet,
           :tags
         ],
         option_validation: Proc.new { |options|
@@ -183,6 +191,7 @@ module Twine
           :encoding,
           :format,
           :output_path,
+          :quiet,
           :tags
         ],
         example: 'twine consume-all-localization-files twine.txt Resources/Locales/ --developer-language en --tags DefaultTag1,DefaultTag2'
@@ -197,6 +206,7 @@ module Twine
           :encoding,
           :format,
           :output_path,
+          :quiet,
           :tags
         ],
         example: 'twine consume-localization-archive twine.txt LocDrop5.zip'
@@ -206,7 +216,8 @@ module Twine
         arguments: [:twine_file],
         optional_options: [
           :developer_language,
-          :pedantic
+          :pedantic,
+          :quiet
         ],
         example: 'twine validate-twine-file twine.txt'
       }

@@ -5,6 +5,14 @@ Twine::Plugin.new # Initialize plugins first in Runner.
 
 module Twine
   class Runner
+    class NullOutput
+      def puts(message)
+      end
+      def string
+        ""
+      end
+    end
+
     def self.run(args)
       options = CLI.parse(args)
 
@@ -35,6 +43,9 @@ module Twine
     def initialize(options = {}, twine_file = TwineFile.new)
       @options = options
       @twine_file = twine_file
+      if @options[:quite]
+        Twine::stdout = NullOutput.new
+      end
     end
 
     def write_twine_data(path)

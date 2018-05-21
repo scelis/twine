@@ -47,8 +47,8 @@ class TestGenerateAllLocalizationFiles < CommandTest
   end
 
   class TestDoNotCreateFolders < TestGenerateAllLocalizationFiles
-    def new_runner(twine_file = nil)
-      super(false, twine_file)
+    def new_runner(twine_file = nil, options = {})
+      super(false, twine_file, options)
     end
 
     def test_fails_if_output_folder_does_not_exist
@@ -69,11 +69,18 @@ class TestGenerateAllLocalizationFiles < CommandTest
       new_runner(empty_twine_file).generate_all_localization_files
       assert_match "Skipping file at path", Twine::stdout.string
     end
+
+    def test_does_not_print_empty_file_warnings_if_quite
+      Dir.mkdir File.join @output_dir, 'en.lproj'
+      empty_twine_file = build_twine_file('en') {}
+      new_runner(empty_twine_file, quite: true).generate_all_localization_files
+      refute_match "Skipping file at path", Twine::stdout.string
+    end
   end
 
   class TestCreateFolders < TestGenerateAllLocalizationFiles
-    def new_runner(twine_file = nil)
-      super(true, twine_file)
+    def new_runner(twine_file = nil, options = {})
+      super(true, twine_file, options)
     end
 
     def test_creates_output_folder
@@ -93,6 +100,13 @@ class TestGenerateAllLocalizationFiles < CommandTest
       new_runner(empty_twine_file).generate_all_localization_files
 
       assert_match "Skipping file at path", Twine::stdout.string
+    end
+
+    def test_does_not_print_empty_file_warnings_if_quite
+      empty_twine_file = build_twine_file('en') {}
+      new_runner(empty_twine_file, quite: true).generate_all_localization_files
+
+      refute_match "Skipping file at path", Twine::stdout.string
     end
   end
 
