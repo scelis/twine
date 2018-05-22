@@ -174,7 +174,26 @@ Now, whenever you build your application, Xcode will automatically invoke Twine 
 
 ### Android Studio/Gradle
 
+#### Simple
+
+Add the following task at the top level in app/build.gradle:
+
+```
+task generateLocalizations {
+	String script = 'if hash twine 2>/dev/null; then twine generate-localization-file twine.txt ./src/main/res/values/generated_strings.xml; fi'
+	exec {
+		executable "sh"
+		args '-c', script
+	}
+}
+```
+
+Run the task whenever you need new localization files generated.
+
+#### Fully automated
+
 Add the following code at the top level in app/build.gradle:
+
 ```
 buildscript {
     	repositories { jcenter() }
@@ -204,8 +223,7 @@ preBuild {
 }
 ```
 
-Now every time you build your app the localization files are generated from the Twine file.
-
+With this approach, devs do not need to manually install ruby, gem or twine - jruby takes care of downloading and running twine. Also, with adding `generateLocalizations` to the `preBuild` section, it is automatically run on android studio's gradle sync.
 
 ## User Interface
 
