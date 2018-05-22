@@ -208,6 +208,7 @@ module Twine
         raise Twine::Error.new("File does not exist: #{@options[:input_path]}")
       end
 
+      error_encountered = false
       Dir.mktmpdir do |temp_dir|
         Zip::File.open(@options[:input_path]) do |zipfile|
           zipfile.each do |entry|
@@ -220,6 +221,7 @@ module Twine
               read_localization_file(real_path)
             rescue Twine::Error => e
               Twine::stderr.puts "#{e.message}"
+              error_encountered = true
             end
           end
         end
@@ -227,6 +229,10 @@ module Twine
 
       output_path = @options[:output_path] || @options[:twine_file]
       write_twine_data(output_path)
+
+      if error_encountered
+        raise Twine::Error.new("At least one file could not be consumed")
+      end
     end
 
     def validate_twine_file
