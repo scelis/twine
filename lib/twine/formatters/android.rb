@@ -67,7 +67,8 @@ module Twine
 
             key = child.attributes['name']
 
-            set_translation_for_key(key, lang, child.text)
+            content = child.children.map(&:to_s).join
+            set_translation_for_key(key, lang, content)
             set_comment_for_key(key, comment) if comment
 
             comment = nil
