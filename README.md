@@ -174,9 +174,9 @@ Now, whenever you build your application, Xcode will automatically invoke Twine 
 
 ### Android Studio/Gradle
 
-#### Simple
+#### Standard
 
-Add the following task at the top level in app/build.gradle:
+Add the following code to `app/build.gradle`:
 
 ```
 task generateLocalizations {
@@ -186,44 +186,46 @@ task generateLocalizations {
 		args '-c', script
 	}
 }
+
+preBuild {
+	dependsOn generateLocalizations
+}
 ```
 
-Run the task whenever you need new localization files generated.
+#### Using [jruby](http://jruby.org)
 
-#### Fully automated
+With this approach, developers do not need to manually install ruby, gem, or twine.
 
-Add the following code at the top level in app/build.gradle:
+Add the following code to `app/build.gradle`:
 
 ```
 buildscript {
-    	repositories { jcenter() }
+	repositories { jcenter() }
 
-    	dependencies {
-        	/* check jruby-gradle.org for the latest release */
-        	classpath "com.github.jruby-gradle:jruby-gradle-plugin:1.5.0"
-    	}
+	dependencies {
+		/* NOTE: Set your prefered version of jruby here. */
+		classpath "com.github.jruby-gradle:jruby-gradle-plugin:1.5.0"
+	}
 }
 
 apply plugin: 'com.github.jruby-gradle.base'
 
 dependencies {
+	/* NOTE: Set your prefered version of twine here. */
 	jrubyExec 'rubygems:twine:1.0.3'
 }
 
-
 task generateLocalizations (type: JRubyExec) {
 	dependsOn jrubyPrepare
-        jrubyArgs '-S'
-        script "twine"
-        scriptArgs 'generate-localization-file', 'twine.txt', './src/main/res/values/generated_strings.xml'
+	jrubyArgs '-S'
+	script "twine"
+	scriptArgs 'generate-localization-file', 'twine.txt', './src/main/res/values/generated_strings.xml'
 }
 
 preBuild {
-    dependsOn generateLocalizations
+	dependsOn generateLocalizations
 }
 ```
-
-With this approach, devs do not need to manually install ruby, gem or twine - jruby takes care of downloading and running twine. Also, with adding `generateLocalizations` to the `preBuild` section, it is automatically run on android studio's gradle sync.
 
 ## User Interface
 
