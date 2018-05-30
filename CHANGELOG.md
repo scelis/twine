@@ -1,3 +1,9 @@
+# 1.0.4 (2018-05-30)
+
+- Feature: Add a --quiet option (#245)
+- Bugfix: Consume child HTML tags in Android formatter (#247)
+- Bugfix: Let consume-localization-archive return a non-zero status (#246)
+
 # 1.0.3 (2018-01-26)
 
 - Bugfix: Workaround a possible crash in safe_yaml (#237)
