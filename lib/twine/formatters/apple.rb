@@ -30,7 +30,7 @@ module Twine
           end
         end
 
-        return
+        return super
       end
 
       def output_path_for_language(lang)
