@@ -55,7 +55,7 @@ module Twine
       end
 
       def format_header(lang)
-        "msgid \"\"\nmsgstr \"\"\n\"Language: #{lang}\\n\"\n\"X-Generator: Twine #{Twine::VERSION}\\n\"\n"
+        "msgid \"\"\nmsgstr \"\"\n\"Language: #{lang}\"\n\"X-Generator: Twine #{Twine::VERSION}\"\n"
       end
 
       def format_section_header(section)

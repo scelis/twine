@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Language: en\n"
-"X-Generator: Twine <%= Twine::VERSION %>\n"
+"Language: en"
+"X-Generator: Twine <%= Twine::VERSION %>"
 
 
 # SECTION: Section 1
