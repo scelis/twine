@@ -116,6 +116,21 @@ class TestAndroidFormatter < FormatterTest
     assert_equal 'Hello, <b>BOLD</b>', @empty_twine_file.definitions_by_key["foo"].translations['en']
   end
 
+  def test_double_quotes_are_not_modified
+    content = <<-EOCONTENT
+      <?xml version="1.0" encoding="utf-8"?>
+      <resources>
+        <string name="foo">Hello, <a href="http://www.foo.com">BOLD</a></string>
+      </resources>
+    EOCONTENT
+
+    io = StringIO.new(content)
+
+    @formatter.read io, 'en'
+
+    assert_equal 'Hello, <a href="http://www.foo.com">BOLD</a>', @empty_twine_file.definitions_by_key["foo"].translations['en']
+  end
+
   def test_set_translation_converts_leading_spaces
     @formatter.set_translation_for_key 'key1', 'en', "\u0020value"
     assert_equal ' value', @empty_twine_file.definitions_by_key['key1'].translations['en']
