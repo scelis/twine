@@ -294,6 +294,11 @@ module Twine
       end
     end
 
+    def determine_language_given_path(path)
+      code = File.basename(path, File.extname(path))
+      return code if @twine_file.language_codes.include? code
+    end
+
     def formatter_for_format(format)
       find_formatter { |f| f.format_name == format }
     end
@@ -337,7 +342,7 @@ module Twine
         raise Twine::Error.new "Unable to determine format of #{path}"
       end      
 
-      lang = lang || formatter.determine_language_given_path(path)
+      lang = lang || determine_language_given_path(path) || formatter.determine_language_given_path(path)
       unless lang
         raise Twine::Error.new "Unable to determine language for #{path}"
       end

@@ -15,6 +15,16 @@ module Twine
         'strings.po'
       end
 
+      def determine_language_given_path(path)
+        path_arr = path.split(File::SEPARATOR)
+        path_arr.each do |segment|
+          match = /([a-z]{2}(-[A-Za-z]{2})?)\.po$/.match(segment)
+          return match[1] if match
+        end
+
+        return
+      end
+
       def read(io, lang)
         comment_regex = /#.? *"(.*)"$/
         key_regex = /msgctxt *"(.*)"$/
