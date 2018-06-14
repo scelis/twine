@@ -195,13 +195,8 @@ class TestAndroidFormatter < FormatterTest
     assert_equal identifier, @formatter.format_value(identifier)
   end
 
-  def test_deducts_language_from_filename
-    language = KNOWN_LANGUAGES.sample
-    assert_equal language, @formatter.determine_language_given_path("#{language}.xml")
-  end
-
   def test_deducts_language_from_resource_folder
-    language = KNOWN_LANGUAGES.sample
+    language = %w(en de fr).sample
     assert_equal language, @formatter.determine_language_given_path("res/values-#{language}")
   end
 
@@ -231,11 +226,6 @@ class TestAppleFormatter < FormatterTest
     @formatter.read content_io('formatter_apple.strings'), 'en'
 
     assert_file_contents_read_correctly
-  end
-
-  def test_deducts_language_from_filename
-    language = KNOWN_LANGUAGES.sample
-    assert_equal language, @formatter.determine_language_given_path("#{language}.strings")
   end
 
   def test_deducts_language_from_resource_folder
@@ -342,21 +332,6 @@ class TestJQueryFormatter < FormatterTest
   def test_format_value_with_newline
     assert_equal "value\nwith\nline\nbreaks", @formatter.format_value("value\nwith\nline\nbreaks")
   end
-
-  def test_deducts_language_from_filename
-    language = KNOWN_LANGUAGES.sample
-    assert_equal language, @formatter.determine_language_given_path("#{language}.json")
-  end
-
-  def test_deducts_language_from_extended_filename
-    language = KNOWN_LANGUAGES.sample
-    assert_equal language, @formatter.determine_language_given_path("something-#{language}.json")
-  end
-
-  def test_deducts_language_from_path
-    language = %w(en-GB de fr).sample
-    assert_equal language, @formatter.determine_language_given_path("/output/#{language}/#{@formatter.default_file_name}")
-  end
 end
 
 class TestGettextFormatter < FormatterTest
@@ -386,11 +361,6 @@ class TestGettextFormatter < FormatterTest
     language = "en-GB"
     assert_equal language, @formatter.determine_language_given_path("#{language}.po")
   end
-
-  def test_deducts_language_from_path
-    language = %w(en-GB de fr).sample
-    assert_equal language, @formatter.determine_language_given_path("/output/#{language}/#{@formatter.default_file_name}")
-  end
 end
 
 class TestTizenFormatter < FormatterTest
@@ -411,6 +381,7 @@ class TestTizenFormatter < FormatterTest
     formatter.twine_file = @twine_file
     assert_equal content('formatter_tizen.xml'), formatter.format_file('en')
   end
+
 end
 
 class TestDjangoFormatter < FormatterTest
@@ -433,11 +404,6 @@ class TestDjangoFormatter < FormatterTest
   def test_deducts_language_and_region
     language = "en-GB"
     assert_equal language, @formatter.determine_language_given_path("#{language}.po")
-  end
-
-  def test_deducts_language_from_path
-    language = %w(en-GB de fr).sample
-    assert_equal language, @formatter.determine_language_given_path("/output/#{language}/#{@formatter.default_file_name}")
   end
 end
 
@@ -469,10 +435,10 @@ class TestFlashFormatter < FormatterTest
 
   def test_deducts_language_from_resource_folder
     language = %w(en de fr).sample
-    assert_equal language, @formatter.determine_language_given_path("locale/#{language}/#{@formatter.default_file_name}")
+    assert_equal language, @formatter.determine_language_given_path("locale/#{language}")
   end
 
   def test_deducts_language_and_region_from_resource_folder
-    assert_equal 'de-AT', @formatter.determine_language_given_path("locale/de-AT/#{@formatter.default_file_name}")
+    assert_equal 'de-AT', @formatter.determine_language_given_path("locale/de-AT")
   end
 end

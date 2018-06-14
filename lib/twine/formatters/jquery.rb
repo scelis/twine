@@ -14,17 +14,22 @@ module Twine
       end
 
       def determine_language_given_path(path)
-        match = /^.+-([^-]{2})\.json$/.match File.basename(path)
-        return match[1] if match
+        path_arr = path.split(File::SEPARATOR)
+        path_arr.each do |segment|
+          match = /^((.+)-)?([^-]+)\.json$/.match(segment)
+          if match
+            return match[3]
+          end
+        end
 
-        return super
+        return
       end
 
       def read(io, lang)
         begin
           require "json"
         rescue LoadError
-          raise Twine::Error.new "You must run `gem install json` in order to read or write jquery-localize files."
+          raise Twine::Error.new "You must run 'gem install json' in order to read or write jquery-localize files."
         end
 
         json = JSON.load(io)
