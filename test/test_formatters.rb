@@ -200,6 +200,17 @@ class TestAndroidFormatter < FormatterTest
     assert_equal language, @formatter.determine_language_given_path("#{language}.xml")
   end
 
+  def test_recognize_every_twine_language_from_filename
+    twine_file = build_twine_file "not-a-lang-code" do
+      add_section "Section" do
+        add_definition key: "value"
+      end
+    end
+
+    @formatter.twine_file = twine_file
+    assert_equal "not-a-lang-code", @formatter.determine_language_given_path("not-a-lang-code.xml")
+  end
+
   def test_deducts_language_from_resource_folder
     language = KNOWN_LANGUAGES.sample
     assert_equal language, @formatter.determine_language_given_path("res/values-#{language}")
@@ -236,6 +247,17 @@ class TestAppleFormatter < FormatterTest
   def test_deducts_language_from_filename
     language = KNOWN_LANGUAGES.sample
     assert_equal language, @formatter.determine_language_given_path("#{language}.strings")
+  end
+
+  def test_recognize_every_twine_language_from_filename
+    twine_file = build_twine_file "not-a-lang-code" do
+      add_section "Section" do
+        add_definition key: "value"
+      end
+    end
+
+    @formatter.twine_file = twine_file
+    assert_equal "not-a-lang-code", @formatter.determine_language_given_path("not-a-lang-code.strings")
   end
 
   def test_deducts_language_from_resource_folder

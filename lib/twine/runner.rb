@@ -87,7 +87,7 @@ module Twine
       end
       
       unless formatter
-        raise Twine::Error.new "Could not determine format given the contents of #{@options[:output_path]}"
+        raise Twine::Error.new "Could not determine format given the contents of #{@options[:output_path]}. Try using `--format`."
       end
 
       file_name = @options[:file_name] || formatter.default_file_name
@@ -303,7 +303,7 @@ module Twine
       if formatters.empty?
         return nil
       elsif formatters.size > 1
-        raise Twine::Error.new("Unable to determine format. Candidates are: #{formatters.map(&:format_name).join(', ')}. Please specify the format you want using '--format'")
+        raise Twine::Error.new("Unable to determine format. Candidates are: #{formatters.map(&:format_name).join(', ')}. Please specify the format you want using `--format`")
       end
       formatter = formatters.first
       formatter.twine_file = @twine_file
@@ -334,12 +334,12 @@ module Twine
       end
       
       unless formatter
-        raise Twine::Error.new "Unable to determine format of #{path}"
+        raise Twine::Error.new "Unable to determine format of #{path}. Try using `--format`."
       end      
 
       lang = lang || formatter.determine_language_given_path(path)
       unless lang
-        raise Twine::Error.new "Unable to determine language for #{path}"
+        raise Twine::Error.new "Unable to determine language for #{path}. Try using `--lang`."
       end
 
       @twine_file.language_codes << lang unless @twine_file.language_codes.include? lang
