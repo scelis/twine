@@ -163,7 +163,7 @@ class TestGenerateLocalizationFileCLI < CLITest
 
   def test_missing_argument
     assert_raises Twine::Error do
-      parse "generate-localization-file #{@twine_file}"
+      parse "generate-localization-file #{@twine_file_path}"
     end
   end
 

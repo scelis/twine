@@ -1,6 +1,6 @@
 require 'erb'
 require 'minitest/autorun'
-require "mocha/mini_test"
+require "mocha/minitest"
 require 'securerandom'
 require 'stringio'
 require 'twine'
@@ -23,7 +23,7 @@ class TwineTest < Minitest::Test
   end
 
   def teardown
-    FileUtils.remove_entry_secure @output_dir if File.exists? @output_dir
+    FileUtils.remove_entry_secure @output_dir if File.exist? @output_dir
     Twine::Formatters.formatters.clear
     Twine::Formatters.formatters.concat @formatters
     super
