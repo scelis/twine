@@ -24,10 +24,6 @@ class TestGenerateAllLocalizationFiles < CommandTest
     def setup
       super
       Dir.mkdir File.join @output_dir, 'values-en'
-
-      # both Android and Tizen can handle folders containing `values-en`
-      android_formatter = prepare_mock_formatter(Twine::Formatters::Android)
-      tizen_formatter = prepare_mock_formatter(Twine::Formatters::Tizen, false)
     end
 
     def new_runner(options = {})
@@ -60,7 +56,7 @@ class TestGenerateAllLocalizationFiles < CommandTest
     def test_does_not_create_language_folders
       Dir.mkdir File.join @output_dir, 'en.lproj'
       new_runner.generate_all_localization_files
-      refute File.exists?(File.join(@output_dir, 'es.lproj')), "language folder should not be created"
+      refute File.exist?(File.join(@output_dir, 'es.lproj')), "language folder should not be created"
     end
 
     def test_prints_empty_file_warnings
@@ -86,13 +82,13 @@ class TestGenerateAllLocalizationFiles < CommandTest
     def test_creates_output_folder
       FileUtils.remove_entry_secure @output_dir
       new_runner.generate_all_localization_files
-      assert File.exists? @output_dir
+      assert File.exist? @output_dir
     end
 
     def test_creates_language_folders
       new_runner.generate_all_localization_files
-      assert File.exists?(File.join(@output_dir, 'en.lproj')), "language folder 'en.lproj' should be created"
-      assert File.exists?(File.join(@output_dir, 'es.lproj')), "language folder 'es.lproj' should be created"
+      assert File.exist?(File.join(@output_dir, 'en.lproj')), "language folder 'en.lproj' should be created"
+      assert File.exist?(File.join(@output_dir, 'es.lproj')), "language folder 'es.lproj' should be created"
     end
 
     def test_prints_empty_file_warnings

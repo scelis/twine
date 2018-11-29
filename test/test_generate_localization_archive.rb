@@ -19,7 +19,7 @@ class TestGenerateLocalizationArchive < CommandTest
   def test_generates_zip_file
     new_runner.generate_localization_archive
 
-    assert File.exists?(@output_path), "zip file should exist"
+    assert File.exist?(@output_path), "zip file should exist"
   end
 
   def test_zip_file_structure
