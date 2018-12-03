@@ -57,7 +57,7 @@ module Twine
     end
 
     def join_path *paths
-      File.expand_path File.join *paths
+      File.expand_path File.join(*paths)
     end
   end
 end

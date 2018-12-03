@@ -299,7 +299,7 @@ module Twine
     end
 
     def find_formatter(&block)
-      formatters = Formatters.formatters.select &block
+      formatters = Formatters.formatters.select(&block)
       if formatters.empty?
         return nil
       elsif formatters.size > 1

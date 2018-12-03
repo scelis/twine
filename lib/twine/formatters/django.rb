@@ -18,7 +18,6 @@ module Twine
         key_regex = /msgid *"(.*)"$/
         value_regex = /msgstr *"(.*)"$/m
 
-        last_comment = nil
         while line = io.gets          
           comment_match = comment_regex.match(line)
           if comment_match
