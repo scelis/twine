@@ -413,6 +413,16 @@ class TestGettextFormatter < FormatterTest
     language = %w(en-GB de fr).sample
     assert_equal language, @formatter.determine_language_given_path("/output/#{language}/#{@formatter.default_file_name}")
   end
+
+  def test_quoted_strings
+    formatter = Twine::Formatters::Gettext.new
+    formatter.twine_file = build_twine_file "not-a-lang-code" do
+      add_section "Section" do
+        add_definition key: "foo \"bar\" baz"
+      end
+    end
+    assert_equal content('formatter_gettext_quotes.po'), formatter.format_file('en')
+  end
 end
 
 class TestTizenFormatter < FormatterTest

@@ -76,15 +76,15 @@ module Twine
       end
 
       def format_key(key)
-        "msgctxt \"#{key}\"\n"
+        "msgctxt \"#{escape_quotes(key)}\"\n"
       end
 
       def format_base_translation(definition)
-        "msgid \"#{definition.translations[@default_lang]}\"\n"
+        "msgid \"#{escape_quotes(definition.translations[@default_lang])}\"\n"
       end
 
       def format_value(value)
-        "msgstr \"#{value}\"\n"
+        "msgstr \"#{escape_quotes(value)}\"\n"
       end
     end
   end

@@ -1,0 +1,10 @@
+msgid ""
+msgstr ""
+"Language: en"
+"X-Generator: Twine <%= Twine::VERSION %>"
+
+
+# SECTION: Section
+msgctxt "key"
+msgid "foo \"bar\" baz"
+msgstr "foo \"bar\" baz"
