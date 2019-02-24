@@ -1,3 +1,9 @@
+# 1.0.5 (Upcoming)
+
+- Bugfix: Incorrect language detection when reading localization files (#251)
+- Bugfix: Double quotes in Android files could be converted to single quotes (#254)
+- Bugfix: Properly escape quotes when writing gettext files (#268)
+
 # 1.0.4 (2018-05-30)
 
 - Feature: Add a --quiet option (#245)
