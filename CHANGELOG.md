@@ -1,4 +1,4 @@
-# 1.0.5 (Upcoming)
+# 1.0.5 (2019-02-24)
 
 - Bugfix: Incorrect language detection when reading localization files (#251)
 - Bugfix: Double quotes in Android files could be converted to single quotes (#254)
