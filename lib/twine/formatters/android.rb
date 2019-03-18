@@ -124,7 +124,7 @@ module Twine
         if number_of_twine_placeholders(value) > 0
           angle_bracket = /<(?!(\/?(\!\[CDATA)))/           # matches all `<` but <![CDATA
         else  
-          angle_bracket = /<(?!(\/?(b|u|i|a|\!\[CDATA)))/   # matches all `<` but <b>, <u>, <i>, <a> and <![CDATA
+          angle_bracket = /<(?!(\/?(b|u|i|a|\!\[CDATA)>))/   # matches all `<` but <b>, <u>, <i>, <a> and <![CDATA
         end
         value = gsub_unless(value, angle_bracket, '&lt;') { |substring| substring =~ inside_cdata }
 
