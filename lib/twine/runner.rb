@@ -19,6 +19,7 @@ module Twine
       return unless options
       
       twine_file = TwineFile.new
+      twine_file.set_use_section_namespace options[:section_namespace]
       twine_file.read options[:twine_file]
       runner = new(options, twine_file)
 

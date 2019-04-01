@@ -27,6 +27,13 @@ module Twine
         DESC
         boolean: true
       },
+      section_namespace: {
+        switch: ['-s', '--[no-]section-namespace'],
+        description: <<-DESC,
+          This flag may be used to prefix the string keys for all languages with their respective section if it exists.
+        DESC
+        boolean: false
+      },
       developer_language: {
         switch: ['-d', '--developer-language LANG'],
         description: <<-DESC,
@@ -113,6 +120,7 @@ module Twine
           :encoding,
           :format,
           :include,
+          :section_namespace,
           :languages,
           :quiet,
           :tags,
@@ -136,6 +144,7 @@ module Twine
           :file_name,
           :format,
           :include,
+          :section_namespace,
           :quiet,
           :tags,
           :untagged,
@@ -153,6 +162,7 @@ module Twine
           :developer_language,
           :encoding,
           :include,
+          :section_namespace,
           :quiet,
           :tags,
           :untagged,

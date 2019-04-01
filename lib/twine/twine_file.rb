@@ -80,6 +80,11 @@ module Twine
       @sections = []
       @definitions_by_key = {}
       @language_codes = []
+      @use_section_namespace = {}
+    end
+
+    def set_use_section_namespace(useState = false)
+        @use_section_namespace = useState
     end
 
     def add_language_code(code)
@@ -127,6 +132,13 @@ module Twine
           elsif line.length > 2 && line[0, 1] == '['
             key = match_key(line)
             if key
+
+              if @use_section_namespace == true
+                if current_section
+                  key = current_section.name.delete(' ') + "." + key
+                end
+              end
+
               current_definition = TwineDefinition.new(key)
               @definitions_by_key[current_definition.key] = current_definition
               if !current_section
