@@ -80,7 +80,7 @@ module Twine
       @sections = []
       @definitions_by_key = {}
       @language_codes = []
-      @use_section_namespace = {}
+      @use_section_namespace = false
     end
 
     def set_use_section_namespace(useState = false)
