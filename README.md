@@ -227,6 +227,68 @@ preBuild {
 }
 ```
 
+#### Using [TwineStringsGeneratorPlugin](https://github.com/skoumalcz/TwineStringsGeneratorPlugin)
+
+Ruby, gem and twine is required to be installed beforehand, but the implementation is more straightforward down the line. As well as the others strings are generated before the actual app build begins.
+
+Latest version: 
+[![](https://jitpack.io/v/skoumalcz/TwineStringsGeneratorPlugin.svg)](https://jitpack.io/#skoumalcz/TwineStringsGeneratorPlugin)
+
+Project root build.gradle
+```groovy
+buildscript {
+    repositories {
+        //...
+        maven { url "https://jitpack.io" }
+    }
+
+    dependencies {
+        //...
+        classpath "com.github.skoumalcz:TwineStringsGeneratorPlugin:latest.version"
+    }
+}
+```
+
+Module build.gradle
+```groovy
+apply plugin: 'com.skoumal.twinestringsgenerator.plugin'
+
+twineStringsGenerator {
+    //path to your twine file, mandatory
+    twineFile = "strings.txt"
+    //name of generated string file(s), defaults to "strings.xml"
+    outputFileName = "strings.xml"
+    //default language which will be placed to values directory, defaults to "en"
+    defaultLanguage = "en"
+    //format of generated files, defaults to "android"
+    format = "android"
+    //additional arguments you want to pass to twine executable, defaults to empty list
+    args = ["-itranslated", "-u", "-tandroid"]
+}
+```
+
+Module build.gradle.kts
+```kotlin
+plugins {
+    ...
+    id("com.skoumal.twinestringsgenerator.plugin")
+    ...
+}
+
+twine {
+    //path to your twine file, mandatory
+    twineFile = "strings.txt"
+    //name of generated string file(s), defaults to "strings.xml"
+    outputFileName = "strings.xml"
+    //default language which will be placed to values directory, defaults to "en"
+    defaultLanguage = "en"
+    //format of generated files, defaults to "android"
+    format = "android"
+    //additional arguments you want to pass to twine executable, defaults to empty list
+    args = ["-itranslated", "-u", "-tandroid"]
+}
+```
+
 ## User Interface
 
 * [Twine TextMate 2 Bundle](https://github.com/mobiata/twine.tmbundle) — This [TextMate 2](https://github.com/textmate/textmate) bundle will make it easier for you to work with Twine files. In particular, it lets you use code folding to easily collapse and expand both definitions and sections.
