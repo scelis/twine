@@ -231,6 +231,13 @@ class TestAndroidFormatter < FormatterTest
   def test_output_path_with_region
     assert_equal 'values-en-rGB', @formatter.output_path_for_language('en-GB')
   end
+
+  def test_output_path_respects_default_lang
+    @formatter.twine_file.language_codes.concat KNOWN_LANGUAGES
+    non_default_language = KNOWN_LANGUAGES[1..-1].sample
+    assert_equal 'values', @formatter.output_path_for_language(KNOWN_LANGUAGES[0])
+    assert_equal "values-#{non_default_language}", @formatter.output_path_for_language(non_default_language)
+  end
 end
 
 class TestAppleFormatter < FormatterTest
