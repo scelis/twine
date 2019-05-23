@@ -47,26 +47,87 @@ class TestAndroidFormatter < FormatterTest
       'a "good" way'              => 'a \"good\" way',
 
       '<b>bold</b>'               => '<b>bold</b>',
+      '<em>bold</em>'             => '<em>bold</em>',
+
       '<i>italic</i>'             => '<i>italic</i>',
+      '<cite>italic</cite>'       => '<cite>italic</cite>',
+      '<dfn>italic</dfn>'         => '<dfn>italic</dfn>',
+
+      '<big>larger</big>'         => '<big>larger</big>',
+      '<small>smaller</small>'    => '<small>smaller</small>',
+
+      '<font color="#45C1D0">F</font>' => '<font color="#45C1D0">F</font>',
+
+      '<tt>monospaced</tt>'       => '<tt>monospaced</tt>',
+
+      '<s>strike</s>'             => '<s>strike</s>',
+      '<strike>strike</strike>'   => '<strike>strike</strike>',
+      '<del>strike</del>'         => '<del>strike</del>',
+
       '<u>underline</u>'          => '<u>underline</u>',
 
+      '<super>superscript</super>'=> '<super>superscript</super>',
+
+      '<sub>subscript</sub>'      => '<sub>subscript</sub>',
+
+      '<ul>bullet point</ul>'     => '<ul>bullet point</ul>',
+      '<li>bullet point</li>'     => '<li>bullet point</li>',
+
+      '<br>line break'            => '<br>line break',
+
+      '<div>division</div>'       => '<div>division</div>',
+
+      '<span style="color:#45C1D0">inline</span>' => '<span style="color:#45C1D0">inline</span>',
+
+      '<p>para</p>'               => '<p>para</p>',
+      '<p dir="ltr">para</p>'     => '<p dir="ltr">para</p>',
+
       '<b>%@</b>'                 => '&lt;b>%s&lt;/b>',
+      '<em>%@</em>'               => '&lt;em>%s&lt;/em>',
+
       '<i>%@</i>'                 => '&lt;i>%s&lt;/i>',
+      '<cite>%@</cite>'           => '&lt;cite>%s&lt;/cite>',
+      '<dfn>%@</dfn>'             => '&lt;dfn>%s&lt;/dfn>',
+
+      '<big>%@</big>'             => '&lt;big>%s&lt;/big>',
+      '<small>%@</small>'         => '&lt;small>%s&lt;/small>',
+
+      '<font color="#45C1D0>%@</font>' => '&lt;font color="#45C1D0>%s&lt;/font>',
+
+      '<tt>%@</tt>'               => '&lt;tt>%s&lt;/tt>',
+
+      '<s>%@</s>'                 => '&lt;s>%s&lt;/s>',
+      '<strike>%@</strike>'       => '&lt;strike>%s&lt;/strike>',
+      '<del>%@</del>'             => '&lt;del>%s&lt;/del>',
+
       '<u>%@</u>'                 => '&lt;u>%s&lt;/u>',
 
-      '<span>inline</span>'       => '&lt;span>inline&lt;/span>',
-      '<p>paragraph</p>'          => '&lt;p>paragraph&lt;/p>',
+      '<super>%@</super>'         => '&lt;super>%s&lt;/super>',
+
+      '<sub>%@</sub>'             => '&lt;sub>%s&lt;/sub>',
+
+      '<ul>%@</ul>'               => '&lt;ul>%s&lt;/ul>',
+      '<li>%@</li>'               => '&lt;li>%s&lt;/li>',
+
+      '<br>%@'                    => '&lt;br>%s',
+
+      '<div>%@</div>'             => '&lt;div>%s&lt;/div>',
+
+      '<span style="color:#45C1D0">%@</span>' => '&lt;span style="color:#45C1D0">%s&lt;/span>',
+
+      '<p>%@</p>'                 => '&lt;p>%s&lt;/p>',
+      '<p dir="ltr">%@</p>'       => '&lt;p dir="ltr">%s&lt;/p>',
 
       '<a href="target">link</a>'     => '<a href="target">link</a>',
       '<a href="target">"link"</a>'   => '<a href="target">\"link\"</a>',
       '<a href="target"></a>"out"'    => '<a href="target"></a>\"out\"',
       '<a href="http://url.com?param=1&param2=3&param3=%20">link</a>'   =>   '<a href="http://url.com?param=1&param2=3&param3=%20">link</a>',
 
-      '<p>escaped</p><![CDATA[]]>'                => '&lt;p>escaped&lt;/p><![CDATA[]]>',
-      '<![CDATA[]]><p>escaped</p>'                => '<![CDATA[]]>&lt;p>escaped&lt;/p>',
-      '<![CDATA[<p>unescaped</p>]]>'              => '<![CDATA[<p>unescaped</p>]]>',
-      '<![CDATA[<p>unescaped with %@</p>]]>'      => '<![CDATA[<p>unescaped with %s</p>]]>',
-      '<![CDATA[]]><![CDATA[<p>unescaped</p>]]>'  => '<![CDATA[]]><![CDATA[<p>unescaped</p>]]>',
+      '<q>escaped</q><![CDATA[]]>'                => '&lt;q>escaped&lt;/q><![CDATA[]]>',
+      '<![CDATA[]]><q>escaped</q>'                => '<![CDATA[]]>&lt;q>escaped&lt;/q>',
+      '<![CDATA[<q>unescaped</q>]]>'              => '<![CDATA[<q>unescaped</q>]]>',
+      '<![CDATA[<q>unescaped with %@</q>]]>'      => '<![CDATA[<q>unescaped with %s</q>]]>',
+      '<![CDATA[]]><![CDATA[<q>unescaped</q>]]>'  => '<![CDATA[]]><![CDATA[<q>unescaped</q>]]>',
 
       '<![CDATA[&]]>'  => '<![CDATA[&]]>',
       '<![CDATA[\']]>' => '<![CDATA[\']]>',

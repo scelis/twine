@@ -1,3 +1,7 @@
+# next version
+
+- Improvement: Support more Android styling tags (#278)
+
 # 1.0.5 (2019-02-24)
 
 - Bugfix: Incorrect language detection when reading localization files (#251)
