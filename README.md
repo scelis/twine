@@ -80,7 +80,7 @@ Twine currently supports the following output formats:
 * [Android String Resources][androidstrings] (format: android)
     * HTML tags will be escaped by replacing `<` with `&lt`
     * Tags inside `<![CDATA[` won't be escaped.
-    * Supports [basic styling][androidstyling] with `<b>`, `<i>`, `<u>` and `<a>` links.
+    * Supports [basic styling][androidstyling] according to [Android documentation](https://developer.android.com/guide/topics/resources/string-resource.html#StylingWithHTML).  All of the documented tags are supported, in addition to `<a>` links.
 	    * These tags will *not* be escaped if the string doesn't contain placeholders. You can reference them directly in your layouts or by using [`getText()`](https://developer.android.com/reference/android/content/res/Resources.html#getText(int)) to read them programatically.
 	    * These tags *will* be escaped if the string contains placeholders. You can use [`getString()`](https://developer.android.com/reference/android/content/res/Resources.html#getString(int,%20java.lang.Object...)) combined with [`fromHtml`](https://developer.android.com/reference/android/text/Html.html#fromHtml(java.lang.String)) as shown in the [documentation][androidstyling] to display them.
 	* See [\#212](https://github.com/scelis/twine/issues/212) for details.
