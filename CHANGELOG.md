@@ -1,6 +1,7 @@
-# next version
+# 1.0.6 (2019-05-28)
 
 - Improvement: Support more Android styling tags (#278)
+- Improvement: Update Android output path for default language (#276)
 
 # 1.0.5 (2019-02-24)
 
