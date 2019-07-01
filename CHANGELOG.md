@@ -1,5 +1,5 @@
 # Unreleased
-- Feature: Add --escape-all-tags option to force escping of Android styling tags (#281)
+- Feature: Add --escape-all-tags option to force escaping of Android styling tags (#281)
 
 # 1.0.6 (2019-05-28)
 
