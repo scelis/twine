@@ -125,7 +125,7 @@ module Twine
         # if not, escape opening angle brackes unless it's a supported styling tag
         # https://github.com/scelis/twine/issues/212
         # https://stackoverflow.com/questions/3235131/#18199543
-        if number_of_twine_placeholders(value) > 0
+        if number_of_twine_placeholders(value) > 0 or @options[:escape_all_tags]
           # matches all `<` but <![CDATA
           angle_bracket = /<(?!(\/?(\!\[CDATA)))/
         else
