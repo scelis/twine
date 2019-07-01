@@ -21,6 +21,13 @@ jobs:
             - checkout
             - run: bundle install
             - run: bundle exec rake test TESTOPTS="--ci-dir=$CIRCLE_TEST_REPORTS/reports"
+    "ruby-2.5":
+        docker:
+            - image: circleci/ruby:2.5
+        steps:
+            - checkout
+            - run: bundle install
+            - run: bundle exec rake test TESTOPTS="--ci-dir=$CIRCLE_TEST_REPORTS/reports"
 workflows:
     version: 2
     build:
@@ -28,3 +35,4 @@ workflows:
             - "ruby-2.2"
             - "ruby-2.3"
             - "ruby-2.4"
+            - "ruby-2.5"
