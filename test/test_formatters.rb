@@ -138,6 +138,11 @@ class TestAndroidFormatter < FormatterTest
       '<xliff:g id="42">untouched</xliff:g>' => '<xliff:g id="42">untouched</xliff:g>',
       '<xliff:g id="1">first</xliff:g> inbetween <xliff:g id="2">second</xliff:g>' => '<xliff:g id="1">first</xliff:g> inbetween <xliff:g id="2">second</xliff:g>'
     }
+    @escape_all_test_values = {
+      '<b>bold</b>'               => '&lt;b>bold&lt;/b>',
+      '<i>italic</i>'             => '&lt;i>italic&lt;/i>',
+      '<u>underline</u>'          => '&lt;u>underline&lt;/u>'      
+    }
   end
 
   def test_read_format
@@ -217,6 +222,11 @@ class TestAndroidFormatter < FormatterTest
       @formatter.set_translation_for_key 'key1', 'en', input
       assert_equal expected, @empty_twine_file.definitions_by_key['key1'].translations['en']
     end
+
+    @escape_all_test_values.each do |expected, input|
+      @formatter.set_translation_for_key 'key1', 'en', input
+      assert_equal expected, @empty_twine_file.definitions_by_key['key1'].translations['en']
+    end
   end
 
   def test_format_file
@@ -243,6 +253,11 @@ class TestAndroidFormatter < FormatterTest
 
   def test_format_value_escaping
     @escape_test_values.each do |input, expected|
+      assert_equal expected, @formatter.format_value(input)
+    end
+
+    @formatter.options.merge!({ escape_all_tags: true })
+    @escape_all_test_values.each do |input, expected|
       assert_equal expected, @formatter.format_value(input)
     end
   end

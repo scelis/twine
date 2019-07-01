@@ -48,6 +48,13 @@ class CLITest < TwineTest
     assert_equal 'UTF16', @options[:encoding]
   end
 
+  def assert_option_escape_all_tags
+    parse_with "--escape-all-tags"
+    assert @options[:escape_all_tags]
+    parse_with "--no-escape-all-tags"
+    refute @options[:escape_all_tags]
+  end
+
   def assert_option_format
     random_format = Twine::Formatters.formatters.sample.format_name.downcase
     parse_with "--format #{random_format}"
@@ -177,6 +184,7 @@ class TestGenerateLocalizationFileCLI < CLITest
     assert_help
     assert_option_developer_language
     assert_option_encoding
+    assert_option_escape_all_tags
     assert_option_format
     assert_option_include
     assert_option_single_language
@@ -217,6 +225,7 @@ class TestGenerateAllLocalizationFilesCLI < CLITest
     assert_help
     assert_option_developer_language
     assert_option_encoding
+    assert_option_escape_all_tags
     assert_option_format
     assert_option_include
     assert_option_quiet
@@ -268,6 +277,7 @@ class TestGenerateLocalizationArchiveCLI < CLITest
     assert_help
     assert_option_developer_language
     assert_option_encoding
+    assert_option_escape_all_tags
     assert_option_include
     assert_option_quiet
     assert_option_tags
