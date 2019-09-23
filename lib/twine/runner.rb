@@ -241,6 +241,7 @@ module Twine
       duplicate_keys = Set.new
       keys_without_tags = Set.new
       invalid_keys = Set.new
+      keys_with_python_only_placeholders = Set.new
       valid_key_regex = /^[A-Za-z0-9_]+$/
 
       @twine_file.sections.each do |section|
@@ -253,6 +254,8 @@ module Twine
           keys_without_tags.add(definition.key) if definition.tags == nil or definition.tags.length == 0
 
           invalid_keys << definition.key unless definition.key =~ valid_key_regex
+
+          keys_with_python_only_placeholders << definition.key if definition.translations.values.any? { |v| Placeholders.contains_python_specific_placeholder(v) }
         end
       end
 
@@ -273,6 +276,10 @@ module Twine
 
       unless invalid_keys.empty?
         errors << "Found key(s) with invalid characters:\n#{join_keys.call(invalid_keys)}"
+      end
+
+      unless keys_with_python_only_placeholders.empty?
+        errors << "Found key(s) with placeholders that are only supported by Python:\n#{join_keys.call(keys_with_python_only_placeholders)}"
       end
 
       raise Twine::Error.new errors.join("\n\n") unless errors.empty?

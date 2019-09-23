@@ -58,4 +58,12 @@ class TestValidateTwineFile < CommandTest
       Twine::Runner.new(@options.merge(pedantic: true), @twine_file).validate_twine_file
     end
   end
+
+  def test_reports_python_specific_placeholders
+    random_definition.translations["en"] = "%(python_only)s"
+
+    assert_raises Twine::Error do
+      Twine::Runner.new(@options, @twine_file).validate_twine_file
+    end
+  end
 end

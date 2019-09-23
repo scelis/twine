@@ -72,5 +72,11 @@ module Twine
     def convert_placeholders_from_flash_to_twine(input)
       input.gsub /\{\d+\}/, '%@'
     end
+
+    # Python supports placeholders in the form of `%(amount)03d`
+    # see https://docs.python.org/3/library/stdtypes.html#printf-style-string-formatting
+    def contains_python_specific_placeholder(input)
+      /%\([a-zA-Z0-9_-]+\)#{PLACEHOLDER_PARAMETER_FLAGS_WIDTH_PRECISION_LENGTH}#{PLACEHOLDER_TYPES}/.match(input) != nil
+    end
   end
 end
