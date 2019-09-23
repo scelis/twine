@@ -1,5 +1,6 @@
 module Twine
   module Formatters
+    # For a description of the .po file format, see https://www.gnu.org/software/gettext/manual/html_node/PO-Files.html
     class Django < Abstract
       def format_name
         'django'
@@ -14,9 +15,9 @@ module Twine
       end
 
       def read(io, lang)
-        comment_regex = /#\. *"?(.*)"?$/
-        key_regex = /msgid *"(.*)"$/
-        value_regex = /msgstr *"(.*)"$/m
+        comment_regex = /^\s*#\. *"?(.*)"?$/
+        key_regex = /^msgid *"(.*)"$/
+        value_regex = /^msgstr *"(.*)"$/m
 
         while line = io.gets          
           comment_match = comment_regex.match(line)
@@ -58,7 +59,7 @@ module Twine
       end
 
       def format_section_header(section)
-        "#--------- #{section.name} ---------#\n"
+        "# --------- #{section.name} --------- #\n"
       end
 
       def format_definition(definition, lang)

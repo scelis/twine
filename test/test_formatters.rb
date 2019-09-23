@@ -554,6 +554,19 @@ class TestDjangoFormatter < FormatterTest
     language = %w(en-GB de fr).sample
     assert_equal language, @formatter.determine_language_given_path("/output/#{language}/#{@formatter.default_file_name}")
   end
+
+  def test_ignores_commented_out_strings
+    content = <<-EOCONTENT
+      #~ msgid "foo"
+      #~ msgstr "This should be ignored"
+    EOCONTENT
+
+    io = StringIO.new(content)
+
+    @formatter.read io, 'en'
+
+    assert_nil @empty_twine_file.definitions_by_key["foo"]
+  end
 end
 
 class TestFlashFormatter < FormatterTest

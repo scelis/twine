@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 
-#--------- Section 1 ---------#
+# --------- Section 1 --------- #
 
 #. comment key1
 # base translation: "value1-english"
@@ -17,7 +17,7 @@ msgid "key2"
 msgstr "value2-english"
 
 
-#--------- Section 2 ---------#
+# --------- Section 2 --------- #
 
 # base translation: "value3-english"
 msgid "key3"
