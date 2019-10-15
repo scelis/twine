@@ -122,4 +122,21 @@ class PlaceholderTest < TwineTest
       assert_equal "some %@ more %@ text %@", from_flash("some {0} more {1} text {2}")
     end
   end
+
+  class PythonPlaceholder < PlaceholderTest
+    def test_negative_for_regular_placeholders
+      assert_equal false, Twine::Placeholders.contains_python_specific_placeholder(placeholder)
+    end
+
+    def test_positive_for_named_placeholders
+      inputs = [
+        "%(language)s has",
+        "For %(number)03d quotes",
+        "bought on %(app_name)s"
+      ]
+      inputs.each do |input|
+        assert_equal true, Twine::Placeholders.contains_python_specific_placeholder(input)
+      end
+    end
+  end
 end
