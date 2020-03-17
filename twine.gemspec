@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
   s.version      = Twine::VERSION
   s.date         = Time.now.strftime('%Y-%m-%d')
   s.summary      = "Manage strings and their translations for your iOS, Android and other projects."
-  s.homepage     = "https://github.com/mobiata/twine"
+  s.homepage     = "https://github.com/scelis/twine"
   s.email        = "twine@mobiata.com"
   s.authors      = [ "Sebastian Celis" ]
   s.has_rdoc     = false
@@ -21,7 +21,7 @@ Gem::Specification.new do |s|
   s.required_ruby_version = ">= 2.0"
   s.add_runtime_dependency('rubyzip', "~> 1.1")
   s.add_runtime_dependency('safe_yaml', "~> 1.0")
-  s.add_development_dependency('rake', "~> 10.4")
+  s.add_development_dependency('rake', "~> 13.0")
   s.add_development_dependency('minitest', "~> 5.5")
   s.add_development_dependency('minitest-ci', "~> 3.0")
   s.add_development_dependency('mocha', "~> 1.1")
