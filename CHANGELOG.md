@@ -1,5 +1,8 @@
-# Unreleased
+# 1.1 (2020-07-09)
+
 - Feature: Add --escape-all-tags option to force escaping of Android styling tags (#281)
+- Improvement: Twine now requires Ruby 2.4 or greater and rubyzip 2.0 or greater (#297)
+- Bugfix: Fix issues with the Django formatter (#289)
 
 # 1.0.6 (2019-05-28)
 
