@@ -212,7 +212,7 @@ apply plugin: 'com.github.jruby-gradle.base'
 
 dependencies {
 	/* NOTE: Set your prefered version of twine here. */
-	jrubyExec 'rubygems:twine:1.0.3'
+	jrubyExec 'rubygems:twine:1.1'
 }
 
 task generateLocalizations (type: JRubyExec) {
