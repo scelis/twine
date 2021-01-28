@@ -1,3 +1,7 @@
+# 1.1.1 (2021-01-28)
+
+- Bugfix: Properly parse multiline comments in Android XML files (#300)
+
 # 1.1 (2020-07-09)
 
 - Feature: Add --escape-all-tags option to force escaping of Android styling tags (#281)
