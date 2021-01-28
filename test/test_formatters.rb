@@ -167,6 +167,24 @@ class TestAndroidFormatter < FormatterTest
     assert_equal 'This is\n a string', @empty_twine_file.definitions_by_key["foo"].translations['en']
   end
 
+  def test_read_multiline_comment
+    content = <<-EOCONTENT
+      <?xml version="1.0" encoding="utf-8"?>
+      <resources>
+        <!-- multiline
+        comment -->
+        <string name="foo">This is
+     a string</string>
+      </resources>
+    EOCONTENT
+
+    io = StringIO.new(content)
+
+    @formatter.read io, 'en'
+
+    assert_equal 'multiline comment', @empty_twine_file.definitions_by_key["foo"].comment
+  end
+
   def test_read_html_tags
     content = <<-EOCONTENT
       <?xml version="1.0" encoding="utf-8"?>

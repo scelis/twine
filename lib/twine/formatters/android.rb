@@ -65,6 +65,7 @@ module Twine
         document.root.children.each do |child|
           if child.is_a? REXML::Comment
             content = child.string.strip
+            content.gsub!(/[\s]+/, ' ')
             comment = content if content.length > 0 and not content.start_with?("SECTION:")
           elsif child.is_a? REXML::Element
             next unless child.name == 'string'
