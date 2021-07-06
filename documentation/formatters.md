@@ -83,7 +83,7 @@ Plugins are specified as values for the `gems` key. The following is an example 
 gems: wicked_twine
 ```
 
-Multiple gems can also be specfied in the yaml file.
+Multiple gems can also be specified in the yaml file.
 
 ```
 gems: [wicked_twine, some_other_plugin]
