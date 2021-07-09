@@ -44,7 +44,7 @@ module Twine
     end
 
     def translation_for_lang(lang)
-      translation = [lang].flatten.map { |l| @translations[l] }.first
+      translation = [lang].flatten.map { |l| @translations[l] }.compact.first
 
       translation = reference.translation_for_lang(lang) if translation.nil? && reference
 
