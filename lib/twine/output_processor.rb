@@ -13,6 +13,7 @@ module Twine
 
       def fallback_languages(language)
         fallback_mapping = {
+          'zh-CN' => 'zh-Hans', # if we don't have a zh-CN translation, try zh-Hans before en
           'zh-TW' => 'zh-Hant' # if we don't have a zh-TW translation, try zh-Hant before en
         }
 
