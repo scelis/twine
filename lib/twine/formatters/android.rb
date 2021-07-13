@@ -31,7 +31,7 @@ module Twine
           else
             # The language is defined by a two-letter ISO 639-1 language code, optionally followed by a two letter ISO 3166-1-alpha-2 region code (preceded by lowercase "r").
             # see http://developer.android.com/guide/topics/resources/providing-resources.html#AlternativeResources
-            match = /^values-([a-z]{2}(-r[a-z]{2})?)$/i.match(segment)
+            match = /^values-([a-z]{2}(-r[a-z]{2,4})?)$/i.match(segment)
 
             return match[1].sub('-r', '-') if match
           end
