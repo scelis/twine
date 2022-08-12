@@ -1,0 +1,15 @@
+{
+    "@@locale": "en",
+
+    "key1": "value1-english",
+    "@key1": {
+        "description": "comment key1"
+    },
+    "key2": "value2-english",
+
+    "key3": "value3-english",
+    "key4": "value4-english",
+    "@key4": {
+        "description": "comment key4"
+    }
+}

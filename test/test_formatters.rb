@@ -482,6 +482,58 @@ class TestJQueryFormatter < FormatterTest
   end
 end
 
+class TestFlutterFormatter < FormatterTest
+
+  def setup
+    super Twine::Formatters::Flutter
+  end
+
+  def test_read_format
+    @formatter.read content_io('formatter_flutter.arb'), 'en'
+
+    assert_translations_read_correctly
+  end
+
+  def test_format_file
+    formatter = Twine::Formatters::Flutter.new
+    formatter.twine_file = @twine_file
+    assert_equal content('formatter_jquery.json'), formatter.format_file('en')
+  end
+
+  def test_empty_sections_are_removed
+    @twine_file = build_twine_file 'en' do
+      add_section 'Section 1' do
+      end
+
+      add_section 'Section 2' do
+        add_definition key: 'value'
+      end
+    end
+    formatter = Twine::Formatters::Flutter.new
+    formatter.twine_file = @twine_file
+    refute_includes formatter.format_file('en'), ','
+  end
+
+  def test_format_value_with_newline
+    assert_equal "value\nwith\nline\nbreaks", @formatter.format_value("value\nwith\nline\nbreaks")
+  end
+
+  def test_deducts_language_from_filename
+    language = KNOWN_LANGUAGES.sample
+    assert_equal language, @formatter.determine_language_given_path("#{language}.arb")
+  end
+
+  def test_deducts_language_from_extended_filename
+    language = KNOWN_LANGUAGES.sample
+    assert_equal language, @formatter.determine_language_given_path("something-#{language}.arb")
+  end
+
+  def test_deducts_language_from_path
+    language = %w(en-GB de fr).sample
+    assert_equal language, @formatter.determine_language_given_path("lib/l10n/arb/app_#{language}.arb")
+  end
+end
+
 class TestGettextFormatter < FormatterTest
   def setup
     super Twine::Formatters::Gettext

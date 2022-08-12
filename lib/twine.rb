@@ -33,6 +33,7 @@ module Twine
   require 'twine/formatters/apple'
   require 'twine/formatters/django'
   require 'twine/formatters/flash'
+  require 'twine/formatters/flutter'
   require 'twine/formatters/gettext'
   require 'twine/formatters/jquery'
   require 'twine/formatters/tizen'
