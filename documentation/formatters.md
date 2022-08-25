@@ -88,3 +88,8 @@ Multiple gems can also be specified in the yaml file.
 ```
 gems: [wicked_twine, some_other_plugin]
 ```
+
+## Sample Plugins
+
+* [appium-twine](https://github.com/appium/appium_twine)
+* [twine-flutter](https://github.com/tiknil/twine-flutter)
