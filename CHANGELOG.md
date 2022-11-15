@@ -1,3 +1,7 @@
+# 1.1.2 (2022-11-15)
+
+- Bugfix: Fixed a runtime error caused by a missing rexml dependency in Ruby 3 (#312)
+
 # 1.1.1 (2021-01-28)
 
 - Bugfix: Properly parse multiline comments in Android XML files (#300)
