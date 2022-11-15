@@ -18,7 +18,7 @@ Gem::Specification.new do |s|
   s.files       += Dir.glob("test/**/*")
   s.test_files   = Dir.glob("test/test_*")
 
-  s.required_ruby_version = ">= 2.4"
+  s.required_ruby_version = ">= 2.6"
   s.add_runtime_dependency('rexml', "~> 3.2")
   s.add_runtime_dependency('rubyzip', "~> 2.0")
   s.add_runtime_dependency('safe_yaml', "~> 1.0")
