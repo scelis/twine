@@ -3,3 +3,6 @@
 *.lock
 .ruby-version
 .DS_Store
+bundle/
+.bundle/
+.DS_Store
