@@ -37,12 +37,6 @@ class TestConsumeLocalizationFile < CommandTest
     new_runner('fr', 'fr.json').consume_localization_file
   end
 
-  def test_deducts_gettext_format_from_output_path
-    prepare_mock_read_formatter Twine::Formatters::Gettext
-
-    new_runner('fr', 'fr.po').consume_localization_file
-  end
-
   def test_deducts_language_from_input_path
     random_language = KNOWN_LANGUAGES.sample
     formatter = prepare_mock_formatter Twine::Formatters::Android

@@ -31,11 +31,7 @@ module Twine
   require 'twine/formatters/abstract'
   require 'twine/formatters/android'
   require 'twine/formatters/apple'
-  require 'twine/formatters/django'
-  require 'twine/formatters/flash'
-  require 'twine/formatters/gettext'
   require 'twine/formatters/jquery'
-  require 'twine/formatters/tizen'
   require 'twine/runner'
   require 'twine/cli'
 end

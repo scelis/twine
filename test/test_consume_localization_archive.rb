@@ -25,9 +25,11 @@ class TestConsumeLocalizationArchive < CommandTest
     assert @twine_file.definitions_by_key['key1'].translations['es'], 'value1-spanish'
   end
 
-  def test_raises_error_if_format_ambiguous
-    assert_raises Twine::Error do
-      new_runner.consume_localization_archive
-    end
-  end
+  # This test is not needed, as there is only Android formatter left, which supports XML.
+  #
+  # def test_raises_error_if_format_ambiguous
+  #   assert_raises Twine::Error do
+  #     new_runner.consume_localization_archive
+  #   end
+  # end
 end

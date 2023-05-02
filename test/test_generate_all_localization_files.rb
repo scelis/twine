@@ -31,6 +31,7 @@ class TestGenerateAllLocalizationFiles < CommandTest
     end
 
     def test_returns_error_for_ambiguous_output_path
+      @output_dir = Dir.mktmpdir
       assert_raises Twine::Error do
         new_runner(format: nil).generate_all_localization_files
       end
