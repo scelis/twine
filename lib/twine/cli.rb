@@ -45,14 +45,6 @@ module Twine
           files are UTF-16 without BOM, you need to specify if it's UTF-16LE or UTF16-BE.
         DESC
       },
-      escape_all_tags: {
-        switch: ['--[no-]escape-all-tags'],
-        description: <<-DESC,
-          Always escape all HTML tags. By default the Android formatter will ONLY escape styling tags, if a 
-          string also contains placeholders. This flag enforces that styling tags are escaped regardless of
-          placeholders.
-        DESC
-      },
       file_name: {
         switch: ['-n', '--file-name FILE_NAME'],
         description: 'This flag may be used to overwrite the default file name of the format.'
@@ -62,17 +54,6 @@ module Twine
         description: <<-DESC,
           The file format to read or write: (#{ALL_FORMATS.join(', ')}). Additional formatters can be placed in the formats/ directory.
         DESC
-      },
-      :include => {
-        switch: ['-i', '--include SET', [:all, :translated, :untranslated]],
-        description: <<-DESC,
-          This flag will determine which definitions are included. It's possible values are:
-            all: All definitions both translated and untranslated for the specified language are included. 
-              This is the default value.
-            translated: Only definitions with translation for the specified language are included.
-            untranslated: Only definitions without translation for the specified language are included.
-        DESC
-        default: :all
       },
       languages: {
         switch: ['-l', '--lang LANGUAGES', Array],
@@ -90,22 +71,6 @@ module Twine
         switch: ['-q', '--[no-]quiet'],
         description: 'Suppress all console output except error messages.'
       },
-      tags: {
-        switch: ['-t', '--tags TAG1,TAG2,TAG3', Array],
-        description: <<-DESC,
-          Only definitions with ANY of the specified tags will be processed. Specify this option multiple
-          times to only include definitions with ALL of the specified tags. Prefix a tag with ~ to include
-          definitions NOT containing that tag. Omit this option to match all definitions in the Twine data file.
-        DESC
-        repeated: true
-      },
-      untagged: {
-        switch: ['-u', '--[no-]untagged'],
-        description: <<-DESC,
-          If you have specified tags using the --tags flag, then only those tags will be selected. If you also 
-          want to select all definitions that are untagged, then you can specify this option to do so.
-        DESC
-      },
       validate: {
         switch: ['--[no-]validate'],
         description: 'Validate the Twine file before formatting it.'
@@ -113,28 +78,6 @@ module Twine
     }
 
     COMMANDS = {
-      'generate-localization-file' => {
-        description: 'Generates a localization file in a certain LANGUAGE given a particular FORMAT. This script will attempt to guess both the language and the format given the filename and extension. For example, "ko.xml" will generate a Korean language file for Android.',
-        arguments: [:twine_file, :output_path],
-        optional_options: [
-          :developer_language,
-          :encoding,
-          :escape_all_tags,
-          :format,
-          :include,
-          :languages,
-          :quiet,
-          :tags,
-          :untagged,
-          :validate
-        ],
-        option_validation: Proc.new { |options|
-          if options[:languages] and options[:languages].length > 1
-            raise Twine::Error.new 'specify only a single language for the `generate-localization-file` command.'
-          end
-        },
-        example: 'twine generate-localization-file twine.txt ko.xml --tags FT'
-      },
       'generate-all-localization-files' => {
         description: 'Generates all the localization files necessary for a given project. The parent directory to all of the locale-specific directories in your project should be specified as the INPUT_OR_OUTPUT_PATH. This command will most often be executed by your build script so that each build always contains the most recent translations.',
         arguments: [:twine_file, :output_path],
@@ -142,85 +85,12 @@ module Twine
           :create_folders,
           :developer_language,
           :encoding,
-          :escape_all_tags,
           :file_name,
           :format,
-          :include,
           :quiet,
-          :tags,
-          :untagged,
           :validate
         ],
         example: 'twine generate-all-localization-files twine.txt Resources/Locales/ --tags FT,FB'
-      },
-      'generate-localization-archive' => {
-        description: 'Generates a zip archive of localization files in a given format. The purpose of this command is to create a very simple archive that can be handed off to a translation team. The translation team can unzip the archive, translate all of the strings in the archived files, zip everything back up, and then hand that final archive back to be consumed by the consume-localization-archive command.',
-        arguments: [:twine_file, :output_path],
-        required_options: [
-          :format
-        ],
-        optional_options: [
-          :developer_language,
-          :encoding,
-          :escape_all_tags,
-          :include,
-          :quiet,
-          :tags,
-          :untagged,
-          :validate
-        ],
-        example: 'twine generate-localization-archive twine.txt LocDrop5.zip --tags FT,FB --format android --lang de,en,en-GB,ja,ko'
-      },
-      'consume-localization-file' => {
-        description: 'Slurps all of the translations from a localization file into the specified TWINE_FILE. If you have some files returned to you by your translators you can use this command to incorporate all of their changes. This script will attempt to guess both the language and the format given the filename and extension. For example, "ja.strings" will assume that the file is a Japanese iOS strings file.',
-        arguments: [:twine_file, :input_path],
-        optional_options: [
-          :consume_all,
-          :consume_comments,
-          :developer_language,
-          :encoding,
-          :format,
-          :languages,
-          :output_path,
-          :quiet,
-          :tags
-        ],
-        option_validation: Proc.new { |options|
-          if options[:languages] and options[:languages].length > 1
-            raise Twine::Error.new 'specify only a single language for the `consume-localization-file` command.'
-          end
-        },
-        example: 'twine consume-localization-file twine.txt ja.strings'
-      },
-      'consume-all-localization-files' => {
-        description: 'Slurps all of the translations from a directory into the specified TWINE_FILE. If you have some files returned to you by your translators you can use this command to incorporate all of their changes. This script will attempt to guess both the language and the format given the filename and extension. For example, "ja.strings" will assume that the file is a Japanese iOS strings file.',
-        arguments: [:twine_file, :input_path],
-        optional_options: [
-          :consume_all,
-          :consume_comments,
-          :developer_language,
-          :encoding,
-          :format,
-          :output_path,
-          :quiet,
-          :tags
-        ],
-        example: 'twine consume-all-localization-files twine.txt Resources/Locales/ --developer-language en --tags DefaultTag1,DefaultTag2'
-      },
-      'consume-localization-archive' => {
-        description: 'Consumes an archive of translated files. This archive should be in the same format as the one created by the generate-localization-archive command.',
-        arguments: [:twine_file, :input_path],
-        optional_options: [
-          :consume_all,
-          :consume_comments,
-          :developer_language,
-          :encoding,
-          :format,
-          :output_path,
-          :quiet,
-          :tags
-        ],
-        example: 'twine consume-localization-archive twine.txt LocDrop5.zip'
       },
       'validate-twine-file' => {
         description: 'Validates that the given Twine file is parseable, contains no duplicates, and that no key contains invalid characters. Exits with a non-zero exit code if those criteria are not met.',

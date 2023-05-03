@@ -13,6 +13,10 @@ module Twine
         'localize.json'
       end
 
+      def default_plurals_file_name
+        ''
+      end
+
       def determine_language_given_path(path)
         match = /^.+-([^-]{2})\.json$/.match File.basename(path)
         return match[1] if match
@@ -20,27 +24,17 @@ module Twine
         return super
       end
 
-      def read(io, lang)
-        begin
-          require "json"
-        rescue LoadError
-          raise Twine::Error.new "You must run `gem install json` in order to read or write jquery-localize files."
-        end
-
-        json = JSON.load(io)
-        json.each do |key, value|
-          set_translation_for_key(key, lang, value)
-        end
-      end
-
       def format_file(lang)
         result = super
-        return result unless result
-        "{\n#{super}\n}\n"
+        unless result
+          return FormatterResult.new("{\n#{super}\n}\n", nil)
+        end
+
+        FormatterResult.new(result.singleOutput + "\n" + result.pluralsOutput, nil)
       end
 
-      def format_sections(twine_file, lang)
-        sections = twine_file.sections.map { |section| format_section(section, lang) }
+      def format_sections(twine_file, lang, handlePlurals)
+        sections = twine_file.sections.map { |section| format_section(section, lang, handlePlurals) }
         sections.delete_if(&:empty?)
         sections.join(",\n\n")
       end
@@ -48,16 +42,25 @@ module Twine
       def format_section_header(section)
       end
 
-      def format_section(section, lang)
-        definitions = section.definitions.dup
+      def format_section(section, lang, handlePlurals)
+        definitions = prepareDefinitions(section, lang, handlePlurals)
+        return "" if definitions.empty?
 
-        definitions.map! { |definition| format_definition(definition, lang) }
+        definitions.map! { |definition| format_definition(definition, lang, definition.translations.find { |t| t.pluralValues.empty? } == nil) }
         definitions.compact! # remove nil definitions
         definitions.join(",\n")
       end
 
       def key_value_pattern
         "\"%{key}\":\"%{value}\""
+      end
+
+      def format_pluralized_value(key, pluralValues, lang)
+        result = ''
+        result += pluralValues.map { |plural_key, plural_value|
+          "\"#{key}_#{plural_key}\":\"#{escape_quotes(plural_value)}\""
+        }.join(",\n")
+        result
       end
 
       def format_key(key)

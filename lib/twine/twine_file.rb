@@ -1,9 +1,21 @@
 module Twine
+  class TwineTranslation
+    attr_reader :lang
+    attr_accessor :singleValue
+    attr_accessor :pluralValues
+
+    def initialize(lang)
+      @lang = lang
+      @singleValue = nil
+      @pluralValues = {}
+    end
+  end
+
   class TwineDefinition
     attr_reader :key
     attr_accessor :comment
     attr_accessor :tags
-    attr_reader :translations
+    attr_accessor :translations
     attr_accessor :reference
     attr_accessor :reference_key
 
@@ -11,7 +23,7 @@ module Twine
       @key = key
       @comment = nil
       @tags = nil
-      @translations = {}
+      @translations = []
     end
 
     def comment
@@ -44,10 +56,8 @@ module Twine
     end
 
     def translation_for_lang(lang)
-      translation = [lang].flatten.map { |l| @translations[l] }.compact.first
-
+      translation = translations.find { |t| t.lang == lang }
       translation = reference.translation_for_lang(lang) if translation.nil? && reference
-
       return translation
     end
   end
@@ -70,7 +80,7 @@ module Twine
     private
 
     def match_key(text)
-      match = /^\[(.+)\]$/.match(text)
+      match = /^\[\[(.+)\]\]$/.match(text)
       return match[1] if match
     end
 
@@ -108,6 +118,7 @@ module Twine
         line_num = 0
         current_section = nil
         current_definition = nil
+        current_translation = nil
         while line = f.gets
           parsed = false
           line.strip!
@@ -117,17 +128,19 @@ module Twine
             next
           end
 
-          if line.length > 4 && line[0, 2] == '[['
-            match = /^\[\[(.+)\]\]$/.match(line)
+          if line.length > 6 && line[0, 3] == '[[['
+            match = /^\[\[\[(.+)\]\]\]$/.match(line)
             if match
               current_section = TwineSection.new(match[1])
               @sections << current_section
               parsed = true
             end
-          elsif line.length > 2 && line[0, 1] == '['
+          elsif line.length > 4 && line[0, 2] == '[['
             key = match_key(line)
             if key
               current_definition = TwineDefinition.new(key)
+              current_translation = nil
+
               @definitions_by_key[current_definition.key] = current_definition
               if !current_section
                 current_section = TwineSection.new('')
@@ -136,6 +149,14 @@ module Twine
               current_section.definitions << current_definition
               parsed = true
             end
+          elsif line.length > 2 && line[0, 1] == '['
+            language = /^\[(.+)\]$/.match(line)[1]
+            current_translation = TwineTranslation.new(language)
+            current_definition.translations << current_translation
+            if !@language_codes.include? language
+              add_language_code(language)
+            end
+            parsed = true
           else
             match = /^([^=]+)=(.*)$/.match(line)
             if match
@@ -151,11 +172,18 @@ module Twine
                 current_definition.tags = value.split(',')
               when 'ref'
                 current_definition.reference_key = value if value
-              else
-                if !@language_codes.include? key
-                  add_language_code(key)
+              else              
+                if current_translation == nil
+                  single_translation = TwineTranslation.new(key)
+                  single_translation.singleValue = value
+                  current_definition.translations << single_translation
+                  
+                  if !@language_codes.include? key
+                    add_language_code(key)
+                  end
+                else
+                  current_translation.pluralValues[key] = value
                 end
-                current_definition.translations[key] = value
               end
               parsed = true
             end
@@ -214,7 +242,7 @@ module Twine
     private
 
     def write_value(definition, language, file)
-      value = definition.translations[language]
+      value = definition.translations.find { |translation| translation.lang == language }
       return nil unless value
 
       if value[0] == ' ' || value[-1] == ' ' || (value[0] == '`' && value[-1] == '`')

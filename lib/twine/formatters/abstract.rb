@@ -2,6 +2,16 @@ require 'fileutils'
 
 module Twine
   module Formatters
+    class FormatterResult
+      attr_accessor :singleOutput
+      attr_accessor :pluralsOutput
+      
+      def initialize(single, plurals)
+        @singleOutput = single
+        @pluralsOutput = plurals
+      end
+    end
+
     class Abstract
       LANGUAGE_CODE_WITH_OPTIONAL_REGION_CODE = "[a-z]{2}(?:-[A-Za-z]{2})?"
 
@@ -29,52 +39,8 @@ module Twine
         raise NotImplementedError.new("You must implement default_file_name in your formatter class.")
       end
 
-      def set_translation_for_key(key, lang, value)
-        value = value.gsub("\n", "\\n")
-
-        if @twine_file.definitions_by_key.include?(key)
-          definition = @twine_file.definitions_by_key[key]
-          reference = @twine_file.definitions_by_key[definition.reference_key] if definition.reference_key
-
-          if !reference or value != reference.translations[lang]
-            definition.translations[lang] = value
-          end
-        elsif @options[:consume_all]
-          Twine::stdout.puts "Adding new definition '#{key}' to twine file."
-          current_section = @twine_file.sections.find { |s| s.name == 'Uncategorized' }
-          unless current_section
-            current_section = TwineSection.new('Uncategorized')
-            @twine_file.sections.insert(0, current_section)
-          end
-          current_definition = TwineDefinition.new(key)
-          current_section.definitions << current_definition
-          
-          if @options[:tags] && @options[:tags].length > 0
-            current_definition.tags = @options[:tags]            
-          end
-          
-          @twine_file.definitions_by_key[key] = current_definition
-          @twine_file.definitions_by_key[key].translations[lang] = value
-        else
-          Twine::stdout.puts "WARNING: '#{key}' not found in twine file."
-        end
-        if !@twine_file.language_codes.include?(lang)
-          @twine_file.add_language_code(lang)
-        end
-      end
-
-      def set_comment_for_key(key, comment)
-        return unless @options[:consume_comments]
-        
-        if @twine_file.definitions_by_key.include?(key)
-          definition = @twine_file.definitions_by_key[key]
-          
-          reference = @twine_file.definitions_by_key[definition.reference_key] if definition.reference_key
-
-          if !reference or comment != reference.raw_comment
-            definition.comment = comment
-          end
-        end
+      def default_plurals_file_name
+        raise NotImplementedError.new("You must implement default_file_name in your formatter class.")
       end
 
       def determine_language_given_path(path)
@@ -90,64 +56,91 @@ module Twine
         lang
       end
 
-      def read(io, lang)
-        raise NotImplementedError.new("You must implement read in your formatter class.")
-      end
-
       def format_file(lang)
-        output_processor = Processors::OutputProcessor.new(@twine_file, @options)
-        processed_twine_file = output_processor.process(lang)
-
-        return nil if processed_twine_file.definitions_by_key.empty?
+        return nil if @twine_file.definitions_by_key.empty?
 
         header = format_header(lang)
+
         result = ""
         result += header + "\n" if header
-        result += format_sections(processed_twine_file, lang)
+        result += format_sections(@twine_file, lang, false)
+
+        pluralsHeader = format_plurals_header(lang)
+        pluralsResult = ""
+        pluralsResult += pluralsHeader + "\n" if pluralsHeader
+        pluralsResult += format_sections(@twine_file, lang, true)
+
+        FormatterResult.new(result, pluralsResult)
       end
 
       def format_header(lang)
       end
 
-      def format_sections(twine_file, lang)
-        sections = twine_file.sections.map { |section| format_section(section, lang) }
+      def format_plurals_header(lang)
+        format_header(lang)
+      end
+
+      def format_sections(twine_file, lang, handlePlurals)
+        sections = twine_file.sections.map { |section| format_section(section, lang, handlePlurals) }
         sections.compact.join("\n")
       end
 
-      def format_section_header(section)
+      def format_section_header(section, handlPlurals)
       end
 
       def should_include_definition(definition, lang)
         return !definition.translation_for_lang(lang).nil?
       end
 
-      def format_section(section, lang)
-        definitions = section.definitions.select { |definition| should_include_definition(definition, lang) }
-        return if definitions.empty?
+      def prepareDefinitions(section, lang, handlePlurals)
+        definitionsToHandle = section.definitions.map { |definition|
+          translations = if handlePlurals
+            definition.translations.filter { |translation| translation.singleValue == nil }
+          else
+            definition.translations.filter { |translation| translation.singleValue != nil }
+          end
 
+          newDefinition = definition.dup
+          newDefinition.translations = translations
+          newDefinition
+        }
+        definitionsToHandle.select { |definition| should_include_definition(definition, lang) }
+      end
+
+      def format_section(section, lang, handlePlurals)
+        definitions = prepareDefinitions(section, lang, handlePlurals)
+        return if definitions.empty?
         result = ""
 
         if section.name && section.name.length > 0
-          section_header = format_section_header(section)
+          section_header = format_section_header(section, handlePlurals)
           result += "\n#{section_header}" if section_header
         end
 
-        definitions.map! { |definition| format_definition(definition, lang) }
+        definitions.map! { |definition| format_definition(definition, lang, handlePlurals) }
         definitions.compact! # remove nil definitions
         definitions.map! { |definition| "\n#{definition}" }  # prepend newline
         result += definitions.join
       end
 
-      def format_definition(definition, lang)
-        [format_comment(definition, lang), format_key_value(definition, lang)].compact.join
+      def format_definition(definition, lang, isPlural)
+        [format_comment(definition, lang), format_key_value(definition, lang, isPlural)].compact.join
       end
 
       def format_comment(definition, lang)
       end
 
-      def format_key_value(definition, lang)
+      def format_key_value(definition, lang, isPlural)
         value = definition.translation_for_lang(lang)
-        key_value_pattern % { key: format_key(definition.key.dup), value: format_value(value.dup) }
+        if isPlural
+          format_pluralized_value(definition.key.dup, value.pluralValues.dup, lang)
+        else
+          key_value_pattern % { key: format_key(definition.key.dup), value: format_value(value.singleValue.dup) }
+        end
+      end
+
+      def format_pluralized_value(key, pluralValues, lang)
+        raise NotImplementedError.new("You must implement format_pluralized_value in your formatter class.")
       end
 
       def key_value_pattern
