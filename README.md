@@ -10,3 +10,10 @@ This is a hard modifition of twine tool. Original readme can be found [here](./R
 - sections must be wrapped into [[[`Section name`]]]
 - keys must be wrapped into [[`key name`]]
 - to add plurals you should wrap language into [`language code`] and add all formats in the following format: `one = value for one`, `other = value for other`, etc.
+
+## How to use
+
+First of all, you must have Ruby installed and Bundle as a gem. To do so run `gem install bundle`.
+After that you can install all required dependencies using bundle: `bundle install --path bundle/vendor`.
+
+Run twine commands via bundle exec, like so: `bundle exec ./twine generate-all-localization-files path/to/twine.txt output/directory/ --format android --create-fodlers`

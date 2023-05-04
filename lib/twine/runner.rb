@@ -13,6 +13,8 @@ module Twine
       end
     end
 
+    Plural_categories = ["zero", "one", "two", "few", "many", "other"]
+
     def self.run(args)
       options = CLI.parse(args)
 
@@ -125,6 +127,7 @@ module Twine
       keys_without_tags = Set.new
       invalid_keys = Set.new
       keys_with_python_only_placeholders = Set.new
+      keys_with_wrong_plural_categories = Set.new
       valid_key_regex = /^[A-Za-z0-9_]+$/
 
       @twine_file.sections.each do |section|
@@ -138,7 +141,9 @@ module Twine
 
           invalid_keys << definition.key unless definition.key =~ valid_key_regex
 
-          keys_with_python_only_placeholders << definition.key if definition.translations.values.any? { |v| Placeholders.contains_python_specific_placeholder(v) }
+          keys_with_python_only_placeholders << definition.key if definition.translations.any? { |v| Placeholders.contains_python_specific_placeholder(v.singleValue) || v.pluralValues.map { |key, value| Placeholders.contains_python_specific_placeholder(value) }.any? { |v| v } }
+
+          keys_with_wrong_plural_categories << definition.key if definition.translations.any? { |t| t.pluralValues.any? { |key, value| !Plural_categories.include?(key) } }
         end
       end
 
@@ -163,6 +168,10 @@ module Twine
 
       unless keys_with_python_only_placeholders.empty?
         errors << "Found key(s) with placeholders that are only supported by Python:\n#{join_keys.call(keys_with_python_only_placeholders)}"
+      end
+
+      unless keys_with_wrong_plural_categories.empty?
+        errors << "Found key(s) with invalid plural categories, only #{Plural_categories.map {|v| "`#{v}`" }.join(", ")} are allowed:\n#{join_keys.call(keys_with_wrong_plural_categories)}"
       end
 
       raise Twine::Error.new errors.join("\n\n") unless errors.empty?
