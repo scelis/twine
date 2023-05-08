@@ -108,14 +108,15 @@ module Twine
       end
 
       def format_section(section, lang, handlePlurals)
-        definitions = prepareDefinitions(section, lang, handlePlurals)
-        return if definitions.empty?
         result = ""
 
         if section.name && section.name.length > 0
           section_header = format_section_header(section, handlePlurals)
           result += "\n#{section_header}" if section_header
         end
+
+        definitions = prepareDefinitions(section, lang, handlePlurals)
+        return result if definitions.empty?
 
         definitions.map! { |definition| format_definition(definition, lang, handlePlurals) }
         definitions.compact! # remove nil definitions
