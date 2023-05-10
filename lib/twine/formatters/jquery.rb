@@ -27,10 +27,17 @@ module Twine
       def format_file(lang)
         result = super
         unless result
-          return FormatterResult.new("{\n#{super}\n}\n", nil)
+          return FormatterResult.new("{\n\n}\n", nil)
         end
 
-        FormatterResult.new(result.singleOutput + "\n" + result.pluralsOutput, nil)
+        output = "{\n"
+        output += result.singleOutput
+        if (result.singleOutput != "" && result.pluralsOutput != "")
+          output += ",\n"
+        end
+        output += result.pluralsOutput
+        output += "\n}\n"
+        FormatterResult.new(output, nil)
       end
 
       def format_sections(twine_file, lang, handlePlurals)
