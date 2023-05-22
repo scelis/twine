@@ -67,7 +67,7 @@ module Twine
       def format_pluralized_value(key, pluralValues, lang)
         result = ''
         result += pluralValues.map { |plural_key, plural_value|
-          "\"#{key}_#{plural_key}\":\"#{escape_quotes(plural_value)}\""
+          "\"#{key}_#{plural_key}\":\"#{format_value(plural_value, true)}\""
         }.join(",\n")
         result
       end
@@ -76,9 +76,9 @@ module Twine
         escape_quotes(key)
       end
 
-      def format_value(value)
+      def format_value(value, isPlural = false)
         # convert placeholders (e.g. %@ -> {{index}})
-        value = convert_placeholders_from_twine_to_jquery(value)
+        value = convert_placeholders_from_twine_to_jquery(value, isPlural)
 
         escape_quotes(value)
       end
