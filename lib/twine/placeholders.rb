@@ -78,5 +78,18 @@ module Twine
     def contains_python_specific_placeholder(input)
       /%\([a-zA-Z0-9_-]+\)#{PLACEHOLDER_PARAMETER_FLAGS_WIDTH_PRECISION_LENGTH}#{PLACEHOLDER_TYPES}/.match(input) != nil
     end
+
+    def convert_placeholders_from_twine_to_jquery(input, isPlural)
+      value = convert_twine_string_placeholder(input)
+
+      if isPlural
+        value.gsub(PLACEHOLDER_REGEX, "{{count}}")
+      else
+        value.gsub(PLACEHOLDER_REGEX).each_with_index do |match, index|
+          "{{#{index}}}"
+        end
+      end
+
+    end
   end
 end
