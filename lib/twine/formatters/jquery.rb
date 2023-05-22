@@ -1,6 +1,8 @@
 module Twine
   module Formatters
     class JQuery < Abstract
+      include Twine::Placeholders
+
       def format_name
         'jquery'
       end
@@ -75,6 +77,9 @@ module Twine
       end
 
       def format_value(value)
+        # convert placeholders (e.g. %@ -> {{index}})
+        value = convert_placeholders_from_twine_to_jquery(value)
+
         escape_quotes(value)
       end
     end
