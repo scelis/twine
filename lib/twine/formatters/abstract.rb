@@ -70,6 +70,10 @@ module Twine
         pluralsResult += pluralsHeader + "\n" if pluralsHeader
         pluralsResult += format_sections(@twine_file, lang, true)
 
+        if format_name == "apple"
+            pluralsResult += "\t</dict>\n</plist>"
+        end
+        
         FormatterResult.new(result, pluralsResult)
       end
 
