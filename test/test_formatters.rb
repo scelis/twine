@@ -28,6 +28,14 @@ class FormatterTest < TwineTest
     end
   end
 
+  def assert_nested_translations_read_correctly
+    1.upto(4) do |i|
+      assert_equal "value#{i}-english", @empty_twine_file.definitions_by_key["key#{i}"].translations['en']
+    end
+    assert_equal "value5a-english", @empty_twine_file.definitions_by_key["key5.key5a"].translations['en']
+    assert_equal "value5b-english", @empty_twine_file.definitions_by_key["key5.key5b"].translations['en']
+  end
+
   def assert_file_contents_read_correctly
     assert_translations_read_correctly
 
@@ -440,6 +448,12 @@ class TestJQueryFormatter < FormatterTest
     @formatter.read content_io('formatter_jquery.json'), 'en'
 
     assert_translations_read_correctly
+  end
+
+  def test_read_format_nested
+    @formatter.read content_io('formatter_jquery_nested.json'), 'en'
+
+    assert_nested_translations_read_correctly
   end
 
   def test_format_file
