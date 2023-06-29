@@ -20,6 +20,16 @@ module Twine
         return super
       end
 
+      def set_translation_for_key_recursive(key, lang, value)
+        if value.is_a?(Hash)
+          value.each do |key2, value2|
+            set_translation_for_key_recursive(key+"."+key2, lang, value2)
+          end
+        else
+          set_translation_for_key(key, lang, value)
+        end
+      end
+
       def read(io, lang)
         begin
           require "json"
@@ -29,7 +39,7 @@ module Twine
 
         json = JSON.load(io)
         json.each do |key, value|
-          set_translation_for_key(key, lang, value)
+          set_translation_for_key_recursive(key, lang, value)
         end
       end
 
