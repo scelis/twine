@@ -1,3 +1,7 @@
+# 1.1.3 (2023-07-10)
+
+- Feature: Add support for nested JSON translations using the jQuery formatter (#296)
+
 # 1.1.2 (2022-11-15)
 
 - Bugfix: Fixed a runtime error caused by a missing rexml dependency in Ruby 3 (#312)
