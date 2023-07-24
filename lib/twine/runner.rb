@@ -346,7 +346,7 @@ module Twine
 
       lang = lang || formatter.determine_language_given_path(path)
       unless lang
-        raise Twine::Error.new "Unable to determine language for #{path}. Try using `--lang`."
+        raise Twine::Error.new "Skipping #{path}"
       end
 
       @twine_file.language_codes << lang unless @twine_file.language_codes.include? lang

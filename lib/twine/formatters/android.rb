@@ -27,7 +27,7 @@ module Twine
         path_arr = path.split(File::SEPARATOR)
         path_arr.each do |segment|
           if segment == 'values'
-            return @twine_file.language_codes[0]
+            return "en"
           else
             # The language is defined by a two-letter ISO 639-1 language code, optionally followed by a two letter ISO 3166-1-alpha-2 region code (preceded by lowercase "r").
             # see http://developer.android.com/guide/topics/resources/providing-resources.html#AlternativeResources

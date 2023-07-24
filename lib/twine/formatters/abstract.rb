@@ -40,7 +40,7 @@ module Twine
             definition.translations[lang] = value
           end
         elsif @options[:consume_all]
-          Twine::stdout.puts "Adding new definition '#{key}' to twine file."
+          # Twine::stdout.puts "Adding new definition '#{key}' to twine file."
           current_section = @twine_file.sections.find { |s| s.name == 'Uncategorized' }
           unless current_section
             current_section = TwineSection.new('Uncategorized')
