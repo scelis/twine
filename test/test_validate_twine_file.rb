@@ -38,10 +38,16 @@ class TestValidateTwineFile < CommandTest
   end
 
   def test_reports_invalid_characters_in_keys
-    random_definition.key[0] = "!?;:,^`´'\"\\|/(){}[]~-+*=#$%".chars.to_a.sample
+    invalid_character = "!?;:,^`´'\"\\|/(){}[]~-+*=#$%".chars.to_a.sample
+
+    twine_file = build_twine_file 'en' do
+      add_section 'Section' do
+        add_definition "key#{invalid_character}" => 'value'
+      end
+    end
 
     assert_raises Twine::Error do
-      Twine::Runner.new(@options, @twine_file).validate_twine_file
+      Twine::Runner.new(@options, twine_file).validate_twine_file
     end
   end
 
