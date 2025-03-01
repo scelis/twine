@@ -70,7 +70,7 @@ module Twine
     end
 
     def convert_placeholders_from_flash_to_twine(input)
-      input.gsub /\{\d+\}/, '%@'
+      input.gsub(/\{\d+\}/, '%@')
     end
 
     # Python supports placeholders in the form of `%(amount)03d`

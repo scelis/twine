@@ -21,10 +21,11 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency('rexml', "~> 3.2")
   s.add_runtime_dependency('rubyzip', "~> 2.0")
   s.add_runtime_dependency('safe_yaml', "~> 1.0")
+  s.add_runtime_dependency('base64', "~> 0.2")
   s.add_development_dependency('rake', "~> 13.0")
   s.add_development_dependency('minitest', "~> 5.5")
   s.add_development_dependency('minitest-ci', "~> 3.0")
-  s.add_development_dependency('mocha', "~> 1.1")
+  s.add_development_dependency('mocha', "~> 2.7")
 
   s.executables  = %w( twine )
   s.description  = <<desc

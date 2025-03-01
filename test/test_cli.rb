@@ -20,7 +20,7 @@ class CLITest < TwineTest
   def assert_help
     parse_with '--help'
     assert_equal @options, false
-    assert_match /Usage: twine.*Examples:/m, Twine::stdout.string
+    assert_match(/Usage: twine.*Examples:/m, Twine::stdout.string)
   end
 
   def assert_option_consume_all

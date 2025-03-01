@@ -152,7 +152,7 @@ module Twine
 
         # capture xliff tags and replace them with a placeholder
         xliff_tags = []
-        value.gsub! /<xliff:g.+?<\/xliff:g>/ do
+        value.gsub!(/<xliff:g.+?<\/xliff:g>/) do
           xliff_tags << $&
           'TWINE_XLIFF_TAG_PLACEHOLDER'
         end
@@ -163,7 +163,7 @@ module Twine
         # put xliff tags back into place
         xliff_tags.each do |xliff_tag|
           # escape content of xliff tags
-          xliff_tag.gsub! /(<xliff:g.*?>)(.*)(<\/xliff:g>)/ do "#{$1}#{escape_value($2)}#{$3}" end
+          xliff_tag.gsub!(/(<xliff:g.*?>)(.*)(<\/xliff:g>)/) do "#{$1}#{escape_value($2)}#{$3}" end
           value.sub! 'TWINE_XLIFF_TAG_PLACEHOLDER', xliff_tag
         end
         
