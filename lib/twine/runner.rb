@@ -147,7 +147,7 @@ module Twine
       end
 
       Dir.mktmpdir do |temp_dir|
-        Zip::File.open(@options[:output_path], Zip::File::CREATE) do |zipfile|
+        Zip::File.open(@options[:output_path], create: true) do |zipfile|
           zipfile.mkdir('Locales')
 
           formatter = formatter_for_format(@options[:format])
@@ -210,13 +210,20 @@ module Twine
 
       error_encountered = false
       Dir.mktmpdir do |temp_dir|
+        extract_dir = File.join(File.expand_path(temp_dir), '')
         Zip::File.open(@options[:input_path]) do |zipfile|
           zipfile.each do |entry|
             next if entry.name.end_with? '/' or File.basename(entry.name).start_with? '.'
 
-            real_path = File.join(temp_dir, entry.name)
+            real_path = File.expand_path(File.join(temp_dir, entry.name))
+            unless real_path.start_with?(extract_dir)
+              Twine::stderr.puts "Skipping unsafe archive entry: #{entry.name}"
+              error_encountered = true
+              next
+            end
+
             FileUtils.mkdir_p(File.dirname(real_path))
-            zipfile.extract(entry.name, real_path)
+            entry.get_input_stream { |input| File.binwrite(real_path, input.read) }
             begin
               read_localization_file(real_path)
             rescue Twine::Error => e
