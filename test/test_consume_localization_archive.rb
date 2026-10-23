@@ -1,4 +1,5 @@
 require 'command_test'
+require 'zip'
 
 class TestConsumeLocalizationArchive < CommandTest
   def setup
@@ -12,7 +13,7 @@ class TestConsumeLocalizationArchive < CommandTest
   end
 
   def new_runner(options = {})
-    options[:input_path] = fixture_path 'consume_localization_archive.zip'
+    options[:input_path] ||= fixture_path 'consume_localization_archive.zip'
     options[:output_path] = @output_path
 
     Twine::Runner.new(options, @twine_file)
@@ -29,5 +30,24 @@ class TestConsumeLocalizationArchive < CommandTest
     assert_raises Twine::Error do
       new_runner.consume_localization_archive
     end
+  end
+
+  def test_skips_entries_outside_of_extraction_directory
+    extract_dir = File.join(@output_dir, 'extract')
+    Dir.mkdir extract_dir
+    Dir.stubs(:mktmpdir).yields(extract_dir)
+
+    archive_path = File.join(@output_dir, 'unsafe.zip')
+    Zip::OutputStream.open(archive_path) do |zip|
+      zip.put_next_entry('../escaped/en.xml')
+      zip.write '<resources><string name="key1">value1-english</string></resources>'
+    end
+
+    assert_raises Twine::Error do
+      new_runner(input_path: archive_path, format: 'android').consume_localization_archive
+    end
+
+    refute File.exist?(File.join(@output_dir, 'escaped')), 'archive entry was written outside of the extraction directory'
+    assert_match 'Skipping unsafe archive entry: ../escaped/en.xml', Twine::stderr.string
   end
 end
